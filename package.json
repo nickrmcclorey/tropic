@@ -1,0 +1,23 @@
+{
+  "name": "tropic",
+  "version": "1.0.0",
+  "description": "A file browser",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickrmcclorey/tropic-file-browser.git"
+  },
+  "author": "Nick McClorey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nickrmcclorey/tropic-file-browser/issues"
+  },
+  "homepage": "https://github.com/nickrmcclorey/tropic-file-browser#readme",
+  "dependencies": {
+    "electron": "^2.0.4"
+  }
+}
