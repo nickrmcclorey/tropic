@@ -2,5 +2,20 @@
 
 ul.fileList {
     height:100%;
-    overflow: scroll;
+
+    list-style-type: none;
+}
+
+li {
+    
+
+
+}
+
+img {
+    height:20px;
+    position:relative;
+    top:5px;
+    padding-right:5px;
+
 }
