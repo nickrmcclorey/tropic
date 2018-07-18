@@ -7,15 +7,23 @@ ul.fileList {
 }
 
 li {
-    
+    width:100%;
+    display:grid;
+    grid-template-columns: 0.1fr 1fr 1fr;
+}
 
-
+.fileDate{
+    padding-left: 5px;
+    padding right:5px;
 }
 
 img {
     height:20px;
-    position:relative;
-    top:5px;
+
     padding-right:5px;
 
+}
+
+span {
+    overflow:hidden;
 }
