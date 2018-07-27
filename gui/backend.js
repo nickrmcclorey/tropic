@@ -3,39 +3,61 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 
+// ==== global variables ==== \\
 let currentFolder = {};
+let selectedFile = null;
 
+// ==== end of global variables ====\\
 function init() {
     currentFolder = new Folder(os.homedir());
     updateGuiFiles(currentFolder);
     setEventListeners();
+    document.getElementById('backButton').addEventListener('click', goToParentDirectory, false);
 }
-
 
 
 function Folder(path) {
 
     let newFolder = {};
-    this.childrenNames = fs.readdirSync(path);
+    let childrenNames = fs.readdirSync(path);
     this.children = new Array();
     this.path = path;
 
-    // this.childrenNames is an array of strings corresponding to files and directories
-    for (let k of this.childrenNames) {
+    // childrenNames is an array of strings corresponding to files and directories
+    // we create an associative array where the filename is the index of it's correpsonding info
+    for (let fileName of childrenNames) {
         let file = {};
 
 
-        let fsInfo = fs.statSync(path +'/'+ k);
+        let fsInfo = fs.statSync(path +'/'+ fileName);
 
-        file.size = fsInfo.size;
+        // converts raw size of bytes to string in terms of KB, MB or GB
+        file.size = sizeOf(fsInfo);
+
         file.lastModified = fsInfo.mtime;
 
-        file.type = (fsInfo.isDirectory()) ? 'directory' : findFileExtension(k);
-        this.children[k] = file;
+        file.type = (fsInfo.isDirectory()) ? 'directory' : findFileExtension(fileName);
+
+        file.isDirectory = function () {
+            return this.type == 'directory';
+        }
+
+        // appeniding the file to the array
+        this.children[fileName] = file;
     }
 
 
 }
+
+function goToParentDirectory() {
+    let newPath = currentFolder.path + '\\..'
+    console.log(newPath);
+    currentFolder = new Folder(path.resolve(newPath));
+    //document.getElementById('fileList').innerHTML = '';
+    updateGuiFiles(currentFolder);
+    setEventListeners();
+}
+
 
 // opens a file in a seperate program
 function openFile(rawPath) {
@@ -97,12 +119,33 @@ let defaultIcons = new Array();
 
 function fileIconPath(fileObj) {
 
-    console.log(fileObj.type);
     if (defaultIcons.includes(fileObj.type)) {
         return 'img/' + fileObj.type + '.png';
     } else {
-
         return 'img/blank.png';
     }
 
+}
+
+function sizeOf(fsInfo) {
+
+    if (fsInfo.isFile) {
+        // size is in bytes
+        let size = fsInfo.size;
+        if (size > 1000000000) { // bigger than a gig
+            size /= 1000000000;
+            return size.toString() + ' GB';
+
+        } else if (size > 1000000) { // bigger than a meg
+            size /= 1000000;
+            return size.toString() + ' MB';
+
+        } else if (size > 1000) {
+            size /= 1000;
+            return size.toString() + ' KB';
+
+        } else {
+            return size.toString() + " Bytes"
+        }
+    }
 }

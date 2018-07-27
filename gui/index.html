@@ -1,21 +1,42 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8">
         <title>Tropic File Browser</title>
     </head>
     <body>
         <section class="head">
-            <h3 id="backButton">Back</h3>
 
         </section>
         <section class="fileField">
+
+            <ul class="header">
+                <div class="backAndPath">
+                    <span id="backButton">Back</span>
+                    <span>Path:</span>
+                    <span><input id="pathBox" type="text"></input></span>
+                </div>
+                <div class="columnHeader">
+                <span>Name</span>
+                <span>Size</span>
+                <span>Last Modified</span>
+                </div>
+            </ul>
             <ul class="fileList" id="fileList">
                 <li>
                     <img  src="img/html_icon.png"></img.>
-                    <span>..</span>
+                    <span>it broke</span>
                 </li>
             </ul>
         </section>
+
+        <ul class="contextmenu">
+            <li id="copyButton">copy</li>
+            <li id="cutButton">cut</li>
+            <li id="deleteButton">delete</li>
+            <li id="openButton">open</li>
+            <li id="infoButton">info</li>
+        </ul>
 
     </body>
     <script src="backend.js"></script>
