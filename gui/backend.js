@@ -13,6 +13,7 @@ function init() {
     updateGuiFiles(currentFolder);
     setEventListeners();
     document.getElementById('backButton').addEventListener('click', goToParentDirectory, false);
+    document.getElementById('pathBox').addEventListener('keypress', pathBoxClicked, false);
 }
 
 
@@ -103,7 +104,7 @@ function sizeOf(size) {
 
         } else if (size > 1000000) { // bigger than a meg
             size /= 1000000;
-            return size.toString() + ' MB';
+            return size.toPrecision(3).toString() + ' MB';
 
         } else if (size > 1000) {
             size /= 1000;

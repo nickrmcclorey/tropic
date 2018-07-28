@@ -55,13 +55,25 @@ Folder.prototype.collectFolderContents = function () {
 Folder.prototype.parseWinDir = function () {
     // calling the dir command and recieving its input in parameter 'raw'
     exec('dir "' + this.path + '" ', (error, raw) => {
+        // catch error calling dir and invalid path
         if (error) {
             console.log(error);
             return;
+        } else if (raw.indexOf('File Not Found') != -1) {
+            console.log('path is invalid');
+            return;
         }
+
 
         // getting rid of '.' and '..' entry
         if (this.path != 'C:\\') {
+            // parsing the declared dir to make sure path is correct
+            let dirShown = raw.substr(raw.indexOf('Directory of '));
+            dirShown = dirShown.substr(dirShown.indexOf('C:'), dirShown.indexOf('\n'));
+            dirShown = dirShown.substr(0, dirShown.indexOf('\n'));
+            this.path = dirShown;
+
+
             raw = raw.substr(raw.indexOf('<DIR>'));
             raw = raw.substr(raw.indexOf('..'));
             raw = raw.substr(raw.indexOf('\n')+1);

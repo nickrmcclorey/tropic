@@ -16,6 +16,7 @@ function fileClicked() {
 }
 
 
+
 function setEventListeners() {
 
     let filelist = document.getElementById('fileList');
@@ -107,5 +108,14 @@ function fileListHeader_li() {
 
     return toReturn_li;
 }
+
+function pathBoxClicked(e) {
+    let keyPressed = e.which || e.keyCode;
+    if (keyPressed === 13) {
+        currentFolder = new Folder(this.value);
+    }
+}
+
+
 
 init();
