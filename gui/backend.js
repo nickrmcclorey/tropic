@@ -16,39 +16,6 @@ function init() {
 }
 
 
-function Folder(path) {
-
-    let newFolder = {};
-    let childrenNames = fs.readdirSync(path);
-    this.children = new Array();
-    this.path = path;
-
-    // childrenNames is an array of strings corresponding to files and directories
-    // we create an associative array where the filename is the index of it's correpsonding info
-    for (let fileName of childrenNames) {
-        let file = {};
-
-
-        let fsInfo = fs.statSync(path +'/'+ fileName);
-
-        // converts raw size of bytes to string in terms of KB, MB or GB
-        file.size = sizeOf(fsInfo);
-
-        file.lastModified = fsInfo.mtime;
-
-        file.type = (fsInfo.isDirectory()) ? 'directory' : findFileExtension(fileName);
-
-        file.isDirectory = function () {
-            return this.type == 'directory';
-        }
-
-        // appeniding the file to the array
-        this.children[fileName] = file;
-    }
-
-
-}
-
 function goToParentDirectory() {
     let newPath = currentFolder.path + '\\..'
     console.log(newPath);
@@ -127,14 +94,12 @@ function fileIconPath(fileObj) {
 
 }
 
-function sizeOf(fsInfo) {
+function sizeOf(size) {
+        console.log(size);
 
-    if (fsInfo.isFile) {
-        // size is in bytes
-        let size = fsInfo.size;
         if (size > 1000000000) { // bigger than a gig
             size /= 1000000000;
-            return size.toString() + ' GB';
+            return size.toPrecision(2).toString() + ' GB';
 
         } else if (size > 1000000) { // bigger than a meg
             size /= 1000000;
@@ -142,10 +107,10 @@ function sizeOf(fsInfo) {
 
         } else if (size > 1000) {
             size /= 1000;
-            return size.toString() + ' KB';
+            return Math.round(size).toString() + ' KB';
 
         } else {
             return size.toString() + " Bytes"
         }
-    }
+
 }

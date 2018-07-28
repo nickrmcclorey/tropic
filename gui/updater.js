@@ -1,4 +1,5 @@
 
+
 function fileClicked() {
 
     let selectedFile = removeEdgeSpaces(this.children[1].textContent)
@@ -27,14 +28,14 @@ function setEventListeners() {
 
 }
 
+
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(folderObj) {
 
     let fileList = document.getElementById('fileList');
     document.getElementById('pathBox').value = folderObj.path;
     fileList.innerHTML = '';
-    //fileList.appendChild(backButton());
-    //fileList.appendChild(fileListHeader_li());
+
 
     // folderObj.children is an associative array indexed by strings corresponding to the files' names
     for (let fileName in folderObj.children) {
@@ -80,22 +81,6 @@ function updateGuiFiles(folderObj) {
     setEventListeners();
 }
 
-function backButton() {
-    let toReturn = document.createElement('h3');
-    toReturn.appendChild(document.createTextNode('Back'));
-
-    toReturn.addEventListener('click', function() {
-
-        let newPath = currentFolder.path + '\\..'
-        console.log(newPath);
-        currentFolder = new Folder(path.resolve(newPath));
-        document.getElementById('fileList').innerHTML = '';
-        updateGuiFiles(currentFolder);
-        setEventListeners();
-    }, false);
-
-    return toReturn;
-}
 
 
 function showFileMenu(e) {
