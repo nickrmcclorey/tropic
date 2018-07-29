@@ -6,7 +6,7 @@ ul.fileList  {
     list-style-type: none;
 }
 
-ul.fileList li {
+ul.fileList > li {
     width:100%;
     display:grid;
     grid-template-columns: 0.1fr 1fr 1fr 1fr;
@@ -47,13 +47,22 @@ span {
     overflow:hidden;
 }
 
-ul.contextmenu{
-    visibility: hidden;
+#contextMenu{
+    display: block;
+    list-style-type: none;
     position: absolute;
+    background: transparent;
+    z-index: 100;
+
+}
+
+#contextMenu > li {
+    background-color: cyan;
+
 }
 
 ul.header{
-    
+
 }
 
 #backButton {

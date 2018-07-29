@@ -6,10 +6,15 @@ const path = require('path');
 // ==== global variables ==== \\
 let currentFolder = {};
 let selectedFile = null;
+let settings = require('./settings.json');
 
 // ==== end of global variables ====\\
 function init() {
-    currentFolder = new Folder(os.homedir());
+    if (Object.keys(settings).includes('homeFolder') ) {
+        currentFolder = new Folder(path.resolve(settings.homeFolder));
+    } else {
+        currentFolder = new Folder(os.homedir());
+    }
     updateGuiFiles(currentFolder);
     setEventListeners();
     document.getElementById('backButton').addEventListener('click', goToParentDirectory, false);
@@ -74,6 +79,7 @@ function removeEdgeSpaces(input) {
 
 
 let defaultIcons = new Array();
+
 (function () {
     let refined = new Array();
     let raw = fs.readdirSync('gui/img');
@@ -87,6 +93,10 @@ let defaultIcons = new Array();
 
 function fileIconPath(fileObj) {
 
+    if (Object.keys(settings.img).includes(fileObj.type)) {
+        return 'img/' + settings.img[fileObj.type];
+    }
+
     if (defaultIcons.includes(fileObj.type)) {
         return 'img/' + fileObj.type + '.png';
     } else {
@@ -96,11 +106,11 @@ function fileIconPath(fileObj) {
 }
 
 function sizeOf(size) {
-        console.log(size);
+
 
         if (size > 1000000000) { // bigger than a gig
             size /= 1000000000;
-            return size.toPrecision(2).toString() + ' GB';
+            return size.toFixed(2).toString() + ' GB';
 
         } else if (size > 1000000) { // bigger than a meg
             size /= 1000000;

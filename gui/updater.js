@@ -86,7 +86,16 @@ function updateGuiFiles(folderObj) {
 
 function showFileMenu(e) {
     console.log(e);
+
+    let contextMenu = document.getElementById('contextMenu');
+    contextMenu.style.position = 'absolute'
+    contextMenu.style.left = e.pageX - 45 + 'px';
+    contextMenu.style.top = e.pageY - 25 + 'px';
+    contextMenu.style.display = 'block';
+
 }
+
+
 
 function fileListHeader_li() {
     let filler = document.createElement('span');
