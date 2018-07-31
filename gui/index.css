@@ -48,17 +48,35 @@ span {
 }
 
 #contextMenu{
-    display: block;
+    display: none;
     list-style-type: none;
     position: absolute;
-    background: transparent;
+    background: grey;
     z-index: 100;
+    width: 100px;
+    padding: 3px;
+
+    justify-content: center;
+    align-items: center;
 
 }
 
-#contextMenu > li {
-    background-color: cyan;
+#contextMenu > div {
+    background-color: white;
 
+    padding:3px;
+
+}
+
+#contextMenu > div:hover {
+    color:white;
+    background-color: rgb(0, 182, 58);
+    cursor: pointer;
+
+}
+
+#contextMenu > div:focus {
+    display: none;
 }
 
 ul.header{

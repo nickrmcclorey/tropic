@@ -1,9 +1,13 @@
 
 function Folder(path) {
 
+
     let newFolder = {};
     this.children = new Array();
-    this.path = path;
+    this.path = path
+
+    process.chdir(path);
+
 
     // childrenNames is an array of strings corresponding to files and directories
     // we create an associative array where the filename is the index of it's correpsonding info
@@ -71,7 +75,7 @@ Folder.prototype.parseWinDir = function () {
             let dirShown = raw.substr(raw.indexOf('Directory of '));
             dirShown = dirShown.substr(dirShown.indexOf('C:'), dirShown.indexOf('\n'));
             dirShown = dirShown.substr(0, dirShown.indexOf('\n'));
-            this.path = dirShown;
+        
 
 
             raw = raw.substr(raw.indexOf('<DIR>'));

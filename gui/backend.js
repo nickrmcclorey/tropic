@@ -5,10 +5,11 @@ const path = require('path');
 
 // ==== global variables ==== \\
 let currentFolder = {};
-let selectedFile = null;
+let selectedFiles = new Array();
 let settings = require('./settings.json');
-
 // ==== end of global variables ====\\
+
+
 function init() {
     if (Object.keys(settings).includes('homeFolder') ) {
         currentFolder = new Folder(path.resolve(settings.homeFolder));
@@ -17,8 +18,7 @@ function init() {
     }
     updateGuiFiles(currentFolder);
     setEventListeners();
-    document.getElementById('backButton').addEventListener('click', goToParentDirectory, false);
-    document.getElementById('pathBox').addEventListener('keypress', pathBoxClicked, false);
+    setContextMenuListeners();
 }
 
 
@@ -28,7 +28,7 @@ function goToParentDirectory() {
     currentFolder = new Folder(path.resolve(newPath));
     //document.getElementById('fileList').innerHTML = '';
     updateGuiFiles(currentFolder);
-    setEventListeners();
+
 }
 
 
@@ -67,7 +67,7 @@ function removeEdgeSpaces(input) {
 
     for (let k = input.length-1; k >= 0; k--) {
         if (input.charAt(k) == ' ') {
-            endIndex = k;
+            endIndex = k-1;
         } else {
             break;
         }
@@ -124,4 +124,18 @@ function sizeOf(size) {
             return size.toString() + " Bytes"
         }
 
+}
+
+function clearSelectedFiles() {
+    let fileList_ul = document.getElementById('fileList');
+
+    // reset color of files in browser
+    for (li of fileList_ul.children) {
+        li.style.backgroundColor = '';
+    }
+    selectedFiles = new Array();
+}
+
+function refresh() {
+    currentFolder = new Folder(currentFolder.path);
 }

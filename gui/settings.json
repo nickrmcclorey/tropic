@@ -3,6 +3,7 @@
     "homeFolder": "C:/users/nick/documents",
 
     "img": {
-        "exe": "exealt.png"
+        "exe": "exealt.png",
+        "png": "jpeg.png"
     }
 }
