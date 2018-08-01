@@ -22,13 +22,25 @@ function setEventListeners() {
 }
 
 function setContextMenuListeners() {
-     document.getElementById('renameButton').addEventListener('click', renameFiles, false);
-     document.getElementById('deleteButton').addEventListener('click', deleteFile,false);
-    // document.getElementById('').addEventListener('click',,false);
-    // document.getElementById('').addEventListener('click',,false);
+    // rename buttons
+    for (el of document.getElementsByClassName('renameButton')) {
+        el.addEventListener('click', renameFiles, false);
+    }
+    // delete button
+    for (el of document.getElementsByClassName('deleteButton')) {
+        el.addEventListener('click', deleteFile,false);
+    }
+    // copy button
+    for (el of document.getElementsByClassName('copyButton')) {
+        el.addEventListener('click', () => {pendingAction = 'copy'},false);
+    }
+     //document.getElementById('pasteButton').addEventListener('click',,false);
     // document.getElementById('').addEventListener('click',,false);
     // document.getElementById('').addEventListener('click',,false);
 
+
+    document.getElementsByClassName('newDirButton')[0].addEventListener('click', () => {createNewChild(true)})
+    document.getElementsByClassName('newFileButton')[0].addEventListener('click', () => {createNewChild(false)}, false);
 }
 
 // updates the display with the list of files and their relavant information
@@ -63,10 +75,10 @@ function updateGuiFiles(folderObj) {
         }
 
         // last modified date
-        let date = folderObj.children[fileName].lastModified;
-        let spanDate = document.createElement('span');
-        spanDate.appendChild(document.createTextNode(date.getMonth() + '/' + date.getDate() + '/' + date.getYear()));
-        spanDate.setAttribute('class','fileDate');
+        // let date = folderObj.children[fileName].lastModified;
+        // let spanDate = document.createElement('span');
+        // spanDate.appendChild(document.createTextNode(date.getMonth() + '/' + date.getDate() + '/' + date.getYear()));
+        // spanDate.setAttribute('class','fileDate');
 
 
 
@@ -74,7 +86,7 @@ function updateGuiFiles(folderObj) {
         file_li.appendChild(img);
         file_li.appendChild(spanName);
         file_li.appendChild(spanFileSize);
-        file_li.appendChild(spanDate);
+        //file_li.appendChild(spanDate);
         // append <li> to the list
         fileList.appendChild(file_li);
 
@@ -91,8 +103,13 @@ function selectFile(e) {
 
     let path = currentFolder.path + '\\' + li_target.children[1].textContent;
 
-    if (!selectedFiles.includes(path)) {
-        selectedFiles.push(li_target);
+    let newSelectedFile = {
+        "path": path,
+        "el": li_target
+    }
+
+    if (!selectedFiles.includes(newSelectedFile)) {
+        selectedFiles.push(newSelectedFile);
     }
 }
 
@@ -126,7 +143,7 @@ function fileClicked(e) {
 
 function renameFiles() {
     document.getElementById('contextMenu').style.display = 'none';
-    let oldName = selectedFileNames()[0];
+    let oldName = selectedFileLis()[0];
 
     // creating input box
     let inputBox = document.createElement('input');
@@ -159,7 +176,7 @@ function renameFiles() {
 
 
     // showing the input box
-    let li = selectedFiles[0];
+    let li = selectedFiles[0].el;
     li.children[1].innerHTML = '';
     li.children[1].appendChild(inputBox);
     inputBox.focus();
@@ -169,20 +186,25 @@ function renameFiles() {
 
 
 function deleteFile() {
-    for (let fileName of selectedFileNames()) {
+    console.log('inside');
+    for (let fileName of selectedFileLis()) {
         if (currentFolder.children[fileName].isDirectory()) {
             fs.rmdirSync(fileName);
         } else {
-            fs.unlinkSync(fileName);
+            fs.unlink(fileName, (error) => {
+                if (error) {
+                    console.log(error);
+                }
+            });
         }
     }
     refresh();
 }
 
-function selectedFileNames() {
+function selectedFileLis() {
     let toReturn = new Array();
-    for (let li of selectedFiles) {
-        toReturn.push(li.children[1].textContent);
+    for (let obj of selectedFiles) {
+        toReturn.push(obj.el.children[1].textContent);
     }
     return toReturn;
 }
@@ -218,7 +240,7 @@ function handleClick(e) {
 
 }
 
-// navigates the browser to the path typed in the box
+// navigates the browser to the path typed in the box at top of page
 function pathBoxClicked(e) {
     console.log(e);
     let keyPressed = e.which || e.keyCode;
@@ -227,7 +249,40 @@ function pathBoxClicked(e) {
     }
 }
 
+// makeDir should be boolean that is true if creating folder, false if creating file
+function createNewChild(makeDir) {
+    console.log(makeDir);
+    let fileList = document.getElementById('fileList');
+    let inputEl = inputBox();
+    inputEl.setAttribute('id', 'newFileInput');
 
+    inputEl.addEventListener('keypress', function (e) {
+        let keyPressed = e.which;
+        if (keyPressed == 13) {
+            let userInput = inputEl.value;
+
+            if (makeDir && !fs.existsSync()) {
+                fs.mkdirSync(userInput);
+            } else {
+                fs.writeFile(userInput, '', () => {});
+            }
+
+            refresh();
+        }
+    }, false);
+
+
+    fileList.prepend(inputEl);
+    inputEl.focus();
+}
+
+
+function inputBox() {
+    let inputBox = document.createElement('input');
+    inputBox.setAttribute('type', 'text');
+    return inputBox;
+
+}
 
 
 init();

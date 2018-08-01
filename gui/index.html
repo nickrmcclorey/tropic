@@ -5,21 +5,21 @@
         <title>Tropic File Browser</title>
     </head>
     <body>
-        <section class="head">
+
+        <section class="header">
+                <span id="backButton">Back</span>
+                <span>Path:</span>
+                <span><input id="pathBox" type="text"></input></span>
 
         </section>
+
         <section class="fileField">
 
             <ul class="header">
-                <div class="backAndPath">
-                    <span id="backButton">Back</span>
-                    <span>Path:</span>
-                    <span><input id="pathBox" type="text"></input></span>
-                </div>
+
                 <div class="columnHeader">
                 <span>Name</span>
                 <span>Size</span>
-                <span>Last Modified</span>
                 </div>
             </ul>
             <ul class="fileList" id="fileList">
@@ -30,14 +30,28 @@
             </ul>
         </section>
 
+        <section class="controlPanel" id="controlPanel">
+            <div class="rightHandMenu">
+                <div class="copyButton">copy</div>
+                <div class="cutButton">cut</div>
+                <div class="pasteButton">paste</div>
+                <div class="deleteButton">delete</div>
+                <div class="renameButton">rename</div>
+                <div class="newFileButton">new file</div>
+                <div class="newDirButton">new folder</div>
+            </div>
+
+        </section>
+
         <section class="contextMenu" id="contextMenu">
-            <div id="copyButton">copy</div>
-            <div id="cutButton">cut</div>
-            <div id="pasteButton">paste</div>
-            <div id="deleteButton">delete</div>
-            <div id="renameButton">rename</div>
-            <div id="openButton">open</div>
-            <div id="infoButton">info</div>
+            <div class="copyButton">copy</div>
+            <div class="cutButton">cut</div>
+            <div class="pasteButton">paste</div>
+            <div class="deleteButton">delete</div>
+            <div class="renameButton">rename</div>
+            <div class="openButton">open</div>
+            <div class="infoButton">info</div>
+
         </section>
 
     </body>

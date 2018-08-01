@@ -7,6 +7,7 @@ const path = require('path');
 let currentFolder = {};
 let selectedFiles = new Array();
 let settings = require('./settings.json');
+let pendingAction = null;
 // ==== end of global variables ====\\
 
 
