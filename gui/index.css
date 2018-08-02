@@ -2,11 +2,13 @@
 
 body {
     display: grid;
-    grid-template-rows: 1fr 40fr;
+    grid-template-rows: 30px 40fr;
     grid-template-columns: 2.5fr 1fr;
     grid-column-gap: 20px;
 }
 
+/* child of body
+    holds the path input box and back button */
 section.header {
     display:grid;
     align-items: flex-end;
@@ -22,9 +24,11 @@ section.controlPanel > div {
 
 }
 
+/* list that holds the files */
 ul.fileList  {
     height:100%;
-
+    padding-left: 0px;
+    margin-left: 2.8em;
     list-style-type: none;
 }
 
@@ -35,7 +39,7 @@ ul.fileList > li {
     grid-template-columns: 0.1fr 2fr 1fr 1fr;
     padding-bottom :1px;
     padding-top: 1px;
-    padding-left: 5px;
+    /* padding-left: 5px; */
 }
 
 div.columnHeader {

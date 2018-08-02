@@ -1,32 +1,35 @@
 const {exec} = require('child_process');
 const os = require('os');
 const fs = require('fs');
-const path = require('path');
+const pathModule = require('path');
 
 // ==== global variables ==== \\
 let currentFolder = {};
 let selectedFiles = new Array();
 let settings = require('./settings.json');
 let pendingAction = null;
+let defaultIcons = new Array();
 // ==== end of global variables ====\\
 
 
 function init() {
+    loadDefaultIcons();
+
     if (Object.keys(settings).includes('homeFolder') ) {
-        currentFolder = new Folder(path.resolve(settings.homeFolder));
+        currentFolder = new Folder(settings.homeFolder);
     } else {
         currentFolder = new Folder(os.homedir());
     }
     updateGuiFiles(currentFolder);
-    setEventListeners();
-    setContextMenuListeners();
+    setFileListListeners();
+    setInitListeners();
 }
 
 
 function goToParentDirectory() {
     let newPath = currentFolder.path + '\\..'
     console.log(newPath);
-    currentFolder = new Folder(path.resolve(newPath));
+    currentFolder = new Folder(newPath);
     //document.getElementById('fileList').innerHTML = '';
     updateGuiFiles(currentFolder);
 
@@ -44,44 +47,12 @@ function openFile(rawPath) {
     }
 }
 
-// parses file extension from full file name (i.e. 'myBook.xlsx' as a parameter returns 'xlsx')
-function findFileExtension(fileName) {
-    if (fileName.lastIndexOf('.') == -1) {
-        return null;
-    } else {
-        return fileName.substr(fileName.lastIndexOf('.')+1);
-    }
-}
 
-// remove spaces from edges of string
-function removeEdgeSpaces(input) {
-
-    let beginIndex = 0;
-    let endIndex = input.length;
-
-    for (let k = 0; k < input.length; k++) {
-        if (input.charAt(k) != ' ') {
-            beginIndex = k;
-            break;
-        }
-    }
-
-    for (let k = input.length-1; k >= 0; k--) {
-        if (input.charAt(k) == ' ') {
-            endIndex = k-1;
-        } else {
-            break;
-        }
-    }
-
-    return input.substr(beginIndex, endIndex);
-
-}
-
-
-let defaultIcons = new Array();
-
-(function () {
+// the files in img folder are read into an array
+// if the pictures name matches an extension, it is used.
+// i.e. putting an picture called xlsx.png in the img folder
+// will cause the program to use that picture as the .xlsx icon
+function loadDefaultIcons() {
     let refined = new Array();
     let raw = fs.readdirSync('gui/img');
     // chopping off extensions
@@ -90,8 +61,10 @@ let defaultIcons = new Array();
         refined.push(newEntry);
     }
     defaultIcons = defaultIcons.concat(refined);
-})();
+};
 
+// returns the path to the file that should be used.
+// settings.json can be used to set file icons
 function fileIconPath(fileObj) {
 
     if (Object.keys(settings.img).includes(fileObj.type)) {
@@ -106,26 +79,7 @@ function fileIconPath(fileObj) {
 
 }
 
-function sizeOf(size) {
 
-
-        if (size > 1000000000) { // bigger than a gig
-            size /= 1000000000;
-            return size.toFixed(2).toString() + ' GB';
-
-        } else if (size > 1000000) { // bigger than a meg
-            size /= 1000000;
-            return size.toPrecision(3).toString() + ' MB';
-
-        } else if (size > 1000) {
-            size /= 1000;
-            return Math.round(size).toString() + ' KB';
-
-        } else {
-            return size.toString() + " Bytes"
-        }
-
-}
 
 function clearSelectedFiles() {
     let fileList_ul = document.getElementById('fileList');
@@ -137,6 +91,166 @@ function clearSelectedFiles() {
     selectedFiles = new Array();
 }
 
+// reloads the page with any file changes
 function refresh() {
     currentFolder = new Folder(currentFolder.path);
+}
+
+
+// makeDir should be boolean that is true if creating folder, false if creating file
+function createNewChild(makeDir) {
+    console.log(makeDir);
+    let fileList = document.getElementById('fileList');
+    let inputEl = newInputBox();
+    inputEl.setAttribute('id', 'newFileInput');
+
+    inputEl.addEventListener('keypress', function (e) {
+        let keyPressed = e.which;
+        if (keyPressed == 13) {
+            let userInput = inputEl.value;
+
+            if (makeDir && !fs.existsSync()) {
+                fs.mkdirSync(userInput);
+            } else {
+                fs.writeFile(userInput, '', () => {});
+            }
+
+            refresh();
+        }
+    }, false);
+
+    // if inputEl loses focus, cancel the creation of new file
+    inputEl.addEventListener('blur', () => { inputEl.style.display = 'none' }, false);
+
+
+    fileList.prepend(inputEl);
+    inputEl.focus();
+}
+
+
+// there's no recovering deleted files.
+//Maybe I could find path to trash but this is different for each OS
+// Maybe I could create my own trash folder
+function deleteFile() {
+    console.log('inside');
+    for (let fileName of selectedFileLis()) {
+        if (currentFolder.children[fileName].isDirectory()) {
+            fs.rmdirSync(fileName);
+        } else {
+            fs.unlink(fileName, (error) => {
+                if (error) {
+                    console.log(error);
+                }
+            });
+        }
+    }
+    refresh();
+}
+
+// goes through selectedFiles and grabs just
+// the li elements and returns them in an array
+function selectedFileLis() {
+    let toReturn = new Array();
+    for (let obj of selectedFiles) {
+        toReturn.push(obj.el.children[1].textContent);
+    }
+    return toReturn;
+}
+
+// usually results in contextMenu being shown
+function fileRightClicked(e) {
+    //console.log(e);
+    if (!e.ctrlKey && selectedFiles.length == 1) {
+        clearSelectedFiles();
+    }
+    // 'this' is the li element
+    selectFile(this);
+
+// displaying context menu
+    let contextMenu = document.getElementById('contextMenu');
+    contextMenu.style.left = e.pageX + 'px';
+    contextMenu.style.top = e.pageY - 15 + 'px';
+    contextMenu.style.display = 'block';
+
+    console.log(selectedFiles);
+}
+
+// used to hide contextMenu
+function handleClick(e) {
+    //console.log(e);
+
+    let contextMenu = document.getElementById('contextMenu');
+    if (!e.path.includes(contextMenu)) {
+        hideContextMenu();
+    }
+
+    if (!e.path.includes(document.getElementById('fileList'))) {
+        clearSelectedFiles();
+    }
+
+}
+
+
+// creates input box, waits for user to enter new name or click elsewhere
+function renameFiles() {
+    hideContextMenu();
+    let oldName = selectedFileLis()[0];
+
+    // creating input box
+    let inputBox = document.createElement('input');
+    inputBox.setAttribute('type', 'text');
+    inputBox.setAttribute('id', 'renameBox');
+
+    // when user presses enter in the input box, the file will renamed
+    inputBox.addEventListener('keypress', (e) => {
+
+        // did user press enter?
+        let keyPressed = e.which || e.keyCode;
+        if (keyPressed == 13) { // enter pressed
+
+            // get new name, rename file and refresh
+            let newName = inputBox.value;
+
+            fs.rename(currentFolder.path + '/' + oldName, currentFolder.path + '/' + newName, (error) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    refresh();
+                    clearSelectedFiles();
+                }
+            }); // end of fs.rename callback
+        }// end of if
+    }, false); // end of keypress callback
+
+    // if user clicks elsewhere, replace the input box with old name
+    inputBox.addEventListener('blur', () => { li.children[1].innerHTML = oldName }, false);
+
+
+    // showing the input box
+    let li = selectedFiles[0].el;
+    li.children[1].innerHTML = '';
+    li.children[1].appendChild(inputBox);
+    inputBox.focus();
+
+} // end of rename sequence
+
+
+// these files will be highlighted and held as global variables
+// for future use. i.e. copy, paste
+function selectFile(li_target) {
+
+    // get li target as e.target could be child element of path
+
+    li_target.style.backgroundColor = 'rgb(35, 219, 220)';
+
+    let path = currentFolder.path + '\\' + nameFromLi(li_target);
+
+    let newSelectedFile = {
+        "path": path,
+        "el": li_target
+    }
+
+    if (!selectedFiles.includes(newSelectedFile)) {
+        selectedFiles.push(newSelectedFile);
+    }
 }

@@ -1,6 +1,6 @@
 
 function Folder(path) {
-
+    path = pathModule.resolve(path);
 
     let newFolder = {};
     this.children = new Array();
@@ -75,7 +75,7 @@ Folder.prototype.parseWinDir = function () {
             let dirShown = raw.substr(raw.indexOf('Directory of '));
             dirShown = dirShown.substr(dirShown.indexOf('C:'), dirShown.indexOf('\n'));
             dirShown = dirShown.substr(0, dirShown.indexOf('\n'));
-        
+
 
 
             raw = raw.substr(raw.indexOf('<DIR>'));
