@@ -8,6 +8,7 @@ let currentFolder = {};
 let selectedFiles = new Array();
 let settings = require('./settings.json');
 let pendingAction = null;
+let lockedAction = null;
 let defaultIcons = new Array();
 // ==== end of global variables ====\\
 
@@ -166,13 +167,25 @@ function fileRightClicked(e) {
     // 'this' is the li element
     selectFile(this);
 
-// displaying context menu
-    let contextMenu = document.getElementById('contextMenu');
-    contextMenu.style.left = e.pageX + 'px';
-    contextMenu.style.top = e.pageY - 15 + 'px';
-    contextMenu.style.display = 'block';
+    showContextMenu();
 
     console.log(selectedFiles);
+}
+
+
+function lockSelectedFiles(cutOrCopy) {
+    if (cutOrCopy != 'copy' && cutOrCopy != 'cut') {
+        console.log('lockSelectedFiles function called with invalid arguments')
+        return;
+    }
+
+    lockedAction = {
+        "type": cutOrCopy,
+        "paths": selectedFiles
+    };
+    console.log(lockedAction);
+
+    clearSelectedFiles();
 }
 
 // used to hide contextMenu
@@ -184,9 +197,9 @@ function handleClick(e) {
         hideContextMenu();
     }
 
-    if (!e.path.includes(document.getElementById('fileList'))) {
-        clearSelectedFiles();
-    }
+    // if (!e.path.includes(document.getElementById('fileList'))) {
+    //     clearSelectedFiles();
+    // }
 
 }
 
@@ -253,4 +266,37 @@ function selectFile(li_target) {
     if (!selectedFiles.includes(newSelectedFile)) {
         selectedFiles.push(newSelectedFile);
     }
+}
+
+
+function pasteSelectedFiles() {
+    // can't paste if files havent' been copied
+    if (!lockedAction) {
+        return;
+    }
+
+    if (lockedAction.type == 'cut') {
+        for (selectedFile of lockedAction.paths) {
+            console.log(selectedFile);
+            let fileName = pathModule.basename(selectedFile.path);
+            fs.rename(selectedFile.path, pathModule.join(currentFolder.path, fileName), (error) => {
+                if (error) {
+                    console.log(error);
+                }
+            }); // end of callback and fs.rename
+
+        } // end of for loop
+    } else if (lockedAction.type == 'copy') {
+        for (selectedFile of lockedAction.paths) {
+            let fileName = pathModule.basename(selectedFile.path);
+            fs.copyFile(selectedFile.path, pathModule.join(currentFolder.path, fileName), (error) => {
+                if (error) {
+                    console.log(error);
+                }
+            });
+        }
+    }
+
+    pendingAction = null;
+    refresh();
 }

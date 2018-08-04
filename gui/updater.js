@@ -32,9 +32,16 @@ function setInitListeners() {
     }
     // copy button
     for (el of document.getElementsByClassName('copyButton')) {
-        el.addEventListener('click', () => {pendingAction = 'copy'},false);
+        el.addEventListener('click', () => { lockSelectedFiles('copy'); hideContextMenu();},false);
     }
-     //document.getElementById('pasteButton').addEventListener('click',,false);
+    // cut button
+    for (el of document.getElementsByClassName('cutButton')) {
+        el.addEventListener('click', () => { lockSelectedFiles('cut'); hideContextMenu();},false);
+    }
+    // paste button
+    for (el of document.getElementsByClassName('pasteButton')) {
+        el.addEventListener('click', pasteSelectedFiles, false);
+    }
     // document.getElementById('').addEventListener('click',,false);
     // document.getElementById('').addEventListener('click',,false);
 
@@ -131,7 +138,14 @@ function hideContextMenu() {
     document.getElementById('contextMenu').style.display = 'none';
 }
 
-
+function showContextMenu(e) {
+    let contextMenu = document.getElementById('contextMenu');
+    if (e) {
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY - 15 + 'px';
+        contextMenu.style.display = 'block';
+    }
+}
 
 // navigates the browser to the path typed in the box at top of page
 function pathBoxKeyDown(e) {
