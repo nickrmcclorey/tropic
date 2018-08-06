@@ -64,3 +64,9 @@ function sizeOf(size) {
         }
 
 }
+
+function printError(error) {
+    if (error) {
+        console.log(error);
+    }
+}

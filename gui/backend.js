@@ -5,8 +5,8 @@ const pathModule = require('path');
 
 // ==== global variables ==== \\
 let currentFolder = {};
-let selectedFiles = new Array();
 let settings = require('./settings.json');
+let selectedFiles = new Array();
 let pendingAction = null;
 let lockedAction = null;
 let defaultIcons = new Array();
@@ -98,6 +98,7 @@ function refresh() {
 }
 
 
+// function to make a new folder or file
 // makeDir should be boolean that is true if creating folder, false if creating file
 function createNewChild(makeDir) {
     console.log(makeDir);
@@ -134,7 +135,7 @@ function createNewChild(makeDir) {
 // Maybe I could create my own trash folder
 function deleteFile() {
     console.log('inside');
-    for (let fileName of selectedFileLis()) {
+    for (let fileName of selectedFileNames()) {
         if (currentFolder.children[fileName].isDirectory()) {
             fs.rmdirSync(fileName);
         } else {
@@ -150,7 +151,7 @@ function deleteFile() {
 
 // goes through selectedFiles and grabs just
 // the li elements and returns them in an array
-function selectedFileLis() {
+function selectedFileNames() {
     let toReturn = new Array();
     for (let obj of selectedFiles) {
         toReturn.push(obj.el.children[1].textContent);
@@ -167,7 +168,7 @@ function fileRightClicked(e) {
     // 'this' is the li element
     selectFile(this);
 
-    showContextMenu();
+    showContextMenu(e);
 
     console.log(selectedFiles);
 }
@@ -197,17 +198,13 @@ function handleClick(e) {
         hideContextMenu();
     }
 
-    // if (!e.path.includes(document.getElementById('fileList'))) {
-    //     clearSelectedFiles();
-    // }
-
 }
 
 
 // creates input box, waits for user to enter new name or click elsewhere
 function renameFiles() {
     hideContextMenu();
-    let oldName = selectedFileLis()[0];
+    let oldName = selectedFileNames()[0];
 
     // creating input box
     let inputBox = document.createElement('input');
@@ -263,39 +260,31 @@ function selectFile(li_target) {
         "el": li_target
     }
 
-    if (!selectedFiles.includes(newSelectedFile)) {
-        selectedFiles.push(newSelectedFile);
-    }
+
+    selectedFiles.push(newSelectedFile);
 }
 
 
 function pasteSelectedFiles() {
-    // can't paste if files havent' been copied
+    // can't paste if files haven't been copied
     if (!lockedAction) {
         return;
     }
 
-    if (lockedAction.type == 'cut') {
-        for (selectedFile of lockedAction.paths) {
-            console.log(selectedFile);
-            let fileName = pathModule.basename(selectedFile.path);
-            fs.rename(selectedFile.path, pathModule.join(currentFolder.path, fileName), (error) => {
-                if (error) {
-                    console.log(error);
-                }
-            }); // end of callback and fs.rename
 
-        } // end of for loop
-    } else if (lockedAction.type == 'copy') {
-        for (selectedFile of lockedAction.paths) {
-            let fileName = pathModule.basename(selectedFile.path);
-            fs.copyFile(selectedFile.path, pathModule.join(currentFolder.path, fileName), (error) => {
-                if (error) {
-                    console.log(error);
-                }
-            });
+    for (selectedFile of lockedAction.paths) {
+        console.log(selectedFile);
+        let fileName = pathModule.basename(selectedFile.path);
+
+        // cut or copy depending on previous selection
+        if (lockedAction.type == 'cut') {
+            fs.rename(selectedFile.path, pathModule.join(currentFolder.path, fileName), printError ); // end of callback and fs.rename
+        } else if (lockedAction.type == 'copy') {
+            fs.copyFile(selectedFile.path, pathModule.join(currentFolder.path, fileName), printError);
         }
-    }
+    } // end of for loop
+
+
 
     pendingAction = null;
     refresh();

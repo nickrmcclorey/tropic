@@ -13,8 +13,11 @@ function setFileListListeners() {
     let filelist = document.getElementById('fileList');
     for (let filebar of fileList.children) {
 
+        // open file on double click
         filebar.addEventListener('dblclick', file_dbl_clicked, false);
+        // file selected
         filebar.addEventListener('click', fileClicked, false);
+        // file right clicked, open contextMenu
         filebar.addEventListener('contextmenu', fileRightClicked, false);
 
     }
@@ -80,14 +83,6 @@ function updateGuiFiles(folderObj) {
             // appending a textNode containing the size of the file
             spanFileSize.appendChild(document.createTextNode(folderObj.children[fileName].size));
         }
-
-        // last modified date
-        // let date = folderObj.children[fileName].lastModified;
-        // let spanDate = document.createElement('span');
-        // spanDate.appendChild(document.createTextNode(date.getMonth() + '/' + date.getDate() + '/' + date.getYear()));
-        // spanDate.setAttribute('class','fileDate');
-
-
 
         // appending all the elements to the <li> bar
         file_li.appendChild(img);
