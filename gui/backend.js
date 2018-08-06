@@ -5,10 +5,8 @@ const pathModule = require('path');
 
 // ==== global variables ==== \\
 let currentFolder = {};
-let settings = require('./settings.json');
-let selectedFiles = new Array();
-let pendingAction = null;
-let lockedAction = null;
+const settings = require('./settings.json');
+let selectedFiles = new SelectedFiles();
 let defaultIcons = new Array();
 // ==== end of global variables ====\\
 
@@ -89,7 +87,7 @@ function clearSelectedFiles() {
     for (li of fileList_ul.children) {
         li.style.backgroundColor = '';
     }
-    selectedFiles = new Array();
+    selectedFiles.tentative = new Array();
 }
 
 // reloads the page with any file changes
@@ -134,16 +132,12 @@ function createNewChild(makeDir) {
 //Maybe I could find path to trash but this is different for each OS
 // Maybe I could create my own trash folder
 function deleteFile() {
-    console.log('inside');
+    console.log(selectedFileNames());
     for (let fileName of selectedFileNames()) {
         if (currentFolder.children[fileName].isDirectory()) {
-            fs.rmdirSync(fileName);
+            fs.rmdir(fileName, printError);
         } else {
-            fs.unlink(fileName, (error) => {
-                if (error) {
-                    console.log(error);
-                }
-            });
+            fs.unlink(fileName, printError);
         }
     }
     refresh();
@@ -153,8 +147,9 @@ function deleteFile() {
 // the li elements and returns them in an array
 function selectedFileNames() {
     let toReturn = new Array();
-    for (let obj of selectedFiles) {
-        toReturn.push(obj.el.children[1].textContent);
+    for (let obj of selectedFiles.tentative) {
+        console.log(obj);
+        toReturn.push(obj.li.children[1].textContent);
     }
     return toReturn;
 }
@@ -162,7 +157,7 @@ function selectedFileNames() {
 // usually results in contextMenu being shown
 function fileRightClicked(e) {
     //console.log(e);
-    if (!e.ctrlKey && selectedFiles.length == 1) {
+    if (!e.ctrlKey && selectedFiles.tentative.length == 1) {
         clearSelectedFiles();
     }
     // 'this' is the li element
@@ -173,21 +168,6 @@ function fileRightClicked(e) {
     console.log(selectedFiles);
 }
 
-
-function lockSelectedFiles(cutOrCopy) {
-    if (cutOrCopy != 'copy' && cutOrCopy != 'cut') {
-        console.log('lockSelectedFiles function called with invalid arguments')
-        return;
-    }
-
-    lockedAction = {
-        "type": cutOrCopy,
-        "paths": selectedFiles
-    };
-    console.log(lockedAction);
-
-    clearSelectedFiles();
-}
 
 // used to hide contextMenu
 function handleClick(e) {
@@ -237,7 +217,7 @@ function renameFiles() {
 
 
     // showing the input box
-    let li = selectedFiles[0].el;
+    let li = selectedFiles.tentative[0].li;
     li.children[1].innerHTML = '';
     li.children[1].appendChild(inputBox);
     inputBox.focus();
@@ -255,31 +235,25 @@ function selectFile(li_target) {
 
     let path = currentFolder.path + '\\' + nameFromLi(li_target);
 
-    let newSelectedFile = {
-        "path": path,
-        "el": li_target
-    }
-
-
-    selectedFiles.push(newSelectedFile);
+    selectedFiles.addTentative(path, li_target);
 }
 
 
 function pasteSelectedFiles() {
     // can't paste if files haven't been copied
-    if (!lockedAction) {
+    if (!selectedFiles.pendingAction) {
         return;
     }
 
 
-    for (selectedFile of lockedAction.paths) {
+    for (selectedFile of selectedFiles.locked) {
         console.log(selectedFile);
         let fileName = pathModule.basename(selectedFile.path);
 
         // cut or copy depending on previous selection
-        if (lockedAction.type == 'cut') {
+        if (selectedFiles.pendingAction == 'cut') {
             fs.rename(selectedFile.path, pathModule.join(currentFolder.path, fileName), printError ); // end of callback and fs.rename
-        } else if (lockedAction.type == 'copy') {
+        } else if (selectedFiles.pendingAction == 'copy') {
             fs.copyFile(selectedFile.path, pathModule.join(currentFolder.path, fileName), printError);
         }
     } // end of for loop

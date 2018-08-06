@@ -2,7 +2,6 @@
 function Folder(path) {
     path = pathModule.resolve(path);
 
-    let newFolder = {};
     this.children = new Array();
     this.path = path
 

@@ -35,17 +35,19 @@ function setInitListeners() {
     }
     // copy button
     for (el of document.getElementsByClassName('copyButton')) {
-        el.addEventListener('click', () => { lockSelectedFiles('copy'); hideContextMenu();},false);
+        el.addEventListener('click', () => { selectedFiles.lockSelection('copy'); hideContextMenu();},false);
     }
     // cut button
     for (el of document.getElementsByClassName('cutButton')) {
-        el.addEventListener('click', () => { lockSelectedFiles('cut'); hideContextMenu();},false);
+        el.addEventListener('click', () => { selectedFiles.lockSelection('cut'); hideContextMenu();},false);
     }
     // paste button
     for (el of document.getElementsByClassName('pasteButton')) {
         el.addEventListener('click', pasteSelectedFiles, false);
     }
-    // document.getElementById('').addEventListener('click',,false);
+    for (el of document.getElementsByClassName('openButton')) {
+        el.addEventListener('click', () => {openFile(selectedFiles.tentative[0].path)},false);
+    }
     // document.getElementById('').addEventListener('click',,false);
 
 
@@ -80,7 +82,7 @@ function updateGuiFiles(folderObj) {
         if (folderObj.children[fileName].isDirectory()) {
                 spanFileSize.appendChild(document.createTextNode('directory'));
         } else {
-            // appending a textNode containing the size of the file
+            // appending a textNode showing the size of the file
             spanFileSize.appendChild(document.createTextNode(folderObj.children[fileName].size));
         }
 
@@ -88,7 +90,7 @@ function updateGuiFiles(folderObj) {
         file_li.appendChild(img);
         file_li.appendChild(spanName);
         file_li.appendChild(spanFileSize);
-        //file_li.appendChild(spanDate);
+
         // append <li> to the list
         fileList.appendChild(file_li);
 
