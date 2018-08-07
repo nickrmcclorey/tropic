@@ -121,14 +121,29 @@ function file_dbl_clicked() {
 function fileClicked(e) {
 
     // 'this' will be the li element
-    let selectedFile = nameFromLi(this);
-
-    if (!e.ctrlKey) {
+    if (selectedFiles.tentativeContains(this)) {
+        selectedFiles.tentativeRemove(this);
+        return;
+    } else if (!e.ctrlKey) {
         clearSelectedFiles();
     }
 
     selectFile(this);
 
+}
+
+function refreshSelectedFiles() {
+    let fileList_ul = document.getElementById('fileList');
+
+    for (li of fileList_ul.children) {
+        li.style.backgroundColor = '';
+    }
+
+
+    for (file of selectedFiles.tentative) {
+        console.log(file.li.style.backgroundColor);
+        file.li.style.backgroundColor = 'rgb(35, 219, 220)';
+    }
 }
 
 function hideContextMenu() {

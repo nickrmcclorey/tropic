@@ -11,8 +11,10 @@ SelectedFiles.prototype.addTentative = function (path, li_el) {
         "path": pathModule.resolve(path),
         "li":li_el
     }; // end of obj
-    this.tentative.push(objToPush);
 
+    if (!this.tentative.includes(objToPush)) {
+        this.tentative.push(objToPush);
+    }
 };
 
 SelectedFiles.prototype.lockSelection = function (copyOrPaste) {
@@ -20,11 +22,21 @@ SelectedFiles.prototype.lockSelection = function (copyOrPaste) {
     this.locked = this.tentative;
 };
 
-SelectedFiles.prototype.tentativeContains = function(li) {
+SelectedFiles.prototype.tentativeContains = function(liToCheck) {
     for (entry of this.tentative) {
         if (entry.li == liToCheck) {
             return true;
         }
     }
     return false;
+}
+
+SelectedFiles.prototype.tentativeRemove = function(liToRemove) {
+    for (k in this.tentative) {
+        // when we find the index, we remove the selected file
+        if (this.tentative[k].li == liToRemove) {
+            this.tentative.splice(k, 1);
+            return;
+        }
+    }
 }

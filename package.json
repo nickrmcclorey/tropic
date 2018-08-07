@@ -17,7 +17,9 @@
     "url": "https://github.com/nickrmcclorey/tropic-file-browser/issues"
   },
   "homepage": "https://github.com/nickrmcclorey/tropic-file-browser#readme",
-  "dependencies": {
-    "electron": "^2.0.4"
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^2.0.6",
+    "electron-builder": "^20.27.0"
   }
 }

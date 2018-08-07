@@ -12,4 +12,6 @@ const {app, BrowserWindow} = require('electron');
   app.on('ready', createWindow);
 
 
-const { exec } = require('child_process');
+  app.on('window-all-closed', () => {
+      app.quit()
+  });
