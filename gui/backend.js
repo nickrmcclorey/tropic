@@ -55,7 +55,12 @@ function openFile(rawPath) {
 // will cause the program to use that picture as the .xlsx icon
 function loadDefaultIcons() {
     let refined = new Array();
-    let raw = fs.readdirSync('gui/img');
+    let raw = null;
+
+    
+    raw = fs.readdirSync(pathModule.resolve(__dirname,'img'));
+
+
     // chopping off extensions
     for (let k of raw) {
         let newEntry = k.substr(0, k.indexOf('.'));
