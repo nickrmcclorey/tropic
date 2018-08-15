@@ -4,16 +4,16 @@
 function setFileListListeners() {
 
     // button to go to parent directory
-    document.getElementById('backButton').addEventListener('click', goToParentDirectory, false);
+    for (el of document.getElementsByClassName('backButton')) {
+        el.addEventListener('click', goToParentDirectory, false);
+    }
     // user entered path into path box
     for (el of document.getElementsByClassName('pathBox')) {
         el.addEventListener('keypress', pathBoxKeyDown, false);
     }
-    // hide right click menu whne user clicks elsewhere
-    document.addEventListener('click', handleClick, false);
 
-    let fileList = document.getElementById(selectedFileList);
-    for (let filebar of fileList.children) {
+
+    for (let filebar of active.fileList().children) {
 
         // open file on double click
         filebar.addEventListener('dblclick', file_dbl_clicked, false);
@@ -32,6 +32,9 @@ function setFileListListeners() {
 }
 
 function setInitListeners() {
+    // hide right click menu whne user clicks elsewhere
+    document.addEventListener('click', changeActiveField, false);
+
     // rename buttons
     for (el of document.getElementsByClassName('renameButton')) {
         el.addEventListener('click', renameFiles, false);
@@ -61,10 +64,7 @@ function setInitListeners() {
         el.addEventListener('click', addTab, false);
     }
 
-    document.getElementsByClassName('tab')[0].active = true;
-    document.getElementsByClassName('tab')[0].path = activeInputBox().value;
 
-    console.log(activeTab().path);
 
 
     document.getElementsByClassName('newDirButton')[0].addEventListener('click', () => {createNewChild(true)})
@@ -75,15 +75,16 @@ function setInitListeners() {
 function updateGuiFiles(folderObj, elToTarget) {
 
     // if elToTarget is not passed in, we stick with the active pane (selectedFileList)
-    let fileList = document.getElementById(selectedFileList);
+    let fileList = null;
     if (elToTarget) {
-        fileList = document.getElementById(elToTarget);
+        fileList = elToTarget;
+    } else {
+        fileList = active.fileList();
     }
 
     // let fileList = elToTarget;
     // update the input path box to show current path
-    let pathBoxIndex = (selectedFileList == 'fileList1') ? 0 : 1;
-    document.getElementsByClassName('pathBox')[pathBoxIndex ].value = folderObj.path;
+    active.inputBox().value = folderObj.path;
 
     // wipe the list of files because we just changed directories
     fileList.innerHTML = '';
@@ -123,7 +124,7 @@ function updateGuiFiles(folderObj, elToTarget) {
     }// end of for loop
 
 
-    let tab = activeTab();
+    let tab = active.tab();
     tab.path = folderObj.path;
     tab.innerHTML = pathModule.basename(folderObj.path);
 
@@ -142,6 +143,8 @@ function file_dbl_clicked() {
 
     if (currentFolder.children[selectedFile].type == 'directory') {
         currentFolder = new Folder(newPath);
+        while (!currentFolder.finished) {}
+        console.log('updating');
         updateGuiFiles(currentFolder);
     } else {
         openFile(newPath);
@@ -164,7 +167,7 @@ function fileClicked(e) {
 }
 
 function refreshSelectedFiles() {
-    let fileList_ul = document.getElementById(selectedFileList);
+    let fileList_ul = active.fileList();
 
     for (li of fileList_ul.children) {
         li.style.backgroundColor = '';
@@ -196,6 +199,7 @@ function pathBoxKeyDown(e) {
     //console.log(e);
     let keyPressed = e.which || e.keyCode;
     if (keyPressed === 13) { // enter button
+        changeActiveField(e);
         currentFolder = new Folder(this.value);
     }
 }
