@@ -5,24 +5,41 @@
         <title>Tropic File Browser</title>
     </head>
     <body>
-        <section class="filler"></section>
+        <center class="mainMenu">
+            <center class="topMenu">
+                <span class="copyButton">copy</span>
+                <span class="cutButton">cut</span>
+                <span class="pasteButton">paste</span>
+                <span class="deleteButton">delete</span>
+                <span class="renameButton">rename</span>
+                <span class="newFileButton">new file</span>
+                <span class="newDirButton">new folder</span>
+            </center>
+        </center>
 
-        <section class="fileField">
+        <section class="fileField" id="fileField1">
+            <div class="tabBar">
+                <span class="tab">dd</span>
+                <span class="addTabButton">+</span>
+            </div>
+
+
             <div class="header">
-                <span id="backButton">Back</span>
+                <span class="backButton">Back</span>
                 <span>Path:</span>
-                <span><input id="pathBox" type="text"></input></span>
+                <input class="pathBox" id="pathBox1" type="text"></input>
 
             </div>
 
-            <ul class="header">
 
-                <div class="columnHeader">
-                <span>Name</span>
-                <span>Size</span>
-                </div>
-            </ul>
-            <ul class="fileList" id="fileList">
+
+            <div class="columnHeader">
+            <span>Name</span>
+            <span>Size</span>
+            </div>
+
+
+            <ul class="fileList" id="fileList1">
                 <li>
                     <img  src="img/html.png"></img.>
                     <span>it broke</span>
@@ -30,16 +47,34 @@
             </ul>
         </section>
 
-        <section class="controlPanel" id="controlPanel">
-            <div class="rightHandMenu">
-                <div class="copyButton">copy</div>
-                <div class="cutButton">cut</div>
-                <div class="pasteButton">paste</div>
-                <div class="deleteButton">delete</div>
-                <div class="renameButton">rename</div>
-                <div class="newFileButton">new file</div>
-                <div class="newDirButton">new folder</div>
+        <section class="fileField" id="fileField2">
+
+            <div class="tabBar">
+                <span class="tab" active="true">dd</span>
+                <span class="addTabButton">+</span>
             </div>
+
+            <div class="header">
+                <span class="backButton">Back</span>
+                <span>Path:</span>
+                <input class="pathBox" id="pathBox2" type="text"></input>
+
+            </div>
+
+
+
+            <div class="columnHeader">
+            <span>Name</span>
+            <span>Size</span>
+            </div>
+
+
+            <ul class="fileList" id="fileList2">
+                <li>
+                    <img  src="img/html.png"></img.>
+                    <span>it broke</span>
+                </li>
+            </ul>
 
         </section>
 
@@ -58,6 +93,7 @@
 
     <script src="pure.js"></script>
     <script src="SelectedFiles.js"></script>
+    <script src="Active.js"></script>
     <script src="backend.js"></script>
     <script src="folder.js"></script>
     <script src="updater.js"></script>

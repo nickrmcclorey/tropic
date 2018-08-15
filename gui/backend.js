@@ -8,10 +8,12 @@ let currentFolder = {};
 const settings = require('./settings.json');
 let selectedFiles = new SelectedFiles();
 let defaultIcons = new Array();
+let active = new Active(document.getElementsByClassName('fileField')[0]);
 // ==== end of global variables ====\\
 
 
 function init() {
+
     loadDefaultIcons();
 
     if (Object.keys(settings).includes('homeFolder') ) {
@@ -19,20 +21,66 @@ function init() {
     } else {
         currentFolder = new Folder(os.homedir());
     }
+
+    while(currentFolder.finished) {}
+
+    for (el of document.getElementsByClassName('tab')) {
+        el.active = true;
+        el.path = active.inputBox().value;
+        el.innerHTML = pathModule.basename(currentFolder.path);
+    }
+
+    setInitListeners();
     updateGuiFiles(currentFolder);
     setFileListListeners();
-    setInitListeners();
 }
 
+function handleClick(e) {
+    console.log('inside');
+    for (fileField of document.getElementsByClassName('fileField')) {
+        if (e.path.includes(fileField)) {
+            active = new Active (fileField);
+        }
+    }
 
-function goToParentDirectory() {
-    let newPath = currentFolder.path + '\\..'
+    let contextMenu = document.getElementById('contextMenu');
+    if (!e.path.includes(contextMenu)) {
+        hideContextMenu();
+    }
+
+}
+
+// used to hide contextMenu
+// function handleClick(e) {
+//     //console.log(e);
+//
+//     let contextMenu = document.getElementById('contextMenu');
+//     if (!e.path.includes(contextMenu)) {
+//         hideContextMenu();
+//     }
+//
+//
+//     if (e.path.includes(document.getElementById('fileField1')) && selectedFileList != 'fileList1') {
+//         selectedFileList = 'fileList1';
+//         currentFolder = new Folder(document.getElementById('pathBox1').value);
+//     } else if (e.path.includes(document.getElementById('fileField2')) && selectedFileList != 'fileList2') {
+//         selectedFileList = 'fileList2';
+//         currentFolder = new Folder(document.getElementById('pathBox2').value);
+//     }
+//
+// }
+
+function goToParentDirectory(e) {
+    // let newPath = currentFolder.path + '\\..'
+    handleClick(e);
+    let newPath = this.parentNode.children[2].value + '/..'
     console.log(newPath);
     currentFolder = new Folder(newPath);
     //document.getElementById('fileList').innerHTML = '';
     updateGuiFiles(currentFolder);
 
 }
+
 
 
 // opens a file in a seperate program
@@ -53,7 +101,12 @@ function openFile(rawPath) {
 // will cause the program to use that picture as the .xlsx icon
 function loadDefaultIcons() {
     let refined = new Array();
-    let raw = fs.readdirSync('gui/img');
+    let raw = null;
+
+
+    raw = fs.readdirSync(pathModule.resolve(__dirname,'img'));
+
+
     // chopping off extensions
     for (let k of raw) {
         let newEntry = k.substr(0, k.indexOf('.'));
@@ -81,7 +134,7 @@ function fileIconPath(fileObj) {
 
 
 function clearSelectedFiles() {
-    let fileList_ul = document.getElementById('fileList');
+    let fileList_ul = active.fileList();
 
     // reset color of files in browser
     for (li of fileList_ul.children) {
@@ -92,15 +145,26 @@ function clearSelectedFiles() {
 
 // reloads the page with any file changes
 function refresh() {
+    for (fileField of document.getElementsByClassName('fileField')) {
+        console.log('inside');
+        let field = new Active(fileField);
+        let tempFolder = new Folder(field.inputBox().value);
+        //while (!tempFolder.finished){}
+        console.log('updating');
+        updateGuiFiles(tempFolder, fileField);
+    }
     currentFolder = new Folder(currentFolder.path);
 }
 
+function cd(path) {
+
+}
 
 // function to make a new folder or file
 // makeDir should be boolean that is true if creating folder, false if creating file
 function createNewChild(makeDir) {
     console.log(makeDir);
-    let fileList = document.getElementById('fileList');
+    let fileList = active.fileList();
     let inputEl = newInputBox();
     inputEl.setAttribute('id', 'newFileInput');
 
@@ -169,16 +233,6 @@ function fileRightClicked(e) {
 }
 
 
-// used to hide contextMenu
-function handleClick(e) {
-    //console.log(e);
-
-    let contextMenu = document.getElementById('contextMenu');
-    if (!e.path.includes(contextMenu)) {
-        hideContextMenu();
-    }
-
-}
 
 
 // creates input box, waits for user to enter new name or click elsewhere
@@ -261,5 +315,69 @@ function pasteSelectedFiles() {
 
 
     pendingAction = null;
-    refresh();
+    //refresh();
+}
+
+function changeActiveField(e) {
+    for (fileField of document.getElementsByClassName('fileField')) {
+
+        if (e.path.includes(fileField)) {
+            active = new Active(fileField);
+        }
+
+    }
+}
+
+
+// called by the tab
+function changeTab(e) {
+
+
+    // if user clicks on the active tab, we do nothing
+    if (this.active) {
+        return;
+    }
+    console.log('passed');
+
+
+    let tabs = document.getElementsByClassName('tab');
+    // find old active tab and set its active to false
+    for (tab of tabs) {
+        if (tab.active) {
+            tab.path = currentFolder.path;
+            tab.active = false;
+        }
+        tab.active = false;
+    }
+
+    // activate this tab and go to its path
+    active.inputBox().value = this.path;
+    this.active = true;
+
+    currentFolder = new Folder(this.path);
+    updateGuiFiles(currentFolder);
+
+}
+
+
+
+function addTab(e) {
+    handleClick(e);
+    console.log(e);
+
+    // deactivate active tab as we are about to switch tabs
+    active.tab().active = false;
+
+    // navigate to the tabBar with all the tabs in it
+    let tabBar = e.target.parentNode;
+    // create new tab
+    let newChild = document.createElement('span');
+    newChild.setAttribute('class', 'tab');
+    newChild.appendChild(document.createTextNode(pathModule.basename(active.inputBox().value)));
+    newChild.path = active.inputBox().value;
+    newChild.active = true;
+
+    // add tab button must stay on the right
+    tabBar.insertBefore(newChild, this);
+
 }

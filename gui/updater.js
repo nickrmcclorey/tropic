@@ -4,14 +4,16 @@
 function setFileListListeners() {
 
     // button to go to parent directory
-    document.getElementById('backButton').addEventListener('click', goToParentDirectory, false);
+    for (el of document.getElementsByClassName('backButton')) {
+        el.addEventListener('click', goToParentDirectory, false);
+    }
     // user entered path into path box
-    document.getElementById('pathBox').addEventListener('keypress', pathBoxKeyDown, false);
-    // hide right click menu whne user clicks elsewhere
-    document.addEventListener('click', handleClick, false);
+    for (el of document.getElementsByClassName('pathBox')) {
+        el.addEventListener('keypress', pathBoxKeyDown, false);
+    }
 
-    let filelist = document.getElementById('fileList');
-    for (let filebar of fileList.children) {
+
+    for (let filebar of active.fileList().children) {
 
         // open file on double click
         filebar.addEventListener('dblclick', file_dbl_clicked, false);
@@ -22,9 +24,17 @@ function setFileListListeners() {
 
     }
 
+
+    for (el of document.getElementsByClassName('tab')) {
+        el.addEventListener('click', changeTab, false);
+    }
+
 }
 
 function setInitListeners() {
+    // hide right click menu whne user clicks elsewhere
+    document.addEventListener('click', changeActiveField, false);
+
     // rename buttons
     for (el of document.getElementsByClassName('renameButton')) {
         el.addEventListener('click', renameFiles, false);
@@ -48,7 +58,13 @@ function setInitListeners() {
     for (el of document.getElementsByClassName('openButton')) {
         el.addEventListener('click', () => {openFile(selectedFiles.tentative[0].path)},false);
     }
-    // document.getElementById('').addEventListener('click',,false);
+
+
+    for (el of document.getElementsByClassName('addTabButton')) {
+        el.addEventListener('click', addTab, false);
+    }
+
+
 
 
     document.getElementsByClassName('newDirButton')[0].addEventListener('click', () => {createNewChild(true)})
@@ -56,10 +72,21 @@ function setInitListeners() {
 }
 
 // updates the display with the list of files and their relavant information
-function updateGuiFiles(folderObj) {
+function updateGuiFiles(folderObj, elToTarget) {
 
-    let fileList = document.getElementById('fileList');
-    document.getElementById('pathBox').value = folderObj.path;
+    // if elToTarget is not passed in, we stick with the active pane (selectedFileList)
+    let fileList = null;
+    if (elToTarget) {
+        fileList = elToTarget;
+    } else {
+        fileList = active.fileList();
+    }
+
+    // let fileList = elToTarget;
+    // update the input path box to show current path
+    active.inputBox().value = folderObj.path;
+
+    // wipe the list of files because we just changed directories
     fileList.innerHTML = '';
 
 
@@ -96,6 +123,11 @@ function updateGuiFiles(folderObj) {
 
     }// end of for loop
 
+
+    let tab = active.tab();
+    tab.path = folderObj.path;
+    tab.innerHTML = pathModule.basename(folderObj.path);
+
     setFileListListeners();
 }
 
@@ -103,7 +135,7 @@ function updateGuiFiles(folderObj) {
 
 // called by event listener of the li. opens a file or folder
 function file_dbl_clicked() {
-    console.log(this);
+    //console.log(this);
 
     let selectedFile = nameFromLi(this);
     let newPath = pathModule.resolve(currentFolder.path + '/' + selectedFile);
@@ -111,6 +143,8 @@ function file_dbl_clicked() {
 
     if (currentFolder.children[selectedFile].type == 'directory') {
         currentFolder = new Folder(newPath);
+        while (!currentFolder.finished) {}
+        console.log('updating');
         updateGuiFiles(currentFolder);
     } else {
         openFile(newPath);
@@ -133,7 +167,7 @@ function fileClicked(e) {
 }
 
 function refreshSelectedFiles() {
-    let fileList_ul = document.getElementById('fileList');
+    let fileList_ul = active.fileList();
 
     for (li of fileList_ul.children) {
         li.style.backgroundColor = '';
@@ -141,7 +175,7 @@ function refreshSelectedFiles() {
 
 
     for (file of selectedFiles.tentative) {
-        console.log(file.li.style.backgroundColor);
+        //console.log(file.li.style.backgroundColor);
         file.li.style.backgroundColor = 'rgb(35, 219, 220)';
     }
 }
@@ -159,18 +193,20 @@ function showContextMenu(e) {
     }
 }
 
+// called by path box near top of page
 // navigates the browser to the path typed in the box at top of page
 function pathBoxKeyDown(e) {
-    console.log(e);
+    //console.log(e);
     let keyPressed = e.which || e.keyCode;
     if (keyPressed === 13) { // enter button
+        changeActiveField(e);
         currentFolder = new Folder(this.value);
     }
 }
 
 
 
-
+// used when creating new file or folder
 function newInputBox() {
     let inputBox = document.createElement('input');
     inputBox.setAttribute('type', 'text');
