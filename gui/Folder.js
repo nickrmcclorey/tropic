@@ -20,6 +20,16 @@ function Folder(path) {
 
 }
 
+Folder.prototype.read = function () {
+
+    if (process.platform == 'win32') {
+        return new Promise((resolve, reject) => {this.parseWinDir(resolve, reject)});
+    } else {
+        return new Promise(this.collectFolderContents);
+    }
+
+};
+
 Folder.prototype.collectFolderContents = function () {
 
 
@@ -55,7 +65,7 @@ Folder.prototype.collectFolderContents = function () {
 /* the readdir function doesn't always work on windows so
     so I've called the dir command and parsed the output. */
 
-Folder.prototype.parseWinDir = function () {
+Folder.prototype.parseWinDir = function (resolve, reject) {
     // calling the dir command and recieving its input in parameter 'raw'
     exec('dir "' + this.path + '" ', (error, raw) => {
         // catch error calling dir and invalid path
@@ -175,8 +185,12 @@ Folder.prototype.parseWinDir = function () {
         }
 
         //console.log(this);
-        updateGuiFiles(this);
-
+        //updateGuiFiles(this);
+        // console.log('reached end');
+        // console.log(resolve);
+        if (resolve) {
+            resolve();
+        }
     });
 
 }

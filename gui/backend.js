@@ -22,24 +22,34 @@ function init() {
         currentFolder = new Folder(os.homedir());
     }
 
-    while(currentFolder.finished) {}
 
     for (el of document.getElementsByClassName('tab')) {
         el.active = true;
-        el.path = active.inputBox().value;
+        el.path = currentFolder.path;
         el.innerHTML = pathModule.basename(currentFolder.path);
     }
 
+    for (inputBox of document.getElementsByClassName('pathBox')) {
+        inputBox.value = currentFolder.path;
+
+    }
+
     setInitListeners();
-    updateGuiFiles(currentFolder);
-    setFileListListeners();
+    currentFolder.read().then(() => {
+        for (fileList of document.getElementsByClassName('fileList')) {
+            updateGuiFiles(currentFolder, fileList);
+        }
+        setFileListListeners();
+    })
 }
 
 function handleClick(e) {
-    console.log('inside');
+
     for (fileField of document.getElementsByClassName('fileField')) {
-        if (e.path.includes(fileField)) {
+        if (e.path.includes(fileField) && fileField != active.fileField) {
+            console.log('changing panes');
             active = new Active (fileField);
+            currentFolder = new Folder(active.inputBox().value);
         }
     }
 
@@ -47,37 +57,19 @@ function handleClick(e) {
     if (!e.path.includes(contextMenu)) {
         hideContextMenu();
     }
-
 }
 
-// used to hide contextMenu
-// function handleClick(e) {
-//     //console.log(e);
-//
-//     let contextMenu = document.getElementById('contextMenu');
-//     if (!e.path.includes(contextMenu)) {
-//         hideContextMenu();
-//     }
-//
-//
-//     if (e.path.includes(document.getElementById('fileField1')) && selectedFileList != 'fileList1') {
-//         selectedFileList = 'fileList1';
-//         currentFolder = new Folder(document.getElementById('pathBox1').value);
-//     } else if (e.path.includes(document.getElementById('fileField2')) && selectedFileList != 'fileList2') {
-//         selectedFileList = 'fileList2';
-//         currentFolder = new Folder(document.getElementById('pathBox2').value);
-//     }
-//
-// }
+function openDir(path, fileFieldEl) {
+    currentFolder = new Folder(path);
+    currentFolder.read()
+    .then(() => {updateGuiFiles(currentFolder, fileFieldEl);});
+}
 
 function goToParentDirectory(e) {
-    // let newPath = currentFolder.path + '\\..'
+
     handleClick(e);
-    let newPath = this.parentNode.children[2].value + '/..'
-    console.log(newPath);
-    currentFolder = new Folder(newPath);
-    //document.getElementById('fileList').innerHTML = '';
-    updateGuiFiles(currentFolder);
+    let newPath = this.parentNode.children[2].value + '/..';
+    openDir(newPath);
 
 }
 
@@ -145,20 +137,17 @@ function clearSelectedFiles() {
 
 // reloads the page with any file changes
 function refresh() {
-    for (fileField of document.getElementsByClassName('fileField')) {
-        console.log('inside');
-        let field = new Active(fileField);
-        let tempFolder = new Folder(field.inputBox().value);
-        //while (!tempFolder.finished){}
-        console.log('updating');
-        updateGuiFiles(tempFolder, fileField);
-    }
+    // for (fileField of document.getElementsByClassName('fileField')) {
+    //     console.log('inside');
+    //     let field = new Active(fileField);
+    //     let tempFolder = new Folder(field.inputBox().value);
+    //     //while (!tempFolder.finished){}
+    //     console.log('updating');
+    //     updateGuiFiles(tempFolder, fileField);
+    // }
     currentFolder = new Folder(currentFolder.path);
 }
 
-function cd(path) {
-
-}
 
 // function to make a new folder or file
 // makeDir should be boolean that is true if creating folder, false if creating file
@@ -301,7 +290,6 @@ function pasteSelectedFiles() {
 
 
     for (selectedFile of selectedFiles.locked) {
-        console.log(selectedFile);
         let fileName = pathModule.basename(selectedFile.path);
 
         // cut or copy depending on previous selection
@@ -318,44 +306,35 @@ function pasteSelectedFiles() {
     //refresh();
 }
 
-function changeActiveField(e) {
-    for (fileField of document.getElementsByClassName('fileField')) {
 
-        if (e.path.includes(fileField)) {
-            active = new Active(fileField);
-        }
-
-    }
-}
 
 
 // called by the tab
 function changeTab(e) {
 
-
     // if user clicks on the active tab, we do nothing
     if (this.active) {
         return;
     }
+
+    // there can only be one active tab per tab bar.
+    // we set all the tabs in the bar to inactive and set the clicked tab to active
+    for (tab of this.parentNode.children) {
+        tab.active = false;
+    }
+    this.active = true;
+    handleClick(e);
     console.log('passed');
 
 
-    let tabs = document.getElementsByClassName('tab');
-    // find old active tab and set its active to false
-    for (tab of tabs) {
-        if (tab.active) {
-            tab.path = currentFolder.path;
-            tab.active = false;
-        }
-        tab.active = false;
-    }
-
-    // activate this tab and go to its path
+    // update input box with accurate path
     active.inputBox().value = this.path;
     this.active = true;
 
     currentFolder = new Folder(this.path);
-    updateGuiFiles(currentFolder);
+    currentFolder.read()
+    .then(() => { updateGuiFiles(currentFolder); });
+
 
 }
 
@@ -363,7 +342,6 @@ function changeTab(e) {
 
 function addTab(e) {
     handleClick(e);
-    console.log(e);
 
     // deactivate active tab as we are about to switch tabs
     active.tab().active = false;

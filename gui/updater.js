@@ -13,7 +13,7 @@ function setFileListListeners() {
     }
 
 
-    for (let filebar of active.fileList().children) {
+    for (let filebar of document.getElementsByClassName('fileEntry')) {
 
         // open file on double click
         filebar.addEventListener('dblclick', file_dbl_clicked, false);
@@ -33,7 +33,7 @@ function setFileListListeners() {
 
 function setInitListeners() {
     // hide right click menu whne user clicks elsewhere
-    document.addEventListener('click', changeActiveField, false);
+    // document.addEventListener('click', handleClick, false);
 
     // rename buttons
     for (el of document.getElementsByClassName('renameButton')) {
@@ -134,18 +134,20 @@ function updateGuiFiles(folderObj, elToTarget) {
 
 
 // called by event listener of the li. opens a file or folder
-function file_dbl_clicked() {
-    //console.log(this);
+function file_dbl_clicked(e) {
+    handleClick(e);
+    console.log(currentFolder);
 
     let selectedFile = nameFromLi(this);
     let newPath = pathModule.resolve(currentFolder.path + '/' + selectedFile);
 
-
+    console.log(selectedFile)
     if (currentFolder.children[selectedFile].type == 'directory') {
         currentFolder = new Folder(newPath);
-        while (!currentFolder.finished) {}
+        currentFolder.read()
+        .then(() => {updateGuiFiles(currentFolder)});
         console.log('updating');
-        updateGuiFiles(currentFolder);
+        // updateGuiFiles(currentFolder);
     } else {
         openFile(newPath);
     }
@@ -153,6 +155,7 @@ function file_dbl_clicked() {
 
 // this is a callback of each li element in the file list
 function fileClicked(e) {
+    handleClick(e);
 
     // 'this' will be the li element
     if (selectedFiles.tentativeContains(this)) {
@@ -199,8 +202,10 @@ function pathBoxKeyDown(e) {
     //console.log(e);
     let keyPressed = e.which || e.keyCode;
     if (keyPressed === 13) { // enter button
-        changeActiveField(e);
+        handleClick(e);
         currentFolder = new Folder(this.value);
+        currentFolder.read()
+        .then(() => {updateGuiFiles(currentFolder)})
     }
 }
 
@@ -213,6 +218,5 @@ function newInputBox() {
     return inputBox;
 
 }
-
 
 init();
