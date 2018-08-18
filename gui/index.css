@@ -4,26 +4,42 @@ body {
     padding-top: 30px;
     display: grid;
     grid-template-rows: 40fr ;
-    grid-template-columns: 1fr 1fr;
-
+    grid-template-columns: 1fr;
+    background-color: rgb(242, 242, 242);
     grid-column-gap: 20px;
+    grid-row-gap: 0px;
     align-content: center;
 }
 
+.fileFieldParent {
+
+    padding-right: 10px;
+    padding-left: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 20px;
+
+}
+
 .fileField {
-    background-color: rgb(242, 242, 242)
+    background-color: white;
+    padding: 0px;
+    margin: 0px;
 
 }
 
 .mainMenu {
+
 
     grid-column: 1/3;
     position: fixed;
     left: 0;
     right: 0;
     top: 0px;
+    height:25px;
     padding-top: 5px;
-    background-color: white;
+    border-bottom: 2px solid rgb(57, 201, 45);
+    background-color: rgb(117, 224, 223);
     z-index: 400;
 }
 
@@ -85,6 +101,8 @@ div.columnHeader > span:nth-child(2) {
     /* justify-self: begin; */
 }
 
+
+
 li.fileEntry:hover{
     background-color: rgb(0, 182, 58);
     cursor: pointer;
@@ -124,16 +142,31 @@ span {
 
 }
 
-#contextMenu > div, .topMenu > span {
-    background-color: white;
+
+
+#contextMenu > div {
 
     padding:3px;
+    background-color: white;
 
 }
 
-#contextMenu > div:hover, .topMenu >span:hover {
+#contextMenu > div:hover {
     color:white;
     background-color: rgb(0, 182, 58);
+    cursor: pointer;
+
+}
+
+.topMenu > span {
+    height:100%;
+    padding: 5px;
+    padding-bottom: 7px;
+    /* padding-bottom: 5px; */
+
+}
+.topMenu > span:hover {
+    background-color: rgb(57, 201, 45);
     cursor: pointer;
 
 }
@@ -149,6 +182,7 @@ span {
     color:white;
     background-color: rgb(0, 182, 58);
     cursor: pointer;
+
 
 }
 
@@ -183,4 +217,9 @@ ul.header{
 .tabBar > span:hover {
     background-color: rgb(40, 0, 182);
     cursor: pointer;
+}
+
+
+.xButton {
+    font-family: 'helvetica';
 }

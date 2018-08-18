@@ -77,6 +77,12 @@ function goToParentDirectory(e) {
 
 // opens a file in a seperate program
 function openFile(rawPath) {
+    if (currentFolder.children[pathModule.basename(rawPath)].type == 'directory') {
+        openDir(rawPath);
+        hideContextMenu();
+        return;
+    }
+
     // some quotes are added to deal with paths with spaces
     if (process.platform == 'win32') {
         let afterC = rawPath.substr(rawPath.indexOf('\\')+1);
@@ -137,15 +143,15 @@ function clearSelectedFiles() {
 
 // reloads the page with any file changes
 function refresh() {
-    // for (fileField of document.getElementsByClassName('fileField')) {
-    //     console.log('inside');
-    //     let field = new Active(fileField);
-    //     let tempFolder = new Folder(field.inputBox().value);
-    //     //while (!tempFolder.finished){}
-    //     console.log('updating');
-    //     updateGuiFiles(tempFolder, fileField);
-    // }
-    currentFolder = new Folder(currentFolder.path);
+
+    for (fileField of document.getElementsByClassName('fileField')) {
+        let domTraverser = new Active(fileField);
+        let newFolder = new Folder(domTraverser.inputBox().value);
+        newFolder.read()
+        .then(() => {updateGuiFiles(newFolder, domTraverser.fileList())})
+    }
+
+
 }
 
 
@@ -247,10 +253,10 @@ function renameFiles() {
             fs.rename(currentFolder.path + '/' + oldName, currentFolder.path + '/' + newName, (error) => {
                 if (error) {
                     console.log(error);
-                } else {
-                    refresh();
-                    clearSelectedFiles();
+                    alert('failed to rename file')
                 }
+                refresh();
+                clearSelectedFiles();
             }); // end of fs.rename callback
         }// end of if
     }, false); // end of keypress callback
@@ -355,7 +361,31 @@ function addTab(e) {
     newChild.path = active.inputBox().value;
     newChild.active = true;
 
+    let xButton = document.createElement('span');
+    xButton.innerHTML = 'x';
+    xButton.addEventListener('click', eraseTab, false);
+
     // add tab button must stay on the right
     tabBar.insertBefore(newChild, this);
+    tabBar.insertBefore(xButton, this);
+
+}
+
+
+function eraseTab(e) {
+    console.log(this.previousSibling);
+
+    let tabToDelete = this.previousSibling;
+    if (tabToDelete.active) {
+        tabToDelete.parentNode.children[0].active = true;
+    }
+
+    while (this.previousSibling.className != 'tab') {
+        console.log(this.previousSibling.className);
+        this.parentNode.removeChild(this.previousSibling);
+    }
+    this.parentNode.removeChild(this.previousSibling);
+
+    this.parentNode.removeChild(this);
 
 }

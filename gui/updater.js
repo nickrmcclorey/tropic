@@ -51,12 +51,13 @@ function setInitListeners() {
     for (el of document.getElementsByClassName('cutButton')) {
         el.addEventListener('click', () => { selectedFiles.lockSelection('cut'); hideContextMenu();},false);
     }
-    // paste button
+    // paste buttons
     for (el of document.getElementsByClassName('pasteButton')) {
         el.addEventListener('click', pasteSelectedFiles, false);
     }
+    // open buttons
     for (el of document.getElementsByClassName('openButton')) {
-        el.addEventListener('click', () => {openFile(selectedFiles.tentative[0].path)},false);
+        el.addEventListener('click', () => {openFile(pathModule.join(currentFolder.path, nameFromLi(selectedFiles.tentative[0].li)))},false);
     }
 
 
@@ -64,6 +65,9 @@ function setInitListeners() {
         el.addEventListener('click', addTab, false);
     }
 
+    for (el of document.getElementsByClassName('xButton')) {
+        el.addEventListener('click', eraseTab, false);
+    }
 
 
 
@@ -72,7 +76,7 @@ function setInitListeners() {
 }
 
 // updates the display with the list of files and their relavant information
-function updateGuiFiles(folderObj, elToTarget) {
+function updateGuiFiles(folderObj = currentFolder, elToTarget) {
 
     // if elToTarget is not passed in, we stick with the active pane (selectedFileList)
     let fileList = null;
@@ -88,6 +92,7 @@ function updateGuiFiles(folderObj, elToTarget) {
 
     // wipe the list of files because we just changed directories
     fileList.innerHTML = '';
+    console.log(fileList);
 
 
     // folderObj.children is an associative array indexed by strings corresponding to the files' names
@@ -128,6 +133,7 @@ function updateGuiFiles(folderObj, elToTarget) {
     tab.path = folderObj.path;
     tab.innerHTML = pathModule.basename(folderObj.path);
 
+    highlightTabs();
     setFileListListeners();
 }
 
@@ -136,7 +142,6 @@ function updateGuiFiles(folderObj, elToTarget) {
 // called by event listener of the li. opens a file or folder
 function file_dbl_clicked(e) {
     handleClick(e);
-    console.log(currentFolder);
 
     let selectedFile = nameFromLi(this);
     let newPath = pathModule.resolve(currentFolder.path + '/' + selectedFile);
@@ -217,6 +222,16 @@ function newInputBox() {
     inputBox.setAttribute('type', 'text');
     return inputBox;
 
+}
+
+function highlightTabs() {
+    for (tab of document.getElementsByClassName('tab')) {
+        if (tab.active) {
+            tab.style.backgroundColor = 'rgb(0, 182, 58)';
+        } else {
+            tab.style.backgroundColor = 'rgb(0, 1, 115)';
+        }
+    }
 }
 
 init();
