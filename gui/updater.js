@@ -25,6 +25,14 @@ function setFileListListeners() {
     }
 
 
+    for (el of document.getElementsByClassName('addTabButton')) {
+        el.addEventListener('click', addTab, false);
+    }
+
+    for (el of document.getElementsByClassName('xButton')) {
+        el.addEventListener('click', eraseTab, false);
+    }
+
     for (el of document.getElementsByClassName('tab')) {
         el.addEventListener('click', changeTab, false);
     }
@@ -61,15 +69,9 @@ function setInitListeners() {
     }
 
 
-    for (el of document.getElementsByClassName('addTabButton')) {
-        el.addEventListener('click', addTab, false);
+    for (el of document.getElementsByClassName('newFileFieldButton')) {
+        el.addEventListener('click', newFileField, false);
     }
-
-    for (el of document.getElementsByClassName('xButton')) {
-        el.addEventListener('click', eraseTab, false);
-    }
-
-
 
     document.getElementsByClassName('newDirButton')[0].addEventListener('click', () => {createNewChild(true)})
     document.getElementsByClassName('newFileButton')[0].addEventListener('click', () => {createNewChild(false)}, false);
@@ -224,6 +226,7 @@ function newInputBox() {
 
 }
 
+// active tabs are a different color than the others
 function highlightTabs() {
     for (tab of document.getElementsByClassName('tab')) {
         if (tab.active) {
@@ -233,5 +236,44 @@ function highlightTabs() {
         }
     }
 }
+
+// returns number of tabs in a specific tabBar
+function numTabs(tabBar) {
+    let numTabs = 0;
+    for (tab of tabBar.children) {
+        if (tab.className == 'tab') {
+            numTabs++;
+        }
+    }
+    return numTabs;
+}
+
+// adds another box that the user can browse with
+function newFileField() {
+    let fields = document.getElementsByClassName('fileFieldParent')[0];
+    let newField = fields.children[0].cloneNode(true);
+    fields.appendChild(newField);
+    let domTraverser = new Active(newField);
+    domTraverser.tabBar().children[0].active = true;
+    domTraverser.tabBar().children[0].path = active.tab().path;
+    updateGuiFiles();
+    adjustFileFieldParentCss();
+}
+
+function adjustFileFieldParentCss() {
+    let fields = document.getElementsByClassName('fileFieldParent')[0];
+    // using css grid to evenly space the fileFields
+    let gridTemplateColumns = '';
+    for (k of fields.children) {
+        // 1fr for each child of fileFieldParent
+        gridTemplateColumns += ' 1fr';
+    }
+    // set the css grid value for grid-template-columns
+    fields.style.gridTemplateColumns = gridTemplateColumns;
+
+    // activate buttons on new element
+    setFileListListeners();
+}
+
 
 init();

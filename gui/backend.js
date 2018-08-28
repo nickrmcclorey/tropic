@@ -386,6 +386,15 @@ function eraseTab(e) {
     }
     this.parentNode.removeChild(this.previousSibling);
 
+
+
+    console.log(numTabs(this.parentNode));
+    // if there are no more tabs, remove the entire fileField
+    if (numTabs(this.parentNode) < 1) {
+        this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+        adjustFileFieldParentCss();
+    }
+
     this.parentNode.removeChild(this);
 
 }

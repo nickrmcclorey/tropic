@@ -20,6 +20,9 @@ Active.prototype.tab = function () {
         }
     }
     console.log('method couldn\'t find the active tab')
+    let newActiveTab = this.fileField.children[0].children[0];
+    newActiveTab.active = true;
+    return newActiveTab;
 };
 
 Active.prototype.tabBar = function () {
