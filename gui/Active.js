@@ -1,6 +1,5 @@
 function Active(field) {
     this.fileField = field;
-    console.log(this.fileField);
 }
 
 Active.prototype.fileList = function () {

@@ -12,6 +12,13 @@ function setFileListListeners() {
         el.addEventListener('keypress', pathBoxKeyDown, false);
     }
 
+    for (pane of document.getElementsByClassName('fileField')) {
+        pane.addEventListener('click', (e) => {
+            if (e.target.getAttribute('class') == 'fileField') {
+                clearSelectedFiles();
+            }
+        }, false);
+    }
 
     for (let filebar of document.getElementsByClassName('fileEntry')) {
 
@@ -68,10 +75,15 @@ function setInitListeners() {
         el.addEventListener('click', () => {openFile(pathModule.join(currentFolder.path, nameFromLi(selectedFiles.tentative[0].li)))},false);
     }
 
+    for (el of document.getElementsByClassName('openWithButton')) {
+        el.addEventListener('click', openProgramList, false);
+    }
 
     for (el of document.getElementsByClassName('newFileFieldButton')) {
         el.addEventListener('click', newFileField, false);
     }
+
+    document.addEventListener('click', handleClick, false);
 
     document.getElementsByClassName('newDirButton')[0].addEventListener('click', () => {createNewChild(true)})
     document.getElementsByClassName('newFileButton')[0].addEventListener('click', () => {createNewChild(false)}, false);
@@ -94,7 +106,6 @@ function updateGuiFiles(folderObj = currentFolder, elToTarget) {
 
     // wipe the list of files because we just changed directories
     fileList.innerHTML = '';
-    console.log(fileList);
 
 
     // folderObj.children is an associative array indexed by strings corresponding to the files' names
@@ -232,7 +243,7 @@ function highlightTabs() {
         if (tab.active) {
             tab.style.backgroundColor = 'rgb(0, 182, 58)';
         } else {
-            tab.style.backgroundColor = 'rgb(0, 1, 115)';
+            tab.style.backgroundColor = 'rgb(0, 182, 58)';
         }
     }
 }
@@ -273,6 +284,17 @@ function adjustFileFieldParentCss() {
 
     // activate buttons on new element
     setFileListListeners();
+}
+
+function openProgramList(e) {
+    let list = document.getElementsByClassName('programList')[0];
+    console.log(list);
+    let location = document.getElementsByClassName('openWithButton')[0].getBoundingClientRect();
+
+    list.style.left = location.x + 'px';
+    list.style.top = location.bottom + 'px';
+    list.style.display = 'block';
+
 }
 
 

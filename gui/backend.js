@@ -3,6 +3,7 @@ const os = require('os');
 const fs = require('fs');
 const pathModule = require('path');
 
+
 // ==== global variables ==== \\
 let currentFolder = {};
 const settings = require('./settings.json');
@@ -31,8 +32,9 @@ function init() {
 
     for (inputBox of document.getElementsByClassName('pathBox')) {
         inputBox.value = currentFolder.path;
-
     }
+
+    loadExternalPrograms();
 
     setInitListeners();
     currentFolder.read().then(() => {
@@ -45,6 +47,7 @@ function init() {
 
 function handleClick(e) {
 
+
     for (fileField of document.getElementsByClassName('fileField')) {
         if (e.path.includes(fileField) && fileField != active.fileField) {
             console.log('changing panes');
@@ -56,6 +59,11 @@ function handleClick(e) {
     let contextMenu = document.getElementById('contextMenu');
     if (!e.path.includes(contextMenu)) {
         hideContextMenu();
+    }
+
+    let programMenu = document.getElementById('programMenu');
+    if (!e.path.includes(programMenu) && e.target.getAttribute('class') != 'openWithButton') {
+        programMenu.style.display = 'none';
     }
 }
 
@@ -132,11 +140,13 @@ function fileIconPath(fileObj) {
 
 
 function clearSelectedFiles() {
-    let fileList_ul = active.fileList();
+    let fileList_uls = document.getElementsByClassName('fileList');
 
-    // reset color of files in browser
-    for (li of fileList_ul.children) {
-        li.style.backgroundColor = '';
+    for (fileList_ul of fileList_uls) {
+        // reset color of files in browser
+        for (li of fileList_ul.children) {
+            li.style.backgroundColor = '';
+        }
     }
     selectedFiles.tentative = new Array();
 }
@@ -397,4 +407,57 @@ function eraseTab(e) {
 
     this.parentNode.removeChild(this);
 
+}
+
+
+function loadExternalPrograms() {
+    let programEl = document.getElementsByClassName('programList')[0];
+    for (program in settings.programs) {
+        programEl.innerHTML += '<div>' + program + '</div>';
+
+    }
+    programEl.addEventListener('click', startProgram, false);
+}
+
+
+
+function startProgram(event) {
+    // get program object from settings.json
+    let programName = event.target.textContent;
+    let program = settings.programs[programName];
+
+    // figure out file or folder to open
+    let fileOrFolderPath = selectedFiles.tentative[0].path;
+    let filePath = null;
+    let folderPath = null;
+    if (!fileOrFolderPath) {
+        folderPath = currentFolder.path;
+    } else if (fs.statSync(fileOrFolderPath).isDirectory()) {
+        folderPath = fileOrFolderPath;
+    } else if (fs.statSync(fileOrFolderPath).isFile()) {
+        filePath = fileOrFolderPath;
+    }
+
+
+    // only open program if it can open that folder
+    if (folderPath && program.canOpenFolder) {
+        runExtProgram(program.path, folderPath);
+    } else if (filePath && program.canOpenFile) {
+        runExtProgram(program.path, filePath);
+    }
+
+
+
+}
+
+
+function runExtProgram(programPath, fileOrFolderPath) {
+    // console.log(programPath);
+    // console.log(fileOrFolderPath);
+    if (fileOrFolderPath) {
+        console.log(' "' + programPath + '" "' + fileOrFolderPath + '"');
+        exec(' "' + programPath + '" "' + fileOrFolderPath + '"', null);
+    } else {
+        exec('program.path');
+    }
 }
