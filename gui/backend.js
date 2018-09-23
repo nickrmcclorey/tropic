@@ -2,6 +2,7 @@ const {exec} = require('child_process');
 const os = require('os');
 const fs = require('fs');
 const pathModule = require('path');
+const { ipcRenderer } = require('electron');
 
 
 // ==== global variables ==== \\
@@ -10,6 +11,7 @@ const settings = require('./settings.json');
 let selectedFiles = new SelectedFiles();
 let defaultIcons = new Array();
 let active = new Active(document.getElementsByClassName('fileField')[0]);
+let settingsInputBox = null;
 // ==== end of global variables ====\\
 
 
@@ -125,8 +127,8 @@ function loadDefaultIcons() {
 // settings.json can be used to set file icons
 function fileIconPath(fileObj) {
 
-    if (Object.keys(settings.img).includes(fileObj.type)) {
-        return 'img/' + settings.img[fileObj.type];
+    if (Object.keys(settings.fileTypes).includes(fileObj.type)) {
+        return 'img/' + settings.fileTypes[fileObj.type].img;
     }
 
     if (defaultIcons.includes(fileObj.type)) {

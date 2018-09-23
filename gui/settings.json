@@ -2,9 +2,9 @@
 
     "homeFolder": "C:/users/nick/documents",
 
-    "img": {
-        "exe": "exealt.png",
-        "png": "jpeg.png"
+    "fileTypes": {
+        "exe": {"img": "exealt.png"},
+        "png": {"img": "jpeg.png"}
     },
 
     "programs": {

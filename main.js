@@ -2,7 +2,9 @@ const path = require('path');
 const {app, BrowserWindow} = require('electron');
 const Menu = require('electron').Menu;
 const fs = require('fs');
-  function createWindow () {
+
+let win;
+function createWindow () {
 
     // Create the browser window.
     win = new BrowserWindow({width: 800, height: 600, icon: iconPath()})
@@ -33,10 +35,14 @@ function iconPath() {
     }
 }
 
+function runFunction(functionName) {
+    win.webContents.send('executeFunction', functionName);
+}
+
 
 const template = [
 {
-  label: 'I have control',
+  label: 'File',
   submenu: [
     {role: 'undo'},
     {role: 'redo'},
@@ -52,6 +58,8 @@ const template = [
 {
   label: 'View',
   submenu: [
+    {label: "settings", click: () => {runFunction('showSettings')}},
+    {label: "file view", click: () => {runFunction('hideSettings')}},
     {role: 'reload'},
     {role: 'forcereload'},
     {role: 'toggledevtools'},
@@ -75,7 +83,7 @@ const template = [
   submenu: [
     {
       label: 'Learn More',
-      click () { pasteSelectedFiles(); }
+      click: () => { win.webContents.send('sayHello', 'hi') }
     }
   ]
 }
