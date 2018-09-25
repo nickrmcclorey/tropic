@@ -248,8 +248,11 @@ ul.header{
 }
 
 #settings {
+    background-color: white;
+    padding: 10px;
     display:grid;
-    grid-template-columns: 2fr 3fr;
+    grid-template-columns: 270px 3fr;
+    grid-gap: 10px;
 }
 
 label {
@@ -260,11 +263,18 @@ label {
     list-style-type: none;
     background-color: white;
     margin: 0px;
-    padding: 10px;
+    padding: 0px;
+
 }
 
 #fileExtensions > li {
     padding: 5px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#fileExtensions input {
+    margin-right: 5px;
 }
 
 #fileExtensions button {
@@ -273,12 +283,22 @@ label {
 
 .iconSelector {
     padding: 10px;
-    /* display: flex;
-    flex-direction: row; */
 }
 
 .iconSelector img {
     width: 2em;
     height: 2em;
     margin-left: 5px;
+}
+
+#buttonContainer {
+    grid-column: 1/2;
+    grid-row: 2/3;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+#buttonContainer button {
+    margin: 7px;
 }

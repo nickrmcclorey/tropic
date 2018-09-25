@@ -3,7 +3,7 @@ const os = require('os');
 const fs = require('fs');
 const pathModule = require('path');
 const { ipcRenderer } = require('electron');
-
+const $ = require('jquery')
 
 // ==== global variables ==== \\
 let currentFolder = {};

@@ -21,18 +21,62 @@ function showSettings() {
 
         let newRow = document.createElement('li');
         newRow.innerHTML += '<label>' + extensionName + '</label>'
-        newRow.innerHTML += '<input type="text" value='+extension.img+'>'
+        newRow.innerHTML += '<input type="text" size="13" value='+extension.img+'>'
         newRow.innerHTML += '<button class="iconButtons">select</button>'
 
         ul.appendChild(newRow);
     }
 
+
+    // append buttons
+    let appendExtensionButton = document.createElement('button')
+    appendExtensionButton.innerHTML = 'new file extension'
+    appendExtensionButton.addEventListener('click', appendNewFileExtension)
+
+    let applyButton = document.createElement('button')
+    applyButton.innerHTML = 'apply'
+
+    let buttonContainer = document.createElement('div')
+    buttonContainer.setAttribute('id', 'buttonContainer')
+    buttonContainer.appendChild(appendExtensionButton)
+    buttonContainer.appendChild(applyButton)
+
+
     settings_el.innerHTML = '';
     settings_el.appendChild(ul);
+    settings_el.appendChild(buttonContainer)
 
+    setSettingsListeners();
+}
+
+function appendNewFileExtension() {
+    let extensionInput = document.createElement('input')
+    extensionInput.setAttribute('type', 'text')
+    extensionInput.setAttribute('size', '3')
+    extensionInput.addEventListener('keypress', convertToLabel, false)
+
+    let newRow = document.createElement('li');
+    newRow.innerHTML += '<input type="text" size="13">'
+    newRow.innerHTML += '<button class="iconButtons">select</button>'
+    setSettingsListeners();
+
+    newRow.prepend(extensionInput)
+    document.getElementById('fileExtensions').appendChild(newRow)
 }
 
 
+function convertToLabel(e) {
+    if (e.which != 13) {
+        return
+    }
+
+    let span_el = document.createElement('label')
+    span_el.textContent = e.target.value
+
+    this.parentNode.insertBefore(span_el, this)
+    this.parentNode.removeChild(this)
+
+}
 
 function hideSettings() {
     document.getElementById('fileFieldParent').style.display = 'grid';
@@ -45,7 +89,8 @@ function hideSettings() {
 function selectIcon(e) {
     console.log(e.target);
     if (e.target.nodeName != 'IMG' || settingsInputBox == null) {
-        return null;
+        hideIconSelector();
+        return
     }
 
     // set value of picture in input box
@@ -53,23 +98,38 @@ function selectIcon(e) {
     settingsInputBox = null;
 
     // hide the icon selecor
-    let elToDelete = document.getElementsByClassName('iconSelector')[1]
+    let elToDelete = document.getElementsByClassName('iconSelector')[0]
     elToDelete.parentNode.removeChild(elToDelete)
 
 }
 
 
+function hideIconSelector() {
+    let iconSelector = document.getElementById('iconSelector')
+    iconSelector.parentNode.removeChild(iconSelector)
+}
+
+
 
 function setSelectedInputBox(e) {
-    console.log(e.target);
+    if (e.target.getAttribute('class') != 'iconButtons' || $('.iconSelector').length > 0) {
+        return
+    }
+
     settingsInputBox = e.target.previousSibling;
-    document.getElementById('settings').appendChild(loadIconSelector())
+    let settings = document.getElementById('settings')
+    settings.appendChild(loadIconSelector())
+
+    $('.iconSelector').on('click', selectIcon)
 }
 
 
 
 function loadIconSelector() {
-    let iconSelector = document.getElementsByClassName('iconSelector')[0].cloneNode(true)
+    let iconSelector = document.createElement('div')
+    iconSelector.setAttribute('class', 'iconSelector')
+    iconSelector.setAttribute('id', 'iconSelector')
+
     let icons = fs.readdirSync(__dirname + '\\img')
 
     for (iconName of icons) {
@@ -78,15 +138,18 @@ function loadIconSelector() {
         iconSelector.appendChild(img_el);
     }
 
-    iconSelector.addEventListener('click', selectIcon, false);
-
     return iconSelector;
 }
 
 
 
 showSettings();
-document.getElementsByClassName('iconSelector')[0].addEventListener('click', selectIcon, false);
-for (el of document.getElementsByClassName('iconButtons')) {
-    el.addEventListener('click', setSelectedInputBox, false)
+function setSettingsListeners() {
+    let settings = document.getElementById('fileExtensions')
+        settings.addEventListener('click', handlSettingsClick, false)
+}
+
+
+function setSettingsListeners() {
+    $('.iconButtons').on('click', setSelectedInputBox)
 }
