@@ -142,8 +142,6 @@ function loadIconSelector() {
 }
 
 
-
-showSettings();
 function setSettingsListeners() {
     let settings = document.getElementById('fileExtensions')
         settings.addEventListener('click', handlSettingsClick, false)

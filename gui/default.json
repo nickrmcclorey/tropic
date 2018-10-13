@@ -1,0 +1,22 @@
+{
+
+    "homeFolder": "C:/users/nick/documents",
+
+    "fileTypes": {
+        "exe": {"img": "exealt.png"},
+        "png": {"img": "jpeg.png"}
+    },
+
+    "programs": {
+        "Word": {
+            "path": "C:\\Program Files (x86)\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
+            "canOpenFolder": false,
+            "canOpenFile": true
+        },
+        "Excel": {
+            "path": "C:\\Program Files (x86)\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+            "canOpenFolder": false,
+            "canOpenFile": true
+        }
+    }
+}
