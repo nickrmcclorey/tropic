@@ -18,11 +18,13 @@
     "url": "https://github.com/nickrmcclorey/tropic-file-browser/issues"
   },
   "homepage": "https://github.com/nickrmcclorey/tropic-file-browser#readme",
-  "dependencies": {},
+  "dependencies": {
+    "ajv": "^6.5.4",
+    "jquery": "^3.3.1",
+    "node-powershell": "^3.3.1"
+  },
   "devDependencies": {
     "electron": "^2.0.6",
     "electron-builder": "^20.27.0"
-    }
-
-
+  }
 }

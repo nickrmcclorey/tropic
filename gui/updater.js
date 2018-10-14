@@ -116,7 +116,7 @@ function updateGuiFiles(folderObj = currentFolder, elToTarget) {
 
         // icon of file
         let img = document.createElement('img');
-        img.setAttribute('src', fileIconPath(folderObj.children[fileName]));
+        img.setAttribute('src', fileIconPath(folderObj, fileName));
 
         // name of file
         let spanName = document.createElement('span');

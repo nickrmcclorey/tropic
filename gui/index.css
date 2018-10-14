@@ -111,8 +111,6 @@ li.fileEntry:hover{
 
 }
 
-
-
 .fileDate{
     padding-left: 5px;
     padding right:5px;
@@ -250,7 +248,7 @@ ul.header{
 #settings {
     background-color: white;
     padding: 10px;
-    display:grid;
+    display:none;
     grid-template-columns: 270px 3fr;
     grid-gap: 10px;
 }

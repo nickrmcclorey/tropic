@@ -4,12 +4,13 @@ const fs = require('fs');
 const pathModule = require('path');
 const { ipcRenderer } = require('electron');
 const $ = require('jquery')
+const shell = require('node-powershell')
 
 // ==== global variables ==== \\
 let currentFolder = {};
 const settings = require('./settings.json');
 let selectedFiles = new SelectedFiles();
-let defaultIcons = new Array();
+let defaultIcons = new Object();
 let active = new Active(document.getElementsByClassName('fileField')[0]);
 let settingsInputBox = null;
 // ==== end of global variables ====\\
@@ -108,38 +109,58 @@ function openFile(rawPath) {
 // i.e. putting an picture called xlsx.png in the img folder
 // will cause the program to use that picture as the .xlsx icon
 function loadDefaultIcons() {
-    let refined = new Array();
-    let raw = null;
-
-
-    raw = fs.readdirSync(pathModule.resolve(__dirname,'img'));
-
+    let raw = fs.readdirSync(pathModule.resolve(__dirname,'img'));
 
     // chopping off extensions
-    for (let k of raw) {
-        let newEntry = k.substr(0, k.indexOf('.'));
-        refined.push(newEntry);
-    }
-    defaultIcons = defaultIcons.concat(refined);
-};
-
-// returns the path to the file that should be used.
-// settings.json can be used to set file icons
-function fileIconPath(fileObj) {
-
-    if (Object.keys(settings.fileTypes).includes(fileObj.type)) {
-        return 'img/' + settings.fileTypes[fileObj.type].img;
+    for (let fileName of raw) {
+        let newEntry = fileName.substr(0, fileName.indexOf('.'));
+        defaultIcons[newEntry] = fileName;
     }
 
-    if (defaultIcons.includes(fileObj.type)) {
-        return 'img/' + fileObj.type + '.png';
-    } else {
-        return 'img/blank.png';
+    for (let extension of Object.keys(settings.fileTypes)) {
+        defaultIcons[extension] = settings.fileTypes[extension].img;
     }
-
 }
 
 
+// returns the path to the file that should be used.
+// settings.json can be used to set file icons
+function fileIconPath(folder, fileName) {
+    let fileObj = folder.children[fileName];
+    iconFileName = defaultIcons[fileObj.type];
+
+    if (iconFileName == true) {
+        return pathModule.join(folder.path, fileName)
+    } else if (iconFileName == undefined) {
+        extractIconFromFile(pathModule.join(folder.path, fileName));
+        return 'img/blank.png';
+    } else {
+        return 'img/' + iconFileName;
+    }
+}
+
+
+function extractIconFromFile(pathToFile) {
+    let fileName = pathModule.basename(pathToFile);
+    let extension = findFileExtension(fileName);
+    if (extension == null || fileName[0] == '.') {
+        return;
+    }
+    let outputPath = pathModule.join(__dirname, 'img', extension + '.ico')
+    let extractIconCommand = '[System.Drawing.Icon]::ExtractAssociatedIcon("' + pathToFile + '").ToBitmap().Save("' + outputPath + '")';
+    console.log(extractIconCommand);
+
+    let iconScript = new shell({
+        executionPolicy: 'Bypass',
+        noProfile: true
+    });
+    iconScript.addCommand('[System.Reflection.Assembly]::LoadWithPartialName(\'System.Drawing\')  | Out-Null')
+    iconScript.addCommand(extractIconCommand);
+    iconScript.invoke().then(() => {
+        iconScript.dispose();
+        loadDefaultIcons();
+    });
+}
 
 function clearSelectedFiles() {
     let fileList_uls = document.getElementsByClassName('fileList');
@@ -212,6 +233,7 @@ function deleteFile() {
         }
     }
     refresh();
+    hideContextMenu();
 }
 
 // goes through selectedFiles and grabs just

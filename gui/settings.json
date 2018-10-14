@@ -1,12 +1,19 @@
 {
-
     "homeFolder": "C:/users/nick/documents",
-
     "fileTypes": {
-        "exe": {"img": "exealt.png"},
-        "png": {"img": "jpeg.png"}
+        "exe": {
+            "img": "exealt.png"
+        },
+        "png": {
+            "img": "png.png"
+        },
+        "xlsx": {
+            "img": "xlsx.png"
+        },
+        "ico": {
+            "img": true
+        }
     },
-
     "programs": {
         "Word": {
             "path": "C:\\Program Files (x86)\\Microsoft Office\\root\\Office16\\WINWORD.EXE",
