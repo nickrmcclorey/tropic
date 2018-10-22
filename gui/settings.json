@@ -2,7 +2,7 @@
     "homeFolder": "C:/users/nick/documents",
     "fileTypes": {
         "exe": {
-            "img": "exealt.png"
+            "src": "extract"
         },
         "png": {
             "img": "png.png"
@@ -11,7 +11,8 @@
             "img": "xlsx.png"
         },
         "ico": {
-            "img": true
+            "src": "self",
+            "img": "png.png"
         }
     },
     "programs": {

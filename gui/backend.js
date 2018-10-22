@@ -5,6 +5,7 @@ const pathModule = require('path');
 const { ipcRenderer } = require('electron');
 const $ = require('jquery')
 const shell = require('node-powershell')
+const fii = require('file-icon-info');
 
 // ==== global variables ==== \\
 let currentFolder = {};
@@ -49,8 +50,6 @@ function init() {
 }
 
 function handleClick(e) {
-
-
     for (fileField of document.getElementsByClassName('fileField')) {
         if (e.path.includes(fileField) && fileField != active.fileField) {
             console.log('changing panes');
@@ -70,18 +69,18 @@ function handleClick(e) {
     }
 }
 
+
 function openDir(path, fileFieldEl) {
     currentFolder = new Folder(path);
     currentFolder.read()
     .then(() => {updateGuiFiles(currentFolder, fileFieldEl);});
 }
 
-function goToParentDirectory(e) {
 
+function goToParentDirectory(e) {
     handleClick(e);
     let newPath = this.parentNode.children[2].value + '/..';
     openDir(newPath);
-
 }
 
 
@@ -122,43 +121,42 @@ function loadDefaultIcons() {
     }
 }
 
+function injectIcons() {
+    for (el of $('.fileEntry')) {
+        let fileName = el.children[1].textContent;
+        let img64 = currentFolder.children[fileName].img64;
+        el.children[0].setAttribute('src', 'data:image/png;base64,' + img64);
+    }
+}
 
 // returns the path to the file that should be used.
 // settings.json can be used to set file icons
 function fileIconPath(folder, fileName) {
     let fileObj = folder.children[fileName];
-    iconFileName = defaultIcons[fileObj.type];
-
-    if (iconFileName == true) {
-        return pathModule.join(folder.path, fileName)
-    } else if (iconFileName == undefined) {
-        extractIconFromFile(pathModule.join(folder.path, fileName));
-        return 'img/blank.png';
+    let iconFileName = defaultIcons[fileObj.type];
+    let iconSettings = settings.fileTypes[findFileExtension(fileName)];
+    if (fileObj.img64) {
+        console.log('inside');
+        return 'data:img/png; base64 ' + fileObj.img64;
+    }
+    if (iconSettings == undefined) {
+        if (iconFileName == undefined) {
+            return 'img/blank.png';
+        } else {
+            return 'img/' + iconFileName;
+        }
+    } else if (iconSettings.src == 'self') {
+        return pathModule.join(folder.path, fileName);
+    } else if (iconSettings.src == 'extract') {
+        return 'data:image/png;base64,' + folder.children[fileName].img64;
     } else {
         return 'img/' + iconFileName;
     }
 }
 
-
-function extractIconFromFile(pathToFile) {
-    let fileName = pathModule.basename(pathToFile);
-    let extension = findFileExtension(fileName);
-    if (extension == null || fileName[0] == '.') {
-        return;
-    }
-    let outputPath = pathModule.join(__dirname, 'img', extension + '.ico')
-    let extractIconCommand = '[System.Drawing.Icon]::ExtractAssociatedIcon("' + pathToFile + '").ToBitmap().Save("' + outputPath + '")';
-    console.log(extractIconCommand);
-
-    let iconScript = new shell({
-        executionPolicy: 'Bypass',
-        noProfile: true
-    });
-    iconScript.addCommand('[System.Reflection.Assembly]::LoadWithPartialName(\'System.Drawing\')  | Out-Null')
-    iconScript.addCommand(extractIconCommand);
-    iconScript.invoke().then(() => {
-        iconScript.dispose();
-        loadDefaultIcons();
+function extractIconFromFile(pathToFile, img) {
+    return new Promise(function(resolve, reject) {
+        iconExtractor.getIcon(null, pathToFile);
     });
 }
 
@@ -183,8 +181,6 @@ function refresh() {
         newFolder.read()
         .then(() => {updateGuiFiles(newFolder, domTraverser.fileList())})
     }
-
-
 }
 
 
