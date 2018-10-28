@@ -7,30 +7,21 @@ function Folder(path) {
     this.promises = new Array();
 
     process.chdir(path);
-
-    // childrenNames is an array of strings corresponding to files and directories
-    // we create an associative array where the filename is the index of it's correpsonding info
-
-    if (process.platform == 'win32') {
-        this.parseWinDir();
-    } else {
-        this.collectFolderContents();
-    }
 }
 
 Folder.prototype.read = function () {
-
     if (process.platform == 'win32') {
         return new Promise((resolve, reject) => {this.parseWinDir(resolve, reject)});
     } else {
-        return new Promise(this.collectFolderContents);
+        this.collectFolderContents(this.path);
+        return Promise.resolve();
     }
 
 };
 
-Folder.prototype.collectFolderContents = function () {
+Folder.prototype.collectFolderContents = function (path) {
 
-
+    let childrenNames = fs.readdirSync(path);
     for (let fileName of childrenNames) {
 
         let file = {};
@@ -53,6 +44,10 @@ Folder.prototype.collectFolderContents = function () {
             return this.type == 'directory';
         }
 
+        if (file.type == 'exe') {
+            console.log(path + '/' + fileName);
+            this.promises.push(extractIconFromFile(path + '/' + fileName));
+        }
         // we create an associative array where the filename is the index of it's correpsonding info
         this.children[fileName] = file;
     }
@@ -106,12 +101,14 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
 
         // list is now an array of strings
         // each string has the information on one file
+        let fileId = 0;
         for (let line of list) {
             let newFile = {
                 size: null,
                 type: null,
                 lastModified: null,
-                img64: null
+                img64: null,
+                id: fileId
              };
 
             // using javascript's built in date parser
@@ -169,18 +166,19 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
             }
 
             this.children[name] = newFile;
+            fileId++;
 
             if (this.children[name].type == 'exe') {
-                extractIcon(pathModule.join(this.path, name))
-                .then(data => {
-                    this.children[data.file].img64 = data.img64;
-                });
+                this.promises.push(extractIcon(pathModule.join(this.path, name)))
+                // .then(data => {
+                //     console.log('inside');
+                //     this.children[data.file].img64 = data.img64;
+                // });
             }
-
-        }
+        } // end of loop
 
         if (resolve) {
-            resolve();
+            resolve(Promise.all(this.promises));
         }
     });
 
