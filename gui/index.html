@@ -4,6 +4,14 @@
         <meta charset="utf-8">
         <title>Tropic File Browser</title>
     </head>
+    <section hidden id="templates">
+        <span class="tab">
+            <span class="label"></span>
+            <span class="xButton">x</span>
+        </span>
+    </section>
+
+
     <body>
         <center class="mainMenu">
             <center class="topMenu">
@@ -23,66 +31,32 @@
 
         <section class="fileFieldParent" id="fileFieldParent">
 
-        <section class="fileField" id="fileField1">
-            <div class="tabBar">
-                <span class="tab">dd</span>
-                <span class="xButton">x</span>
-                <span class="addTabButton">+</span>
-            </div>
+            <section class="fileField" id="fileField1">
+                <span class="tab">
+                    <span class="label">label</span>
+                    <span class="xButton">x</span>
+                </span>
 
 
-            <div class="header">
-                <span class="backButton">Back</span>
-                <span>Path:</span>
-                <input class="pathBox" id="pathBox1" type="text"></input>
+                <div class="header">
+                    <span class="backButton">Back</span>
+                    <span>Path:</span>
+                    <input class="pathBox" id="pathBox1" type="text"></input>
 
-            </div>
+                </div>
 
-
-
-            <div class="columnHeader">
-            <span>Name</span>
-            <span>Size</span>
-            </div>
+                <div class="columnHeader">
+                <span>Name</span>
+                <span>Size</span>
+                </div>
 
 
-            <ul class="fileList" id="fileList1">
-                <li>
-                    <img  src="img/html.png"></img.>
-                    <span>it broke</span>
-                </li>
-            </ul>
-        </section>
-
-        <section class="fileField" id="fileField2">
-
-            <div class="tabBar">
-                <span class="tab" active="true">dd</span>
-                <span class="xButton">x</span>
-                <span class="addTabButton">+</span>
-            </div>
-
-            <div class="header">
-                <span class="backButton">Back</span>
-                <span>Path:</span>
-                <input class="pathBox" id="pathBox2" type="text"></input>
-
-            </div>
-
-
-
-            <div class="columnHeader">
-            <span>Name</span>
-            <span>Size</span>
-            </div>
-
-
-            <ul class="fileList" id="fileList2">
-                <li>
-                    <img  src="img/html.png"></img.>
-                    <span>it broke</span>
-                </li>
-            </ul>
+                <ul class="fileList" id="fileList1">
+                    <li>
+                        <img  src="img/html.png"></img.>
+                        <span>it broke</span>
+                    </li>
+                </ul>
 
         </section>
 
@@ -115,6 +89,9 @@
     <script src="Active.js"></script>
     <script src="backend.js"></script>
     <script src="folder.js"></script>
+    <script src="PaneTabTracker.js"></script>
+    <script src="Pane.js"></script>
+    <script src="Tab.js"></script>
     <script src="updater.js"></script>
     <script src="listeners.js"></script>
     <link rel="stylesheet" type="text/css" href="index.css"/>

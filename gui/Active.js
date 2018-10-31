@@ -1,4 +1,4 @@
-function Active(field) {
+function Active(field, folder) {
     this.fileField = field;
 }
 

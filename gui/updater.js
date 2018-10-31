@@ -72,7 +72,7 @@ function setInitListeners() {
     }
     // open buttons
     for (el of document.getElementsByClassName('openButton')) {
-        el.addEventListener('click', () => {openFile(pathModule.join(currentFolder.path, nameFromLi(selectedFiles.tentative[0].li)))},false);
+        el.addEventListener('click', () => {openFile(pathModule.join(Tracker.folder().path, nameFromLi(selectedFiles.tentative[0].li)))},false);
     }
 
     for (el of document.getElementsByClassName('openWithButton')) {
@@ -90,7 +90,7 @@ function setInitListeners() {
 }
 
 // updates the display with the list of files and their relavant information
-function updateGuiFiles(folderObj = currentFolder, elToTarget) {
+function updateGuiFiles(folderObj, elToTarget) {
 
     // if elToTarget is not passed in, we stick with the active pane (selectedFileList)
     let fileList = null;
@@ -152,25 +152,21 @@ function updateGuiFiles(folderObj = currentFolder, elToTarget) {
 }
 
 
-
 // called by event listener of the li. opens a file or folder
 function file_dbl_clicked(e) {
     handleClick(e);
 
     let selectedFile = nameFromLi(this);
-    let newPath = pathModule.resolve(currentFolder.path + '/' + selectedFile);
+    let newPath = pathModule.join(Tracker.folder().path, selectedFile);
 
     console.log(selectedFile)
-    if (currentFolder.children[selectedFile].type == 'directory') {
-        currentFolder = new Folder(newPath);
-        currentFolder.read()
-        .then(() => {updateGuiFiles(currentFolder)});
-        console.log('updating');
-        // updateGuiFiles(currentFolder);
+    if (Tracker.folder().children[selectedFile].type == 'directory') {
+        Tracker.activePane.cd(newPath);
     } else {
         openFile(newPath);
     }
 }
+
 
 // this is a callback of each li element in the file list
 function fileClicked(e) {
@@ -185,7 +181,6 @@ function fileClicked(e) {
     }
 
     selectFile(this);
-
 }
 
 function refreshSelectedFiles() {
@@ -218,16 +213,12 @@ function showContextMenu(e) {
 // called by path box near top of page
 // navigates the browser to the path typed in the box at top of page
 function pathBoxKeyDown(e) {
-    //console.log(e);
-    let keyPressed = e.which || e.keyCode;
+    let keyPressed = e.which;
     if (keyPressed === 13) { // enter button
         handleClick(e);
-        currentFolder = new Folder(this.value);
-        currentFolder.read()
-        .then(() => {updateGuiFiles(currentFolder)})
+        Tracker.activePane.cd(this.value);
     }
 }
-
 
 
 // used when creating new file or folder
@@ -237,6 +228,7 @@ function newInputBox() {
     return inputBox;
 
 }
+
 
 // active tabs are a different color than the others
 function highlightTabs() {

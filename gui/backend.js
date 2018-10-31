@@ -9,6 +9,7 @@ const fii = require('file-icon-info');
 
 // ==== global variables ==== \\
 let currentFolder = {};
+let Tracker = {};
 const settings = require('./settings.json');
 let selectedFiles = new SelectedFiles();
 let defaultIcons = new Object();
@@ -21,40 +22,26 @@ function init() {
 
     loadDefaultIcons();
 
-    if (Object.keys(settings).includes('homeFolder') ) {
-        currentFolder = new Folder(settings.homeFolder);
+    let openingPath = "";
+    if (Object.keys(settings).includes('homeFolder')) {
+        openingPath = settings.homeFolder;
     } else {
-        currentFolder = new Folder(os.homedir());
+        openingPath = os.homedir();
     }
 
-
-    for (el of document.getElementsByClassName('tab')) {
-        el.active = true;
-        el.path = currentFolder.path;
-        el.innerHTML = pathModule.basename(currentFolder.path);
-    }
-
-    for (inputBox of document.getElementsByClassName('pathBox')) {
-        inputBox.value = currentFolder.path;
-    }
-
-    loadExternalPrograms();
+    let fileFieldParent = $('#fileFieldParent')[0];
+    Tracker = new PaneTabTracker(fileFieldParent, openingPath);
+    Tracker.refresh();
 
     setInitListeners();
-    currentFolder.read().then(() => {
-        for (fileList of document.getElementsByClassName('fileList')) {
-            updateGuiFiles(currentFolder, fileList);
-        }
-        setFileListListeners();
-    })
+    loadExternalPrograms();
 }
 
 function handleClick(e) {
     for (fileField of document.getElementsByClassName('fileField')) {
         if (e.path.includes(fileField) && fileField != active.fileField) {
             console.log('changing panes');
-            active = new Active (fileField);
-            currentFolder = new Folder(active.inputBox().value);
+            active = new Active (fileField)
         }
     }
 
@@ -87,7 +74,8 @@ function goToParentDirectory(e) {
 
 // opens a file in a seperate program
 function openFile(rawPath) {
-    if (currentFolder.children[pathModule.basename(rawPath)].type == 'directory') {
+    console.log(rawPath);
+    if (Tracker.folder().children[pathModule.basename(rawPath)].type == 'directory') {
         openDir(rawPath);
         hideContextMenu();
         return;
