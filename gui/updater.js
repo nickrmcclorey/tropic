@@ -79,8 +79,10 @@ function setInitListeners() {
         el.addEventListener('click', openProgramList, false);
     }
 
-    for (el of document.getElementsByClassName('newFileFieldButton')) {
-        el.addEventListener('click', newFileField, false);
+    for (el of document.getElementsByClassName('newPaneButton')) {
+        el.addEventListener('click', () => {
+            Tracker.addPane(homePath());
+        }, false);
     }
 
     document.addEventListener('click', handleClick, false);

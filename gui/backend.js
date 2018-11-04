@@ -39,9 +39,13 @@ function init() {
 
 function handleClick(e) {
     for (fileField of document.getElementsByClassName('fileField')) {
-        if (e.path.includes(fileField) && fileField != active.fileField) {
+        if (e.path.includes(fileField) && Tracker.activePane.fileField != fileField) {
             console.log('changing panes');
-            active = new Active (fileField)
+            for (pane of Tracker.panes) {
+                if (pane.fileField == fileField) {
+                    Tracker.activePane = pane;
+                }
+            }
         }
     }
 
@@ -66,8 +70,8 @@ function openDir(path, fileFieldEl) {
 
 function goToParentDirectory(e) {
     handleClick(e);
-    let newPath = this.parentNode.children[2].value + '/..';
-    openDir(newPath);
+    let newPath = pathModule.join(Tracker.folder().path, '..') ;
+    Tracker.activePane.cd(newPath);
 }
 
 
@@ -467,5 +471,14 @@ function runExtProgram(programPath, fileOrFolderPath) {
         exec(' "' + programPath + '" "' + fileOrFolderPath + '"', null);
     } else {
         exec('program.path');
+    }
+}
+
+
+function homePath() {
+    if (settings.homeFolder == undefined) {
+        return os.homedir();
+    } else {
+        return settings.homeFolder
     }
 }

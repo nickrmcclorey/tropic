@@ -5,10 +5,32 @@
         <title>Tropic File Browser</title>
     </head>
     <section hidden id="templates">
-        <span class="tab">
-            <span class="label"></span>
-            <span class="xButton">x</span>
-        </span>
+        <section class="fileField">
+            <span class="tab">
+                <span class="label">label</span>
+                <span class="xButton">x</span>
+            </span>
+
+            <div class="header">
+                <span class="backButton">Back</span>
+                <span>Path:</span>
+                <input class="pathBox" id="pathBox1" type="text"></input>
+
+            </div>
+
+            <div class="columnHeader">
+                <span>Name</span>
+                <span>Size</span>
+            </div>
+
+            <ul class="fileList" id="fileList1">
+                <li>
+                    <img  src="img/html.png"></img.>
+                    <span>it broke</span>
+                </li>
+            </ul>
+
+        </section>
     </section>
 
 
@@ -22,7 +44,7 @@
                 <span class="renameButton">rename</span>
                 <span class="newFileButton">new file</span>
                 <span class="newDirButton">new folder</span>
-                <span class="newFileFieldButton">new pane</span>
+                <span class="newPaneButton">new pane</span>
                 <span class="openWithButton">open with</span>
 
             </center>
@@ -31,34 +53,6 @@
 
         <section class="fileFieldParent" id="fileFieldParent">
 
-            <section class="fileField" id="fileField1">
-                <span class="tab">
-                    <span class="label">label</span>
-                    <span class="xButton">x</span>
-                </span>
-
-
-                <div class="header">
-                    <span class="backButton">Back</span>
-                    <span>Path:</span>
-                    <input class="pathBox" id="pathBox1" type="text"></input>
-
-                </div>
-
-                <div class="columnHeader">
-                <span>Name</span>
-                <span>Size</span>
-                </div>
-
-
-                <ul class="fileList" id="fileList1">
-                    <li>
-                        <img  src="img/html.png"></img.>
-                        <span>it broke</span>
-                    </li>
-                </ul>
-
-        </section>
 
         </section>
 

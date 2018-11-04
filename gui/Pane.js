@@ -1,5 +1,5 @@
-function Pane(fileField, path) {
-    this.fileField = fileField; // html element
+function Pane(path) {
+    this.fileField = $('#templates').find('.fileField')[0].cloneNode(true); // html element
     this.pathBox = $(this.fileField).find('.pathBox')[0];
     this.fileList = $(this.fileField).find('.fileList')[0];
     this.tabs = []; // array of Tabs as defined in Tab.js
@@ -17,6 +17,7 @@ Pane.prototype.path = function () {
 
 Pane.prototype.refresh = function () {
     let folder = this.activeTab.folder;
+    this.pathBox.value = folder.path;
     let elementToUpdate = this.fileList;
     folder.read().then(() => {
         updateGuiFiles(folder, elementToUpdate)
@@ -26,5 +27,4 @@ Pane.prototype.refresh = function () {
 Pane.prototype.cd = function (path) {
     this.activeTab.folder = new Folder(path);
     this.refresh();
-    console.log('refreshed')
 };
