@@ -84,7 +84,7 @@ ul.fileList > li {
 }
 
 ul.fileList > li > span:nth-child(3) {
-    justify-self: end;
+    justify-self: left;
 }
 
 div.columnHeader {

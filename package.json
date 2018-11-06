@@ -1,12 +1,12 @@
 {
   "name": "tropic",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "A file browser",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build": "electron-packager . --icon=./gui/img/palm_trees.ico"
+    "build": "rmdir /q /s tropic-win32-x64 & electron-packager . --icon=./gui/img/palm_trees.ico"
   },
   "repository": {
     "type": "git",

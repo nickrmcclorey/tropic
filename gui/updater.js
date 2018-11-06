@@ -102,12 +102,11 @@ function updateGuiFiles(folderObj, elToTarget) {
         fileList = active.fileList();
     }
 
-    // let fileList = elToTarget;
     // update the input path box to show current path
     active.inputBox().value = folderObj.path;
 
     // wipe the list of files because we just changed directories
-    fileList.innerHTML = '';
+    fileList.innerHTML = '<li><span></span><span>Name</span><span>Size</span></li>';
 
 
     // folderObj.children is an associative array indexed by strings corresponding to the files' names
