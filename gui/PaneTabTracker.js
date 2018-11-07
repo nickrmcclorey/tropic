@@ -4,7 +4,7 @@ function PaneTabTracker(fileFieldParent, path) {
     this.element = fileFieldParent;
 
     fileFieldParent.appendChild(this.activePane.fileField);
-}
+};
 
 PaneTabTracker.prototype.folder = function () {
     return this.activePane.activeTab.folder;
@@ -24,10 +24,19 @@ PaneTabTracker.prototype.addPane = function (path) {
     adjustFileFieldParentCss();
 };
 
-PaneTabTracker.prototype.findPane = function (event) {
+PaneTabTracker.prototype.findPane = function (node) {
     for (let pane of this.panes) {
-        if (event.path.includes(pane.fileField)) {
+        if ($(node).parents().find('.fileField')[0] == pane.fileField) {
             return pane;
+        }
+    }
+};
+
+PaneTabTracker.prototype.findTab = function (node) {
+    let pane = this.findPane(node);
+    for (let tab of pane.tabs) {
+        if (tab.element = node) {
+            return tab;
         }
     }
 };

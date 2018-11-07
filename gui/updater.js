@@ -4,15 +4,15 @@
 function setFileListListeners() {
 
     // button to go to parent directory
-    for (el of document.getElementsByClassName('backButton')) {
+    for (el of $('.backButton')) {
         el.addEventListener('click', goToParentDirectory, false);
     }
     // user entered path into path box
-    for (el of document.getElementsByClassName('pathBox')) {
+    for (el of $('.pathBox')) {
         el.addEventListener('keypress', pathBoxKeyDown, false);
     }
 
-    for (pane of document.getElementsByClassName('fileField')) {
+    for (pane of $('fileField')) {
         pane.addEventListener('click', (e) => {
             if (e.target.getAttribute('class') == 'fileField') {
                 clearSelectedFiles();
@@ -20,17 +20,14 @@ function setFileListListeners() {
         }, false);
     }
 
-    for (let filebar of document.getElementsByClassName('fileEntry')) {
-
+    for (let filebar of $('.fileEntry')) {
         // open file on double click
         filebar.addEventListener('dblclick', file_dbl_clicked, false);
         // file selected
         filebar.addEventListener('click', fileClicked, false);
         // file right clicked, open contextMenu
         filebar.addEventListener('contextmenu', fileRightClicked, false);
-
     }
-
 
     for (el of document.getElementsByClassName('addTabButton')) {
         el.addEventListener('click', addTab, false);
@@ -43,7 +40,6 @@ function setFileListListeners() {
     for (el of document.getElementsByClassName('tab')) {
         el.addEventListener('click', changeTab, false);
     }
-
 }
 
 function setInitListeners() {
@@ -93,7 +89,7 @@ function setInitListeners() {
 
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(folderObj, elToTarget) {
-
+    console.log(elToTarget);
     // if elToTarget is not passed in, we stick with the active pane (selectedFileList)
     let fileList = null;
     if (elToTarget) {
@@ -103,7 +99,7 @@ function updateGuiFiles(folderObj, elToTarget) {
     }
 
     // update the input path box to show current path
-    active.inputBox().value = folderObj.path;
+    Tracker.activePane.pathBox.value = folderObj.path;
 
     // wipe the list of files because we just changed directories
     fileList.innerHTML = '<li><span></span><span>Name</span><span>Size</span></li>';
@@ -144,9 +140,9 @@ function updateGuiFiles(folderObj, elToTarget) {
     }// end of for loop
 
 
-    let tab = active.tab();
+    let tab = Tracker.activePane.activeTab.element;
     tab.path = folderObj.path;
-    tab.innerHTML = pathModule.basename(folderObj.path);
+    $(tab).find('.label')[0].innerHTML = pathModule.basename(folderObj.path);
 
     highlightTabs();
     setFileListListeners();
@@ -290,6 +286,3 @@ function openProgramList(e) {
     list.style.display = 'block';
 
 }
-
-
-init();

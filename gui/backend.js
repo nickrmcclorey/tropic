@@ -10,16 +10,17 @@ const fii = require('file-icon-info');
 // ==== global variables ==== \\
 let currentFolder = {};
 let Tracker = {};
+let templates = $('#templates').remove()[0];
 const settings = require('./settings.json');
 let selectedFiles = new SelectedFiles();
 let defaultIcons = new Object();
-let active = new Active(document.getElementsByClassName('fileField')[0]);
 let settingsInputBox = null;
 // ==== end of global variables ====\\
 
 
 function init() {
-
+    templates.removeAttribute('hidden');
+    console.log(templates);
     loadDefaultIcons();
 
     let openingPath = "";
@@ -38,7 +39,7 @@ function init() {
 }
 
 function handleClick(e) {
-    for (fileField of document.getElementsByClassName('fileField')) {
+    for (fileField of $('.fileField')) {
         if (e.path.includes(fileField) && Tracker.activePane.fileField != fileField) {
             console.log('changing panes');
             for (pane of Tracker.panes) {
@@ -362,8 +363,6 @@ function changeTab(e) {
     currentFolder = new Folder(this.path);
     currentFolder.read()
     .then(() => { updateGuiFiles(currentFolder); });
-
-
 }
 
 
@@ -371,33 +370,25 @@ function changeTab(e) {
 function addTab(e) {
     handleClick(e);
 
-    // deactivate active tab as we are about to switch tabs
-    active.tab().active = false;
-
     // navigate to the tabBar with all the tabs in it
-    let tabBar = e.target.parentNode;
     // create new tab
-    let newChild = document.createElement('span');
-    newChild.setAttribute('class', 'tab');
-    newChild.appendChild(document.createTextNode(pathModule.basename(active.inputBox().value)));
-    newChild.path = active.inputBox().value;
-    newChild.active = true;
+    let newChild = $(templates).find('.tab')[0].cloneNode(true);
 
     let xButton = document.createElement('span');
     xButton.innerHTML = 'x';
     xButton.addEventListener('click', eraseTab, false);
 
     // add tab button must stay on the right
+    let tabBar = $(Tracker.activePane.fileField).find('.tabBar')[0];
     tabBar.insertBefore(newChild, this);
-    tabBar.insertBefore(xButton, this);
 
 }
 
 
 function eraseTab(e) {
-    console.log(this.previousSibling);
-
-    let tabToDelete = this.previousSibling;
+    handleClick(e);
+    console.log(Tracker.findTab(e.target))
+    let tabToDelete = e.target.parentNode;
     if (tabToDelete.active) {
         tabToDelete.parentNode.children[0].active = true;
     }
