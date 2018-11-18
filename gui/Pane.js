@@ -11,6 +11,23 @@ function Pane(path) {
     this.tabs.push(new Tab(path, tabElement));
     this.activeTab = this.tabs[0];
     this.pathBox.value = this.path();
+
+
+    this.setActiveTab = function(tab) {
+        let index = -1;
+        for (let k in this.tabs) {
+            if (this.tabs[k].element == tab) {
+                index = k;
+                break;
+            }
+        }
+
+        if (index > -1) {
+            $(this.activeTab.element).removeClass('activeTab');
+            this.activeTab = this.tabs[index];
+            $(this.activeTab.element).addClass('activeTab');
+        }
+    }
 }
 
 Pane.prototype.path = function () {

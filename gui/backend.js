@@ -10,7 +10,7 @@ const fii = require('file-icon-info');
 // ==== global variables ==== \\
 let currentFolder = {};
 let Tracker = {};
-let templates = $('#templates').remove()[0];
+let templates = null;
 const settings = require('./settings.json');
 let selectedFiles = new SelectedFiles();
 let defaultIcons = new Object();
@@ -19,6 +19,8 @@ let settingsInputBox = null;
 
 
 function init() {
+    setInitListeners();
+    templates = $('#templates').remove()[0];
     templates.removeAttribute('hidden');
     console.log(templates);
     loadDefaultIcons();
@@ -340,29 +342,9 @@ function pasteSelectedFiles() {
 
 // called by the tab
 function changeTab(e) {
-
-    // if user clicks on the active tab, we do nothing
-    if (this.active) {
-        return;
-    }
-
-    // there can only be one active tab per tab bar.
-    // we set all the tabs in the bar to inactive and set the clicked tab to active
-    for (tab of this.parentNode.children) {
-        tab.active = false;
-    }
-    this.active = true;
-    handleClick(e);
-    console.log('passed');
-
-
-    // update input box with accurate path
-    active.inputBox().value = this.path;
-    this.active = true;
-
-    currentFolder = new Folder(this.path);
-    currentFolder.read()
-    .then(() => { updateGuiFiles(currentFolder); });
+    console.log(this);
+    Tracker.activePane.setActiveTab(this);
+    Tracker.refresh();
 }
 
 
@@ -372,44 +354,27 @@ function addTab(e) {
 
     // navigate to the tabBar with all the tabs in it
     // create new tab
-    let newChild = $(templates).find('.tab')[0].cloneNode(true);
-
-    let xButton = document.createElement('span');
-    xButton.innerHTML = 'x';
-    xButton.addEventListener('click', eraseTab, false);
+    let newTab = $(templates).find('.tab')[0].cloneNode(true);
+    newTab.addEventListener('click', changeTab, false);
 
     // add tab button must stay on the right
     let tabBar = $(Tracker.activePane.fileField).find('.tabBar')[0];
-    tabBar.insertBefore(newChild, this);
-
+    let path = Tracker.folder().path;
+    console.log(path);
+    Tracker.activePane.tabs.push(new Tab(path, newTab));
+    Tracker.activePane.setActiveTab(newTab);
+    tabBar.insertBefore(newTab, e.target);
+    Tracker.refresh();
 }
 
 
 function eraseTab(e) {
     handleClick(e);
-    console.log(Tracker.findTab(e.target))
-    let tabToDelete = e.target.parentNode;
-    if (tabToDelete.active) {
-        tabToDelete.parentNode.children[0].active = true;
+    Tracker.removeTab.bind(PaneTabTracker)(e);
+    if (Tracker.activePane.tabs.length <= 0) {
+        let elementToDelete = Tracker.activePane.fileField;
+        elementToDelete.parentNode.removeChild(elementToDelete);
     }
-
-    while (this.previousSibling.className != 'tab') {
-        console.log(this.previousSibling.className);
-        this.parentNode.removeChild(this.previousSibling);
-    }
-    this.parentNode.removeChild(this.previousSibling);
-
-
-
-    console.log(numTabs(this.parentNode));
-    // if there are no more tabs, remove the entire fileField
-    if (numTabs(this.parentNode) < 1) {
-        this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
-        adjustFileFieldParentCss();
-    }
-
-    this.parentNode.removeChild(this);
-
 }
 
 
@@ -421,7 +386,6 @@ function loadExternalPrograms() {
     }
     programEl.addEventListener('click', startProgram, false);
 }
-
 
 
 function startProgram(event) {

@@ -16,7 +16,6 @@ Folder.prototype.read = function () {
         this.collectFolderContents(this.path);
         return Promise.resolve();
     }
-
 };
 
 Folder.prototype.collectFolderContents = function (path) {

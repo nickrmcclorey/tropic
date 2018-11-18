@@ -208,16 +208,20 @@ span {
     padding-right: 6px;
 }
 
-.tab {
+/* .tab {
     background-color: rgb(40, 0, 182);
     cursor: pointer;
-}
+} */
 
 .tab:hover, .addTabButton:hover {
     background-color: blue;
     cursor: pointer;
 }
 
+.activeTab {
+    background-color: rgb(0, 182, 58);
+    color: white;
+}
 
 .xButton {
     color: darkred;

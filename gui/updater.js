@@ -229,12 +229,10 @@ function newInputBox() {
 
 // active tabs are a different color than the others
 function highlightTabs() {
-    for (tab of document.getElementsByClassName('tab')) {
-        if (tab.active) {
-            tab.style.backgroundColor = 'rgb(0, 182, 58)';
-        } else {
-            tab.style.backgroundColor = 'rgb(0, 182, 58)';
-        }
+    $('.tab').removeClass('activeTab');
+    for (let pane of Tracker.panes) {
+        console.log(pane);
+        $(pane.activeTab.element).addClass('activeTab')
     }
 }
 
