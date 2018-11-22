@@ -22,7 +22,6 @@ function init() {
     setInitListeners();
     templates = $('#templates').remove()[0];
     templates.removeAttribute('hidden');
-    console.log(templates);
     loadDefaultIcons();
 
     let openingPath = "";
@@ -36,14 +35,12 @@ function init() {
     Tracker = new PaneTabTracker(fileFieldParent, openingPath);
     Tracker.refresh();
 
-    setInitListeners();
     loadExternalPrograms();
 }
 
 function handleClick(e) {
     for (fileField of $('.fileField')) {
         if (e.path.includes(fileField) && Tracker.activePane.fileField != fileField) {
-            console.log('changing panes');
             for (pane of Tracker.panes) {
                 if (pane.fileField == fileField) {
                     Tracker.activePane = pane;
@@ -64,10 +61,10 @@ function handleClick(e) {
 }
 
 
-function openDir(path, fileFieldEl) {
+function openDir(path, pane) {
     currentFolder = new Folder(path);
     currentFolder.read()
-    .then(() => {updateGuiFiles(currentFolder, fileFieldEl);});
+    .then(() => {updateGuiFiles(currentFolder, pane);});
 }
 
 
@@ -81,7 +78,6 @@ function goToParentDirectory(e) {
 
 // opens a file in a seperate program
 function openFile(rawPath) {
-    console.log(rawPath);
     if (Tracker.folder().children[pathModule.basename(rawPath)].type == 'directory') {
         openDir(rawPath);
         hideContextMenu();
@@ -131,7 +127,6 @@ function fileIconPath(folder, fileName) {
     let iconFileName = defaultIcons[fileObj.type];
     let iconSettings = settings.fileTypes[findFileExtension(fileName)];
     if (fileObj.img64) {
-        console.log('inside');
         return 'data:img/png; base64 ' + fileObj.img64;
     }
     if (iconSettings == undefined) {
@@ -342,7 +337,6 @@ function pasteSelectedFiles() {
 
 // called by the tab
 function changeTab(e) {
-    console.log(this);
     Tracker.activePane.setActiveTab(this);
     Tracker.refresh();
 }
@@ -360,7 +354,6 @@ function addTab(e) {
     // add tab button must stay on the right
     let tabBar = $(Tracker.activePane.fileField).find('.tabBar')[0];
     let path = Tracker.folder().path;
-    console.log(path);
     Tracker.activePane.tabs.push(new Tab(path, newTab));
     Tracker.activePane.setActiveTab(newTab);
     tabBar.insertBefore(newTab, e.target);
@@ -419,8 +412,6 @@ function startProgram(event) {
 
 
 function runExtProgram(programPath, fileOrFolderPath) {
-    // console.log(programPath);
-    // console.log(fileOrFolderPath);
     if (fileOrFolderPath) {
         console.log(' "' + programPath + '" "' + fileOrFolderPath + '"');
         exec(' "' + programPath + '" "' + fileOrFolderPath + '"', null);

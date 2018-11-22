@@ -7,11 +7,18 @@ function PaneTabTracker(fileFieldParent, path) {
 
 
     this.removeTab = (event) => {
-        console.log(this);
-        let index = Tracker.tabIndex(event.target.parentNode);
+        let tabIndex = Tracker.tabIndex(event.target);
+        console.log(tabIndex);
         let pane = Tracker.findPane(event.target);
-        $(pane.tabs[index].element).remove();
-        pane.tabs.splice(index, 1);
+        let activeTabWasErased = (this.activePane.tabs[tabIndex] == this.activePane.activeTab);
+        $(pane.tabs[tabIndex].element).remove();
+        pane.tabs.splice(tabIndex, 1);
+
+        if (pane.tabs.length <= 0) {
+            this.panes.splice(this.panes.indexOf(pane), 1);
+        } else if (activeTabWasErased) {
+            pane.setActiveTab(pane.tabs[0].element);
+        }
     };
 
     this.folder = function () {
@@ -25,6 +32,7 @@ function PaneTabTracker(fileFieldParent, path) {
     };
 
     this.addPane = function (path) {
+        console.log('one');
         let newPane = new Pane(path);
         this.panes.push(newPane);
         newPane.refresh();
@@ -34,16 +42,24 @@ function PaneTabTracker(fileFieldParent, path) {
 
     this.findPane = function (node) {
         for (let pane of this.panes) {
-            if ($(node).parents().find('.fileField')[0] == pane.fileField) {
-                return pane;
+            console.log($(node).parents())
+            for (let parent of $(node).parents()) {
+                if (parent == pane.fileField) {
+                    return pane;
+                }
             }
+            console.error('could\'t find pane');
         }
     };
 
     this.tabIndex = function (node) {
+        if (node.parentNode.classList.contains('tab')) {
+            node = node.parentNode;
+        }
+
         let pane = this.findPane(node);
         for (let k in pane.tabs) {
-            if (pane.tabs[k].element = node) {
+            if (pane.tabs[k].element == node) {
                 return k;
             }
         }

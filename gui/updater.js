@@ -88,18 +88,18 @@ function setInitListeners() {
 }
 
 // updates the display with the list of files and their relavant information
-function updateGuiFiles(folderObj, elToTarget) {
-    console.log(elToTarget);
-    // if elToTarget is not passed in, we stick with the active pane (selectedFileList)
+function updateGuiFiles(folderObj, pane) {
+    // if pane is not passed in, we stick with the active pane (selectedFileList)
     let fileList = null;
-    if (elToTarget) {
-        fileList = elToTarget;
+    if (pane) {
+        fileList = pane.fileList;
     } else {
-        fileList = active.fileList();
+        pane = Tracker.activePane;
+        fileList = Tracker.activePane.fileList;
     }
 
     // update the input path box to show current path
-    Tracker.activePane.pathBox.value = folderObj.path;
+    pane.pathBox.value = folderObj.path;
 
     // wipe the list of files because we just changed directories
     fileList.innerHTML = '<li><span></span><span>Name</span><span>Size</span></li>';
@@ -140,7 +140,7 @@ function updateGuiFiles(folderObj, elToTarget) {
     }// end of for loop
 
 
-    let tab = Tracker.activePane.activeTab.element;
+    let tab = pane.activeTab.element;
     tab.path = folderObj.path;
     $(tab).find('.label')[0].innerHTML = pathModule.basename(folderObj.path);
 

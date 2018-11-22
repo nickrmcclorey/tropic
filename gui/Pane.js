@@ -7,7 +7,6 @@ function Pane(path) {
 
 
     let tabElement = $(this.fileField).find('.tab')[0];
-    console.log(tabElement);
     this.tabs.push(new Tab(path, tabElement));
     this.activeTab = this.tabs[0];
     this.pathBox.value = this.path();
@@ -26,6 +25,8 @@ function Pane(path) {
             $(this.activeTab.element).removeClass('activeTab');
             this.activeTab = this.tabs[index];
             $(this.activeTab.element).addClass('activeTab');
+        } else {
+            console.log('couldn\'t find tab to select')
         }
     }
 }
@@ -37,9 +38,8 @@ Pane.prototype.path = function () {
 Pane.prototype.refresh = function () {
     let folder = this.activeTab.folder;
     this.pathBox.value = folder.path;
-    let elementToUpdate = this.fileList;
     folder.read().then(() => {
-        updateGuiFiles(folder, elementToUpdate)
+        updateGuiFiles(folder, this)
     });
 }
 
