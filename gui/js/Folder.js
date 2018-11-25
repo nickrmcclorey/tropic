@@ -5,8 +5,6 @@ function Folder(path) {
     this.children = new Object();
     this.path = path
     this.promises = new Array();
-
-    process.chdir(path);
 }
 
 Folder.prototype.read = function () {
