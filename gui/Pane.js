@@ -29,19 +29,20 @@ function Pane(path) {
             console.log('couldn\'t find tab to select')
         }
     }
+
+    this.refresh = function () {
+        this.activeTab.folder = new Folder(this.activeTab.folder.path);
+        this.activeTab.folder.read().then(() => {
+            updateGuiFiles(this.activeTab.folder, this);
+        });
+
+    }
 }
 
 Pane.prototype.path = function () {
     return this.activeTab.folder.path;
 };
 
-Pane.prototype.refresh = function () {
-    let folder = this.activeTab.folder;
-    this.pathBox.value = folder.path;
-    folder.read().then(() => {
-        updateGuiFiles(folder, this)
-    });
-}
 
 Pane.prototype.cd = function (path) {
     this.activeTab.folder = new Folder(path);

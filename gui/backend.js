@@ -61,13 +61,6 @@ function handleClick(e) {
 }
 
 
-function openDir(path, pane) {
-    currentFolder = new Folder(path);
-    currentFolder.read()
-    .then(() => {updateGuiFiles(currentFolder, pane);});
-}
-
-
 function goToParentDirectory(e) {
     handleClick(e);
     let newPath = pathModule.join(Tracker.folder().path, '..') ;
@@ -75,11 +68,10 @@ function goToParentDirectory(e) {
 }
 
 
-
 // opens a file in a seperate program
 function openFile(rawPath) {
     if (Tracker.folder().children[pathModule.basename(rawPath)].type == 'directory') {
-        openDir(rawPath);
+        Tracker.activePane.cd(rawPath);
         hideContextMenu();
         return;
     }
@@ -253,7 +245,7 @@ function fileRightClicked(e) {
 // creates input box, waits for user to enter new name or click elsewhere
 function renameFiles() {
     hideContextMenu();
-    let oldName = selectedFileNames()[0];
+    let fileToRename = selectedFiles.tentative[0];
 
     // creating input box
     let inputBox = document.createElement('input');
@@ -270,19 +262,19 @@ function renameFiles() {
             // get new name, rename file and refresh
             let newName = inputBox.value;
 
-            fs.rename(currentFolder.path + '/' + oldName, currentFolder.path + '/' + newName, (error) => {
+            fs.rename(fileToRename.path, pathModule.join(Tracker.folder().path, newName), (error) => {
                 if (error) {
                     console.log(error);
-                    alert('failed to rename file')
+                    alert('Failed to rename file')
                 }
-                refresh();
+                Tracker.refresh();
                 clearSelectedFiles();
             }); // end of fs.rename callback
         }// end of if
     }, false); // end of keypress callback
 
     // if user clicks elsewhere, replace the input box with old name
-    inputBox.addEventListener('blur', () => { li.children[1].innerHTML = oldName }, false);
+    inputBox.addEventListener('blur', () => { li.children[1].innerHTML = pathModule.basename(fileToRename.path) }, false);
 
 
     // showing the input box
@@ -297,12 +289,13 @@ function renameFiles() {
 // these files will be highlighted and held as global variables
 // for future use. i.e. copy, paste
 function selectFile(li_target) {
+    console.log(li_target)
 
     // get li target as e.target could be child element of path
 
     li_target.style.backgroundColor = 'rgb(35, 219, 220)';
 
-    let path = currentFolder.path + '\\' + nameFromLi(li_target);
+    let path = pathModule.join(Tracker.folder().path, nameFromLi(li_target));
 
     selectedFiles.addTentative(path, li_target);
 }
@@ -317,13 +310,15 @@ function pasteSelectedFiles() {
 
     for (selectedFile of selectedFiles.locked) {
         let fileName = pathModule.basename(selectedFile.path);
+        console.log(fileName);
 
         // cut or copy depending on previous selection
         if (selectedFiles.pendingAction == 'cut') {
-            fs.rename(selectedFile.path, pathModule.join(currentFolder.path, fileName), printError ); // end of callback and fs.rename
+            fs.renameSync(selectedFile.path, pathModule.join(Tracker.folder().path, fileName), printError ); // end of callback and fs.rename
         } else if (selectedFiles.pendingAction == 'copy') {
-            fs.copyFile(selectedFile.path, pathModule.join(currentFolder.path, fileName), printError);
+            fs.copyFileSync(selectedFile.path, pathModule.join(Tracker.folder().path, fileName), printError);
         }
+        setTimeout(function(){ Tracker.refresh() }, 100);
     } // end of for loop
 
 
