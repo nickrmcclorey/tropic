@@ -202,15 +202,11 @@ function createNewChild(makeDir) {
 //Maybe I could find path to trash but this is different for each OS
 // Maybe I could create my own trash folder
 function deleteFile() {
-    console.log(selectedFileNames());
-    for (let fileName of selectedFileNames()) {
-        if (currentFolder.children[fileName].isDirectory()) {
-            fs.rmdir(fileName, printError);
-        } else {
-            fs.unlink(fileName, printError);
-        }
-    }
-    refresh();
+    let pathToExe = pathModule.join(__dirname, "/programs/recycle/recycle.exe");
+    let filesToDelete = selectedFiles.tentativePaths().join(' ');
+    exec(pathToExe + ' ' + filesToDelete, () => {
+        Tracker.refresh();
+    });
     hideContextMenu();
 }
 
