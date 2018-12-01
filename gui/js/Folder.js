@@ -104,7 +104,6 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
                 size: null,
                 type: null,
                 lastModified: null,
-                img64: null,
                 id: fileId
              };
 
@@ -166,11 +165,7 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
             fileId++;
 
             if (this.children[name].type == 'exe') {
-                this.promises.push(extractIcon(pathModule.join(this.path, name)))
-                // .then(data => {
-                //     console.log('inside');
-                //     this.children[data.file].img64 = data.img64;
-                // });
+                this.children[name].imgPromise = extractIcon(pathModule.join(this.path, name));
             }
         } // end of loop
 

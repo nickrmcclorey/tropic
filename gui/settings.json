@@ -2,7 +2,7 @@
     "homeFolder": "C:/users/nick/documents",
     "fileTypes": {
         "exe": {
-            "src": "extract"
+            "img": "exealt.png"
         },
         "png": {
             "img": "png.png"

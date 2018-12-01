@@ -214,7 +214,7 @@ span {
 } */
 
 .tab:hover, .addTabButton:hover {
-    background-color: blue;
+    background-color: green;
     cursor: pointer;
 }
 
