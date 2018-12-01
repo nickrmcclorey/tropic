@@ -1,7 +1,7 @@
-*.exe
 node_modules
 test.js
 *.png
 *.jpeg
 *.ico
 tropic-win32-x64
+gui/img

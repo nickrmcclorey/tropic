@@ -40,3 +40,11 @@ SelectedFiles.prototype.tentativeRemove = function(liToRemove) {
         }
     }
 }
+
+SelectedFiles.prototype.tentativePaths = function () {
+    let pathArray = [];
+    for (let file of this.tentative) {
+        pathArray.push(file.path)
+    }
+    return pathArray;
+};

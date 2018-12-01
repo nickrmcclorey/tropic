@@ -13,35 +13,9 @@ function findFileExtension(fileName) {
 }
 
 
-
-// remove spaces from edges of string
-function removeEdgeSpaces(input) {
-
-    let beginIndex = 0;
-    let endIndex = input.length;
-
-    for (let k = 0; k < input.length; k++) {
-        if (input.charAt(k) != ' ') {
-            beginIndex = k;
-            break;
-        }
-    }
-
-    for (let k = input.length-1; k >= 0; k--) {
-        if (input.charAt(k) == ' ') {
-            endIndex = k-1;
-        } else {
-            break;
-        }
-    }
-
-    return input.substr(beginIndex, endIndex);
-
-}
-
 // grabbing file name from li element
 function nameFromLi(li) {
-    return removeEdgeSpaces(li.children[1].textContent);
+    return li.children[1].textContent.trim();
 }
 
 function sizeOf(size) {

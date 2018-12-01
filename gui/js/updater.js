@@ -4,15 +4,15 @@
 function setFileListListeners() {
 
     // button to go to parent directory
-    for (el of document.getElementsByClassName('backButton')) {
+    for (el of $('.backButton')) {
         el.addEventListener('click', goToParentDirectory, false);
     }
     // user entered path into path box
-    for (el of document.getElementsByClassName('pathBox')) {
+    for (el of $('.pathBox')) {
         el.addEventListener('keypress', pathBoxKeyDown, false);
     }
 
-    for (pane of document.getElementsByClassName('fileField')) {
+    for (pane of $('fileField')) {
         pane.addEventListener('click', (e) => {
             if (e.target.getAttribute('class') == 'fileField') {
                 clearSelectedFiles();
@@ -20,17 +20,14 @@ function setFileListListeners() {
         }, false);
     }
 
-    for (let filebar of document.getElementsByClassName('fileEntry')) {
-
+    for (let filebar of $('.fileEntry')) {
         // open file on double click
         filebar.addEventListener('dblclick', file_dbl_clicked, false);
         // file selected
         filebar.addEventListener('click', fileClicked, false);
         // file right clicked, open contextMenu
         filebar.addEventListener('contextmenu', fileRightClicked, false);
-
     }
-
 
     for (el of document.getElementsByClassName('addTabButton')) {
         el.addEventListener('click', addTab, false);
@@ -43,7 +40,6 @@ function setFileListListeners() {
     for (el of document.getElementsByClassName('tab')) {
         el.addEventListener('click', changeTab, false);
     }
-
 }
 
 function setInitListeners() {
@@ -72,15 +68,17 @@ function setInitListeners() {
     }
     // open buttons
     for (el of document.getElementsByClassName('openButton')) {
-        el.addEventListener('click', () => {openFile(pathModule.join(currentFolder.path, nameFromLi(selectedFiles.tentative[0].li)))},false);
+        el.addEventListener('click', () => {openFile(pathModule.join(Tracker.folder().path, nameFromLi(selectedFiles.tentative[0].li)))},false);
     }
 
     for (el of document.getElementsByClassName('openWithButton')) {
         el.addEventListener('click', openProgramList, false);
     }
 
-    for (el of document.getElementsByClassName('newFileFieldButton')) {
-        el.addEventListener('click', newFileField, false);
+    for (el of document.getElementsByClassName('newPaneButton')) {
+        el.addEventListener('click', () => {
+            Tracker.addPane(homePath());
+        }, false);
     }
 
     document.addEventListener('click', handleClick, false);
@@ -90,22 +88,21 @@ function setInitListeners() {
 }
 
 // updates the display with the list of files and their relavant information
-function updateGuiFiles(folderObj = currentFolder, elToTarget) {
-
-    // if elToTarget is not passed in, we stick with the active pane (selectedFileList)
+function updateGuiFiles(folderObj, pane) {
+    // if pane is not passed in, we stick with the active pane (selectedFileList)
     let fileList = null;
-    if (elToTarget) {
-        fileList = elToTarget;
+    if (pane) {
+        fileList = pane.fileList;
     } else {
-        fileList = active.fileList();
+        pane = Tracker.activePane;
+        fileList = Tracker.activePane.fileList;
     }
 
-    // let fileList = elToTarget;
     // update the input path box to show current path
-    active.inputBox().value = folderObj.path;
+    pane.pathBox.value = folderObj.path;
 
     // wipe the list of files because we just changed directories
-    fileList.innerHTML = '';
+    fileList.innerHTML = '<li><span></span><span>Name</span><span>Size</span></li>';
 
 
     // folderObj.children is an associative array indexed by strings corresponding to the files' names
@@ -116,7 +113,8 @@ function updateGuiFiles(folderObj = currentFolder, elToTarget) {
 
         // icon of file
         let img = document.createElement('img');
-        img.setAttribute('src', fileIconPath(folderObj.children[fileName]));
+        img.setAttribute('src', fileIconPath(folderObj, fileName));
+        img.setAttribute('id', folderObj.children[fileName].id)
 
         // name of file
         let spanName = document.createElement('span');
@@ -142,14 +140,13 @@ function updateGuiFiles(folderObj = currentFolder, elToTarget) {
     }// end of for loop
 
 
-    let tab = active.tab();
+    let tab = pane.activeTab.element;
     tab.path = folderObj.path;
-    tab.innerHTML = pathModule.basename(folderObj.path);
+    $(tab).find('.label')[0].innerHTML = pathModule.basename(folderObj.path);
 
     highlightTabs();
     setFileListListeners();
 }
-
 
 
 // called by event listener of the li. opens a file or folder
@@ -157,19 +154,16 @@ function file_dbl_clicked(e) {
     handleClick(e);
 
     let selectedFile = nameFromLi(this);
-    let newPath = pathModule.resolve(currentFolder.path + '/' + selectedFile);
+    let newPath = pathModule.join(Tracker.folder().path, selectedFile);
 
     console.log(selectedFile)
-    if (currentFolder.children[selectedFile].type == 'directory') {
-        currentFolder = new Folder(newPath);
-        currentFolder.read()
-        .then(() => {updateGuiFiles(currentFolder)});
-        console.log('updating');
-        // updateGuiFiles(currentFolder);
+    if (Tracker.folder().children[selectedFile].type == 'directory') {
+        Tracker.activePane.cd(newPath);
     } else {
         openFile(newPath);
     }
 }
+
 
 // this is a callback of each li element in the file list
 function fileClicked(e) {
@@ -184,7 +178,6 @@ function fileClicked(e) {
     }
 
     selectFile(this);
-
 }
 
 function refreshSelectedFiles() {
@@ -217,16 +210,12 @@ function showContextMenu(e) {
 // called by path box near top of page
 // navigates the browser to the path typed in the box at top of page
 function pathBoxKeyDown(e) {
-    //console.log(e);
-    let keyPressed = e.which || e.keyCode;
+    let keyPressed = e.which;
     if (keyPressed === 13) { // enter button
         handleClick(e);
-        currentFolder = new Folder(this.value);
-        currentFolder.read()
-        .then(() => {updateGuiFiles(currentFolder)})
+        Tracker.activePane.cd(this.value);
     }
 }
-
 
 
 // used when creating new file or folder
@@ -237,14 +226,13 @@ function newInputBox() {
 
 }
 
+
 // active tabs are a different color than the others
 function highlightTabs() {
-    for (tab of document.getElementsByClassName('tab')) {
-        if (tab.active) {
-            tab.style.backgroundColor = 'rgb(0, 182, 58)';
-        } else {
-            tab.style.backgroundColor = 'rgb(0, 182, 58)';
-        }
+    $('.tab').removeClass('activeTab');
+    for (let pane of Tracker.panes) {
+        console.log(pane);
+        $(pane.activeTab.element).addClass('activeTab')
     }
 }
 
@@ -296,6 +284,3 @@ function openProgramList(e) {
     list.style.display = 'block';
 
 }
-
-
-init();

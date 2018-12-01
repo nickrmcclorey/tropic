@@ -13,11 +13,10 @@ body {
 }
 
 .fileFieldParent {
-
     padding-right: 10px;
     padding-left: 10px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     grid-column-gap: 20px;
 
 }
@@ -30,8 +29,6 @@ body {
 }
 
 .mainMenu {
-
-
     grid-column: 1/3;
     position: fixed;
     left: 0;
@@ -87,7 +84,7 @@ ul.fileList > li {
 }
 
 ul.fileList > li > span:nth-child(3) {
-    justify-self: end;
+    justify-self: left;
 }
 
 div.columnHeader {
@@ -110,8 +107,6 @@ li.fileEntry:hover{
     color:white;
 
 }
-
-
 
 .fileDate{
     padding-left: 5px;
@@ -186,8 +181,6 @@ span {
     color:white;
     background-color: rgb(0, 182, 58);
     cursor: pointer;
-
-
 }
 
 
@@ -195,14 +188,9 @@ span {
     display: none;
 }
 
-ul.header{
-
-}
-
 .backButton {
     padding-right: 1.5em;
 }
-
 
 .tabBar {
     display:flex;
@@ -211,7 +199,7 @@ ul.header{
 }
 
 /* targets each tab */
-.tabBar > span {
+.tab, .addTabButton {
     background-color: rgb(5, 152, 52);
     background-color: grey;
     color:white;
@@ -220,14 +208,23 @@ ul.header{
     padding-right: 6px;
 }
 
-.tabBar > span:hover {
+/* .tab {
     background-color: rgb(40, 0, 182);
+    cursor: pointer;
+} */
+
+.tab:hover, .addTabButton:hover {
+    background-color: green;
     cursor: pointer;
 }
 
+.activeTab {
+    background-color: rgb(0, 182, 58);
+    color: white;
+}
 
 .xButton {
-    font-family: 'helvetica';
+    color: darkred;
 }
 
 .programList {
@@ -245,4 +242,60 @@ ul.header{
 .programList div:hover {
     background-color: rgb(0, 182, 58);
     cursor: pointer;
+}
+
+#settings {
+    background-color: white;
+    padding: 10px;
+    display:none;
+    grid-template-columns: 270px 3fr;
+    grid-gap: 10px;
+}
+
+label {
+    padding-right: 15px;
+}
+
+#fileExtensions {
+    list-style-type: none;
+    background-color: white;
+    margin: 0px;
+    padding: 0px;
+
+}
+
+#fileExtensions > li {
+    padding: 5px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#fileExtensions input {
+    margin-right: 5px;
+}
+
+#fileExtensions button {
+    margin-left: 5px;
+}
+
+.iconSelector {
+    padding: 10px;
+}
+
+.iconSelector img {
+    width: 2em;
+    height: 2em;
+    margin-left: 5px;
+}
+
+#buttonContainer {
+    grid-column: 1/2;
+    grid-row: 2/3;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+#buttonContainer button {
+    margin: 7px;
 }

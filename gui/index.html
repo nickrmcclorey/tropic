@@ -4,6 +4,36 @@
         <meta charset="utf-8">
         <title>Tropic File Browser</title>
     </head>
+    <section hidden id="templates">
+        <section class="fileField">
+            <span class="tabBar">
+                <span class="tab">
+                    <span class="label"></span>
+                    <span class="xButton">x</span>
+                </span>
+                <span class="addTabButton">+</span>
+            </span>
+
+            <div class="header">
+                <span class="backButton">Back</span>
+                <span>Path:</span>
+                <input class="pathBox" id="pathBox1" type="text"></input>
+
+            </div>
+
+
+            <ul class="fileList">
+                <div class="columnHeader">
+                    <span></span>
+                    <span>Name</span>
+                    <span>Size</span>
+                </div>
+            </ul>
+
+        </section>
+    </section>
+
+
     <body>
         <center class="mainMenu">
             <center class="topMenu">
@@ -14,77 +44,15 @@
                 <span class="renameButton">rename</span>
                 <span class="newFileButton">new file</span>
                 <span class="newDirButton">new folder</span>
-                <span class="newFileFieldButton">new pane</span>
+                <span class="newPaneButton">new pane</span>
                 <span class="openWithButton">open with</span>
 
             </center>
         </center>
 
 
-        <section class="fileFieldParent">
+        <section class="fileFieldParent" id="fileFieldParent">
 
-        <section class="fileField" id="fileField1">
-            <div class="tabBar">
-                <span class="tab">dd</span>
-                <span class="xButton">x</span>
-                <span class="addTabButton">+</span>
-            </div>
-
-
-            <div class="header">
-                <span class="backButton">Back</span>
-                <span>Path:</span>
-                <input class="pathBox" id="pathBox1" type="text"></input>
-
-            </div>
-
-
-
-            <div class="columnHeader">
-            <span>Name</span>
-            <span>Size</span>
-            </div>
-
-
-            <ul class="fileList" id="fileList1">
-                <li>
-                    <img  src="img/html.png"></img.>
-                    <span>it broke</span>
-                </li>
-            </ul>
-        </section>
-
-        <section class="fileField" id="fileField2">
-
-            <div class="tabBar">
-                <span class="tab" active="true">dd</span>
-                <span class="xButton">x</span>
-                <span class="addTabButton">+</span>
-            </div>
-
-            <div class="header">
-                <span class="backButton">Back</span>
-                <span>Path:</span>
-                <input class="pathBox" id="pathBox2" type="text"></input>
-
-            </div>
-
-
-
-            <div class="columnHeader">
-            <span>Name</span>
-            <span>Size</span>
-            </div>
-
-
-            <ul class="fileList" id="fileList2">
-                <li>
-                    <img  src="img/html.png"></img.>
-                    <span>it broke</span>
-                </li>
-            </ul>
-
-        </section>
 
         </section>
 
@@ -103,15 +71,23 @@
 
         </section>
 
+
+        <section id="settings">
+            <p style="grid-column:1/3">settings</p>
+        </section>
+
     </body>
 
-    <script src="pure.js"></script>
-    <script src="SelectedFiles.js"></script>
-    <script src="Active.js"></script>
-    <script src="backend.js"></script>
-    <script src="folder.js"></script>
-    <script src="updater.js"></script>
+    <script src="js/PaneTabTracker.js"></script>
+    <script src="js/pure.js"></script>
+    <script src="js/SelectedFiles.js"></script>
+    <script src="js/backend.js"></script>
+    <script src="js/folder.js"></script>
+    <script src="js/Pane.js"></script>
+    <script src="js/Tab.js"></script>
+    <script src="js/updater.js"></script>
+    <script src="js/listeners.js"></script>
+    <script> init(); </script>
     <link rel="stylesheet" type="text/css" href="index.css"/>
-
 
 </html>
