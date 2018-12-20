@@ -31,7 +31,7 @@ function Pane(path) {
     }
 
     this.refresh = function () {
-        this.activeTab.folder = new Folder(this.activeTab.folder.path);
+        // this.activeTab.folder = new Folder(this.activeTab.folder.path);
         this.activeTab.folder.read().then(() => {
             updateGuiFiles(this.activeTab.folder, this);
         });

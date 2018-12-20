@@ -1,6 +1,8 @@
 
 function Folder(path) {
-    path = pathModule.resolve(path);
+    if (!path.includes('%')) {
+        path = pathModule.resolve(path);
+    }
 
     this.children = new Object();
     this.path = path
@@ -58,7 +60,7 @@ Folder.prototype.collectFolderContents = function (path) {
 Folder.prototype.parseWinDir = function (resolve, reject) {
 
     // calling the dir command and recieving its input in parameter 'raw'
-    exec('dir "' + this.path + '" ', (error, raw) => {
+    exec('dir ' + this.path + ' /a', (error, raw) => {
         // catch error calling dir and invalid path
         if (error) {
             console.log(error);

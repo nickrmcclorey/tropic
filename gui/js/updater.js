@@ -156,7 +156,6 @@ function file_dbl_clicked(e) {
     let selectedFile = nameFromLi(this);
     let newPath = pathModule.join(Tracker.folder().path, selectedFile);
 
-    console.log(selectedFile)
     if (Tracker.folder().children[selectedFile].type == 'directory') {
         Tracker.activePane.cd(newPath);
     } else {
@@ -213,6 +212,7 @@ function pathBoxKeyDown(e) {
     let keyPressed = e.which;
     if (keyPressed === 13) { // enter button
         handleClick(e);
+        console.log(e.target.value)
         Tracker.activePane.cd(this.value);
     }
 }
@@ -231,7 +231,6 @@ function newInputBox() {
 function highlightTabs() {
     $('.tab').removeClass('activeTab');
     for (let pane of Tracker.panes) {
-        console.log(pane);
         $(pane.activeTab.element).addClass('activeTab')
     }
 }

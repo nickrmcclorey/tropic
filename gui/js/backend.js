@@ -4,8 +4,8 @@ const fs = require('fs');
 const pathModule = require('path');
 const { ipcRenderer } = require('electron');
 const $ = require('jquery')
-const shell = require('node-powershell')
 const fii = require('file-icon-info');
+const ncp = require('ncp')
 
 // ==== global variables ==== \\
 let currentFolder = {};
@@ -57,6 +57,10 @@ function handleClick(e) {
     let programMenu = document.getElementById('programMenu');
     if (!e.path.includes(programMenu) && e.target.getAttribute('class') != 'openWithButton') {
         programMenu.style.display = 'none';
+    }
+
+    if (e.target.classList.contains('fileField')) {
+        clearSelectedFiles();
     }
 }
 
@@ -160,8 +164,9 @@ function refresh() {
     for (fileField of document.getElementsByClassName('fileField')) {
         let domTraverser = new Active(fileField);
         let newFolder = new Folder(domTraverser.inputBox().value);
-        newFolder.read()
-        .then(() => {updateGuiFiles(newFolder, domTraverser.fileList())})
+        newFolder.read().then(() => {
+            updateGuiFiles(newFolder, domTraverser.fileList());
+        });
     }
 }
 
@@ -285,15 +290,15 @@ function renameFiles() {
 // these files will be highlighted and held as global variables
 // for future use. i.e. copy, paste
 function selectFile(li_target) {
-    console.log(li_target)
 
     // get li target as e.target could be child element of path
 
     li_target.style.backgroundColor = 'rgb(35, 219, 220)';
 
     let path = pathModule.join(Tracker.folder().path, nameFromLi(li_target));
+    let isDirectory = fs.lstatSync(path).isDirectory()
 
-    selectedFiles.addTentative(path, li_target);
+    selectedFiles.addTentative(path, isDirectory);
 }
 
 
@@ -306,13 +311,22 @@ function pasteSelectedFiles() {
 
     for (selectedFile of selectedFiles.locked) {
         let fileName = pathModule.basename(selectedFile.path);
-        console.log(fileName);
 
+        let destination = '';
+        if (selectedFiles.tentative[0] && selectedFiles.tentative[0].isDirectory) {
+            destination = selectedFiles.tentative[0].path;
+            destination = pathModule.join(destination, fileName);
+        } else {
+            destination = pathModule.join(Tracker.folder().path, fileName);
+        }
+        
+        console.log(destination);
         // cut or copy depending on previous selection
         if (selectedFiles.pendingAction == 'cut') {
-            fs.renameSync(selectedFile.path, pathModule.join(Tracker.folder().path, fileName), printError ); // end of callback and fs.rename
+            fs.renameSync(selectedFile.path, destination, printError ); // end of callback and fs.rename
         } else if (selectedFiles.pendingAction == 'copy') {
-            fs.copyFileSync(selectedFile.path, pathModule.join(Tracker.folder().path, fileName), printError);
+            ncp(selectedFile.path, destination, printError);
+            // fs.copyFileSync(selectedFile.path, pathModule.join(Tracker.folder().path, fileName), printError);
         }
         setTimeout(function(){ Tracker.refresh() }, 100);
     } // end of for loop
@@ -378,7 +392,8 @@ function startProgram(event) {
     let program = settings.programs[programName];
 
     // figure out file or folder to open
-    let fileOrFolderPath = selectedFiles.tentative[0].path;
+    let lastSelectedFile = selectedFiles.tentative[0];
+    let fileOrFolderPath = (lastSelectedFile) ? lastSelectedFile.path : Tracker.folder().path;
     let filePath = null;
     let folderPath = null;
     if (!fileOrFolderPath) {
@@ -389,16 +404,12 @@ function startProgram(event) {
         filePath = fileOrFolderPath;
     }
 
-
     // only open program if it can open that folder
     if (folderPath && program.canOpenFolder) {
         runExtProgram(program.path, folderPath);
     } else if (filePath && program.canOpenFile) {
         runExtProgram(program.path, filePath);
     }
-
-
-
 }
 
 

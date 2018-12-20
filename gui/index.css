@@ -39,6 +39,7 @@ body {
     border-bottom: 2px solid rgb(0, 182, 58);;
     background-color: rgb(255, 247, 24);
     z-index: 400;
+    overflow: hidden;
 }
 
 
