@@ -142,7 +142,9 @@ function updateGuiFiles(folderObj, pane) {
 
     let tab = pane.activeTab.element;
     tab.path = folderObj.path;
-    $(tab).find('.label')[0].innerHTML = pathModule.basename(folderObj.path);
+    let label = pathModule.basename(folderObj.path);
+    // tab's label is the basename or the path if in root folder
+    $(tab).find('.label')[0].innerHTML = (label == '') ? folderObj.path : label;
 
     highlightTabs();
     setFileListListeners();

@@ -65,16 +65,19 @@ section.controlPanel > div {
 /* list that holds the files */
 ul.fileList  {
     padding: 0px;
+    margin: 0px;
     margin-right: 10px;
+    margin-left: 2.8em;
     height:100%;
     padding-left: 0px;
-    margin-left: 2.8em;
     list-style-type: none;
+    max-height: 25rem;
+    overflow-y: scroll;
 }
 
 /* targets the files in the file List */
 ul.fileList > li {
-    width:100%;
+    width:95%;
     display:grid;
     grid-template-columns: 0.1fr 2fr 1fr;
     padding-bottom :1px;

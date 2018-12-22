@@ -60,7 +60,7 @@ Folder.prototype.collectFolderContents = function (path) {
 Folder.prototype.parseWinDir = function (resolve, reject) {
 
     // calling the dir command and recieving its input in parameter 'raw'
-    exec('dir ' + this.path + ' /a', (error, raw) => {
+    exec('dir "' + this.path + '" /a:-s /o:e', (error, raw) => {
         // catch error calling dir and invalid path
         if (error) {
             console.log(error);
@@ -128,7 +128,6 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
 
                     if (line[i] == '<DIR>')  {
                         newFile.size = 'folder';
-
                     } else {
                         // take the size, remove the commas, convert to a number and convert it to GB, MB or KB
                         newFile.size = sizeOf(Number(newFile.size.replace(/,/g, '')));
@@ -163,6 +162,9 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
                 return this.type == 'directory';
             }
 
+            if (name == '.') {
+                continue;
+            }
             this.children[name] = newFile;
             fileId++;
 
