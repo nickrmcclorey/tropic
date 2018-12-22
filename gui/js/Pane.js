@@ -40,6 +40,7 @@ function Pane(path) {
     }
 }
 
+
 Pane.prototype.path = function () {
     return this.activeTab.folder.path;
 };

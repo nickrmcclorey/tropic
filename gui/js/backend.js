@@ -38,6 +38,7 @@ function init() {
     loadExternalPrograms();
 }
 
+
 function handleClick(e) {
     for (fileField of $('.fileField')) {
         if (e.path.includes(fileField) && Tracker.activePane.fileField != fileField) {
@@ -108,6 +109,7 @@ function loadDefaultIcons() {
     }
 }
 
+
 function injectIcons() {
     for (el of $('.fileEntry')) {
         let fileName = el.children[1].textContent;
@@ -115,6 +117,7 @@ function injectIcons() {
         el.children[0].setAttribute('src', 'data:image/png;base64,' + img64);
     }
 }
+
 
 // returns the path to the file that should be used.
 // settings.json can be used to set file icons
@@ -140,11 +143,13 @@ function fileIconPath(folder, fileName) {
     }
 }
 
+
 function extractIconFromFile(pathToFile, img) {
     return new Promise(function(resolve, reject) {
         iconExtractor.getIcon(null, pathToFile);
     });
 }
+
 
 function clearSelectedFiles() {
     let fileList_uls = document.getElementsByClassName('fileList');
@@ -157,6 +162,7 @@ function clearSelectedFiles() {
     }
     selectedFiles.tentative = new Array();
 }
+
 
 // reloads the page with any file changes
 function refresh() {
@@ -196,8 +202,6 @@ function createNewChild(makeDir) {
 
     // if inputEl loses focus, cancel the creation of new file
     inputEl.addEventListener('blur', () => { inputEl.style.display = 'none' }, false);
-
-
     fileList.prepend(inputEl);
     inputEl.focus();
 }
@@ -213,6 +217,7 @@ function deleteFile() {
     hideContextMenu();
 }
 
+
 // usually results in contextMenu being shown
 function fileRightClicked(e) {
     //console.log(e);
@@ -226,8 +231,6 @@ function fileRightClicked(e) {
 
     console.log(selectedFiles);
 }
-
-
 
 
 // creates input box, waits for user to enter new name or click elsewhere

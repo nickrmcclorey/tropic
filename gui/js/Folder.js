@@ -9,6 +9,7 @@ function Folder(path) {
     this.promises = new Array();
 }
 
+
 Folder.prototype.read = function () {
     if (process.platform == 'win32') {
         return new Promise((resolve, reject) => {this.parseWinDir(resolve, reject)});
@@ -17,6 +18,7 @@ Folder.prototype.read = function () {
         return Promise.resolve();
     }
 };
+
 
 Folder.prototype.collectFolderContents = function (path) {
 
@@ -53,10 +55,8 @@ Folder.prototype.collectFolderContents = function (path) {
 }
 
 
-
 /* the readdir function doesn't always work on windows so
     so I've called the dir command and parsed the output. */
-
 Folder.prototype.parseWinDir = function (resolve, reject) {
 
     // calling the dir command and recieving its input in parameter 'raw'
@@ -179,6 +179,7 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
     });
 
 }
+
 
 function extractIcon(path) {
     let extractor = new require('file-icon-info');

@@ -42,6 +42,7 @@ function setFileListListeners() {
     }
 }
 
+
 function setInitListeners() {
     // hide right click menu whne user clicks elsewhere
     // document.addEventListener('click', handleClick, false);
@@ -86,6 +87,7 @@ function setInitListeners() {
     document.getElementsByClassName('newDirButton')[0].addEventListener('click', () => {createNewChild(true)})
     document.getElementsByClassName('newFileButton')[0].addEventListener('click', () => {createNewChild(false)}, false);
 }
+
 
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(folderObj, pane) {
@@ -181,6 +183,7 @@ function fileClicked(e) {
     selectFile(this);
 }
 
+
 function refreshSelectedFiles() {
     let fileList_ul = active.fileList();
 
@@ -195,9 +198,11 @@ function refreshSelectedFiles() {
     }
 }
 
+
 function hideContextMenu() {
     document.getElementById('contextMenu').style.display = 'none';
 }
+
 
 function showContextMenu(e) {
     let contextMenu = document.getElementById('contextMenu');
@@ -207,6 +212,7 @@ function showContextMenu(e) {
         contextMenu.style.display = 'block';
     }
 }
+
 
 // called by path box near top of page
 // navigates the browser to the path typed in the box at top of page
@@ -237,6 +243,7 @@ function highlightTabs() {
     }
 }
 
+
 // returns number of tabs in a specific tabBar
 function numTabs(tabBar) {
     let numTabs = 0;
@@ -247,6 +254,7 @@ function numTabs(tabBar) {
     }
     return numTabs;
 }
+
 
 // adds another box that the user can browse with
 function newFileField() {
@@ -259,6 +267,7 @@ function newFileField() {
     updateGuiFiles();
     adjustFileFieldParentCss();
 }
+
 
 function adjustFileFieldParentCss() {
     let fields = document.getElementsByClassName('fileFieldParent')[0];
@@ -274,6 +283,7 @@ function adjustFileFieldParentCss() {
     // activate buttons on new element
     setFileListListeners();
 }
+
 
 function openProgramList(e) {
     let list = document.getElementsByClassName('programList')[0];
