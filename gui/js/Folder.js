@@ -59,13 +59,14 @@ Folder.prototype.collectFolderContents = function (path) {
     so I've called the dir command and parsed the output. */
 Folder.prototype.parseWinDir = function (resolve, reject) {
 
+    let command = 'dir ' + preparePathForCmd(this.path) + ' /a:-s /o:e' 
     // calling the dir command and recieving its input in parameter 'raw'
-    exec('dir "' + this.path + '" /a:-s /o:e', (error, raw) => {
+    exec(command, (error, raw) => {
         // catch error calling dir and invalid path
         if (error) {
             console.log(error);
             return;
-        } else if (raw.indexOf('File Not Found') != -1) {
+        } else if (raw.includes('File Not Found')) {
             console.log('path is invalid');
             return;
         }
@@ -107,7 +108,7 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
                 type: null,
                 lastModified: null,
                 id: fileId
-             };
+            };
 
             // using javascript's built in date parser
             newFile.lastModified = new Date(line.substr(0,21));
@@ -123,7 +124,6 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
             // <DIR> will be there if file is directory
             for (let i in line) {
                 if (line[i]) {
-                    // console.log(line[i]);
                     newFile.size = line[i];
 
                     if (line[i] == '<DIR>')  {
@@ -177,14 +177,15 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
             resolve(Promise.all(this.promises));
         }
     });
+}
+
+function findFileSize(dirLine) {
 
 }
 
-
 function extractIcon(path) {
-    let extractor = new require('file-icon-info');
     return new Promise(function(resolve, reject) {
-        extractor.getIcon(path, (img64) => {
+        fii.getIcon(path, (img64) => {
             resolve({
                 "img64": img64,
                 "file": pathModule.basename(path)

@@ -6,10 +6,11 @@ function SelectedFiles() {
 }
 
 
-SelectedFiles.prototype.addTentative = function (path, isDirectory) {
+SelectedFiles.prototype.addTentative = function (path, isDirectory, li) {
     let objToPush = {
         "path": pathModule.resolve(path),
-        "isDirectory": isDirectory
+        "isDirectory": isDirectory,
+        "li": li
     }; // end of obj
 
     if (!this.tentative.includes(objToPush)) {

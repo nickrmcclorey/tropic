@@ -65,13 +65,14 @@ section.controlPanel > div {
 /* list that holds the files */
 ul.fileList  {
     padding: 0px;
-    margin: 0px;
+    margin-top: 0px;
+    margin-bottom: 10px;
     margin-right: 10px;
     margin-left: 2.8em;
     height:100%;
     padding-left: 0px;
     list-style-type: none;
-    max-height: 25rem;
+    max-height: 27rem;
     overflow-y: scroll;
 }
 

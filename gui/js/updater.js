@@ -139,6 +139,11 @@ function updateGuiFiles(folderObj, pane) {
         // append <li> to the list
         fileList.appendChild(file_li);
 
+        // provide pointer to element so we can append the correct icon later on
+        if (folderObj.children[fileName].type == 'exe') {
+            folderObj.children[fileName].element = file_li;
+        }
+
     }// end of for loop
 
 
@@ -150,6 +155,20 @@ function updateGuiFiles(folderObj, pane) {
 
     highlightTabs();
     setFileListListeners();
+    appendExeIcons(pane);
+}
+
+
+function appendExeIcons(pane) {
+    for (let key of Object.keys(pane.activeTab.folder.children)) {
+        let child = pane.activeTab.folder.children[key];
+        if (child.element) {
+            child.imgPromise.then((img64Object) => {
+                console.log(child.element.children[0]);
+                child.element.children[0].setAttribute('src', 'data:image/png;base64, ' + img64Object.img64);
+            });
+        }
+    }
 }
 
 

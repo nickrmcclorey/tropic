@@ -59,7 +59,8 @@ function appendNewFileExtension() {
     setSettingsListeners();
 
     newRow.prepend(extensionInput)
-    document.getElementById('fileExtensions').appendChild(newRow)
+    document.getElementById('fileExtensions').appendChild(newRow);
+    setSettingsListeners();
 }
 
 
@@ -135,14 +136,7 @@ function loadIconSelector() {
 
 
 function setSettingsListeners() {
-    let settings = document.getElementById('fileExtensions')
-        settings.addEventListener('click', handlSettingsClick, false)
-}
-
-
-function setSettingsListeners() {
     $('.iconButtons').on('click', setSelectedInputBox)
-    $
 }
 
 

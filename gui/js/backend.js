@@ -144,13 +144,6 @@ function fileIconPath(folder, fileName) {
 }
 
 
-function extractIconFromFile(pathToFile, img) {
-    return new Promise(function(resolve, reject) {
-        iconExtractor.getIcon(null, pathToFile);
-    });
-}
-
-
 function clearSelectedFiles() {
     let fileList_uls = document.getElementsByClassName('fileList');
 
@@ -288,7 +281,7 @@ function selectFile(li_target) {
     let path = pathModule.join(Tracker.folder().path, nameFromLi(li_target));
     let isDirectory = fs.lstatSync(path).isDirectory()
 
-    selectedFiles.addTentative(path, isDirectory);
+    selectedFiles.addTentative(path, isDirectory, li_target);
 }
 
 

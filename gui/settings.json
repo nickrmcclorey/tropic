@@ -13,6 +13,9 @@
         "ico": {
             "src": "self",
             "img": "png.png"
+        },
+        "class": {
+            "img": "jar.ico"
         }
     },
     "programs": {
