@@ -65,16 +65,20 @@ section.controlPanel > div {
 /* list that holds the files */
 ul.fileList  {
     padding: 0px;
+    margin-top: 0px;
+    margin-bottom: 10px;
     margin-right: 10px;
+    margin-left: 2.8em;
     height:100%;
     padding-left: 0px;
-    margin-left: 2.8em;
     list-style-type: none;
+    max-height: 27rem;
+    overflow-y: scroll;
 }
 
 /* targets the files in the file List */
 ul.fileList > li {
-    width:100%;
+    width:95%;
     display:grid;
     grid-template-columns: 0.1fr 2fr 1fr;
     padding-bottom :1px;
@@ -96,11 +100,6 @@ div.columnHeader {
     padding-top: 1px;
     padding-left: 3em;
 }
-div.columnHeader > span:nth-child(2) {
-    /* justify-self: begin; */
-}
-
-
 
 li.fileEntry:hover{
     background-color: rgb(0, 182, 58);
@@ -133,36 +132,29 @@ span {
     z-index: 100;
     width: 100px;
     padding: 3px;
-
     justify-content: center;
     align-items: center;
-
 }
 
-
-
 #contextMenu > div {
-
     padding:3px;
     background-color: white;
-
 }
 
 #contextMenu > div:hover {
     color:white;
     background-color: rgb(0, 182, 58);
     cursor: pointer;
+}
 
+.topMenu {
+    white-space: nowrap;
 }
 
 .topMenu > span {
     height:100%;
     padding: 5px;
     padding-bottom: 7px;
-    /* color:rgb(221, 221, 221); */
-
-    /* padding-bottom: 5px; */
-
 }
 .topMenu > span:hover {
     background-color: rgb(0, 182, 58);
@@ -208,11 +200,6 @@ span {
     padding-left: 6px;
     padding-right: 6px;
 }
-
-/* .tab {
-    background-color: rgb(40, 0, 182);
-    cursor: pointer;
-} */
 
 .tab:hover, .addTabButton:hover {
     background-color: green;

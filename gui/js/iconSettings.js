@@ -7,7 +7,6 @@ ipcRenderer.on('executeFunction', (event, functionName) => {
 });
 
 
-
 function showSettings() {
     document.getElementById('fileFieldParent').style.display = 'none';
     let settings_el = document.getElementById('settings');
@@ -60,7 +59,8 @@ function appendNewFileExtension() {
     setSettingsListeners();
 
     newRow.prepend(extensionInput)
-    document.getElementById('fileExtensions').appendChild(newRow)
+    document.getElementById('fileExtensions').appendChild(newRow);
+    setSettingsListeners();
 }
 
 
@@ -73,12 +73,12 @@ function convertToLabel(e) {
     this.parentNode.removeChild(this)
 }
 
+
 function hideSettings() {
     document.getElementById('fileFieldParent').style.display = 'grid';
     let settings = document.getElementById('settings');
     settings.style.display = 'none';
 }
-
 
 
 function selectIcon(e) {
@@ -105,7 +105,6 @@ function hideIconSelector() {
 }
 
 
-
 function setSelectedInputBox(e) {
     if (e.target.getAttribute('class') != 'iconButtons' || $('.iconSelector').length > 0) {
         return
@@ -117,7 +116,6 @@ function setSelectedInputBox(e) {
 
     $('.iconSelector').on('click', selectIcon)
 }
-
 
 
 function loadIconSelector() {
@@ -138,14 +136,7 @@ function loadIconSelector() {
 
 
 function setSettingsListeners() {
-    let settings = document.getElementById('fileExtensions')
-        settings.addEventListener('click', handlSettingsClick, false)
-}
-
-
-function setSettingsListeners() {
     $('.iconButtons').on('click', setSelectedInputBox)
-    $
 }
 
 
@@ -160,7 +151,9 @@ function saveIconSettings() {
         settings['fileTypes'][fileExtension]['img'] = fileExtension_el.nextSibling.value;
     }
     saveSettingsToFile();
+    loadDefaultIcons();
 }
+
 
 function saveSettingsToFile() {
     let pathToSettings = pathModule.join(__dirname, 'settings.json');

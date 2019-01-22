@@ -42,6 +42,7 @@ function setFileListListeners() {
     }
 }
 
+
 function setInitListeners() {
     // hide right click menu whne user clicks elsewhere
     // document.addEventListener('click', handleClick, false);
@@ -87,6 +88,7 @@ function setInitListeners() {
     document.getElementsByClassName('newFileButton')[0].addEventListener('click', () => {createNewChild(false)}, false);
 }
 
+
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(folderObj, pane) {
     // if pane is not passed in, we stick with the active pane (selectedFileList)
@@ -102,8 +104,11 @@ function updateGuiFiles(folderObj, pane) {
     pane.pathBox.value = folderObj.path;
 
     // wipe the list of files because we just changed directories
-    fileList.innerHTML = '<li><span></span><span>Name</span><span>Size</span></li>';
-
+    if (Object.keys(folderObj.children).length == 0) {
+        fileList.innerHTML = "<li><span></span><span>Folder is empty</span></li>";    
+    } else {
+        fileList.innerHTML = '<li><span></span><span>Name</span><span>Size</span></li>';
+    }
 
     // folderObj.children is an associative array indexed by strings corresponding to the files' names
     for (let fileName in folderObj.children) {
@@ -137,15 +142,35 @@ function updateGuiFiles(folderObj, pane) {
         // append <li> to the list
         fileList.appendChild(file_li);
 
+        // provide pointer to element so we can append the correct icon later on
+        if (folderObj.children[fileName].type == 'exe') {
+            folderObj.children[fileName].element = file_li;
+        }
+
     }// end of for loop
 
 
     let tab = pane.activeTab.element;
     tab.path = folderObj.path;
-    $(tab).find('.label')[0].innerHTML = pathModule.basename(folderObj.path);
+    let label = pathModule.basename(folderObj.path);
+    // tab's label is the basename or the path if in root folder
+    $(tab).find('.label')[0].innerHTML = (label == '') ? folderObj.path : label;
 
     highlightTabs();
     setFileListListeners();
+    appendExeIcons(pane);
+}
+
+
+function appendExeIcons(pane) {
+    for (let key of Object.keys(pane.activeTab.folder.children)) {
+        let child = pane.activeTab.folder.children[key];
+        if (child.element) {
+            child.imgPromise.then((img64Object) => {
+                child.element.children[0].setAttribute('src', 'data:image/png;base64, ' + img64Object.img64);
+            });
+        }
+    }
 }
 
 
@@ -179,23 +204,11 @@ function fileClicked(e) {
     selectFile(this);
 }
 
-function refreshSelectedFiles() {
-    let fileList_ul = active.fileList();
-
-    for (li of fileList_ul.children) {
-        li.style.backgroundColor = '';
-    }
-
-
-    for (file of selectedFiles.tentative) {
-        //console.log(file.li.style.backgroundColor);
-        file.li.style.backgroundColor = 'rgb(35, 219, 220)';
-    }
-}
 
 function hideContextMenu() {
     document.getElementById('contextMenu').style.display = 'none';
 }
+
 
 function showContextMenu(e) {
     let contextMenu = document.getElementById('contextMenu');
@@ -205,6 +218,7 @@ function showContextMenu(e) {
         contextMenu.style.display = 'block';
     }
 }
+
 
 // called by path box near top of page
 // navigates the browser to the path typed in the box at top of page
@@ -235,6 +249,7 @@ function highlightTabs() {
     }
 }
 
+
 // returns number of tabs in a specific tabBar
 function numTabs(tabBar) {
     let numTabs = 0;
@@ -246,23 +261,12 @@ function numTabs(tabBar) {
     return numTabs;
 }
 
-// adds another box that the user can browse with
-function newFileField() {
-    let fields = document.getElementsByClassName('fileFieldParent')[0];
-    let newField = fields.children[0].cloneNode(true);
-    fields.appendChild(newField);
-    let domTraverser = new Active(newField);
-    domTraverser.tabBar().children[0].active = true;
-    domTraverser.tabBar().children[0].path = active.tab().path;
-    updateGuiFiles();
-    adjustFileFieldParentCss();
-}
 
 function adjustFileFieldParentCss() {
     let fields = document.getElementsByClassName('fileFieldParent')[0];
     // using css grid to evenly space the fileFields
     let gridTemplateColumns = '';
-    for (k of fields.children) {
+    for (let k = 0; k < Tracker.panes.length; k++) {
         // 1fr for each child of fileFieldParent
         gridTemplateColumns += ' 1fr';
     }
@@ -272,6 +276,7 @@ function adjustFileFieldParentCss() {
     // activate buttons on new element
     setFileListListeners();
 }
+
 
 function openProgramList(e) {
     let list = document.getElementsByClassName('programList')[0];

@@ -28,11 +28,6 @@ function createWindow () {
 // this is needed because the path changes from development to deployment
 function iconPath() {
     return path.resolve(__dirname, 'gui/img/palm_trees.ico');
-    if (fs.existsSync('gui/img/palm_trees.ico')) {
-        return 'gui/img/palm_trees.ico';
-    } else {
-        return 'resources/app/gui/img/palm_trees';
-    }
 }
 
 function runFunction(functionName) {

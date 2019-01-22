@@ -2,7 +2,7 @@
     "homeFolder": "C:/users/nick/documents",
     "fileTypes": {
         "exe": {
-            "img": "exealt.png"
+            "img": "batalt.png"
         },
         "png": {
             "img": "png.png"
@@ -13,6 +13,9 @@
         "ico": {
             "src": "self",
             "img": "png.png"
+        },
+        "class": {
+            "img": "jar.ico"
         }
     },
     "programs": {

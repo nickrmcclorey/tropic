@@ -1,8 +1,6 @@
 // every function in this file is pure
 // it doesn't rely on, nor does it affect, any global variables
 
-
-
 // parses file extension from full file name (i.e. 'myBook.xlsx' as a parameter returns 'xlsx')
 function findFileExtension(fileName) {
     if (fileName.lastIndexOf('.') == -1) {
@@ -20,7 +18,6 @@ function nameFromLi(li) {
 
 function sizeOf(size) {
 
-
         if (size > 1000000000) { // bigger than a gig
             size /= 1000000000;
             return size.toFixed(2).toString() + ' GB';
@@ -37,6 +34,16 @@ function sizeOf(size) {
             return size.toString() + " Bytes"
         }
 
+}
+
+function preparePathForCmd(path) {
+    let paths = path.trim().replace('/', '\\').split('\\');
+    for (let k in paths) {
+        if (paths[k].includes(' ')) {
+            paths[k] = "\"" + paths[k] + "\"";
+        }
+    }
+    return paths.join('\\');
 }
 
 function printError(error) {

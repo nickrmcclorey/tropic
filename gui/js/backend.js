@@ -38,6 +38,7 @@ function init() {
     loadExternalPrograms();
 }
 
+
 function handleClick(e) {
     for (fileField of $('.fileField')) {
         if (e.path.includes(fileField) && Tracker.activePane.fileField != fileField) {
@@ -108,13 +109,6 @@ function loadDefaultIcons() {
     }
 }
 
-function injectIcons() {
-    for (el of $('.fileEntry')) {
-        let fileName = el.children[1].textContent;
-        let img64 = currentFolder.children[fileName].img64;
-        el.children[0].setAttribute('src', 'data:image/png;base64,' + img64);
-    }
-}
 
 // returns the path to the file that should be used.
 // settings.json can be used to set file icons
@@ -140,11 +134,6 @@ function fileIconPath(folder, fileName) {
     }
 }
 
-function extractIconFromFile(pathToFile, img) {
-    return new Promise(function(resolve, reject) {
-        iconExtractor.getIcon(null, pathToFile);
-    });
-}
 
 function clearSelectedFiles() {
     let fileList_uls = document.getElementsByClassName('fileList');
@@ -158,24 +147,12 @@ function clearSelectedFiles() {
     selectedFiles.tentative = new Array();
 }
 
-// reloads the page with any file changes
-function refresh() {
-
-    for (fileField of document.getElementsByClassName('fileField')) {
-        let domTraverser = new Active(fileField);
-        let newFolder = new Folder(domTraverser.inputBox().value);
-        newFolder.read().then(() => {
-            updateGuiFiles(newFolder, domTraverser.fileList());
-        });
-    }
-}
-
 
 // function to make a new folder or file
 // makeDir should be boolean that is true if creating folder, false if creating file
 function createNewChild(makeDir) {
     console.log(makeDir);
-    let fileList = active.fileList();
+    let fileList = Tracker.activePane.fileList;
     let inputEl = newInputBox();
     inputEl.setAttribute('id', 'newFileInput');
 
@@ -185,27 +162,24 @@ function createNewChild(makeDir) {
             let userInput = inputEl.value;
 
             if (makeDir && !fs.existsSync()) {
-                fs.mkdirSync(userInput);
+                newDirPath = pathModule.join(Tracker.folder().path, userInput);
+                fs.mkdirSync(newDirPath);
             } else {
                 fs.writeFile(userInput, '', () => {});
             }
 
-            refresh();
+            Tracker.refresh();
         }
     }, false);
 
     // if inputEl loses focus, cancel the creation of new file
     inputEl.addEventListener('blur', () => { inputEl.style.display = 'none' }, false);
-
-
-    fileList.prepend(inputEl);
+    fileList.insertBefore(inputEl, fileList.children[1]);
     inputEl.focus();
 }
 
 
-// there's no recovering deleted files.
-//Maybe I could find path to trash but this is different for each OS
-// Maybe I could create my own trash folder
+// uses executable that recycles files
 function deleteFile() {
     let pathToExe = pathModule.join(__dirname, "/programs/recycle/recycle.exe");
     let filesToDelete = selectedFiles.tentativePaths().join(' ');
@@ -215,16 +189,6 @@ function deleteFile() {
     hideContextMenu();
 }
 
-// goes through selectedFiles and grabs just
-// the li elements and returns them in an array
-function selectedFileNames() {
-    let toReturn = new Array();
-    for (let obj of selectedFiles.tentative) {
-        console.log(obj);
-        toReturn.push(obj.li.children[1].textContent);
-    }
-    return toReturn;
-}
 
 // usually results in contextMenu being shown
 function fileRightClicked(e) {
@@ -239,8 +203,6 @@ function fileRightClicked(e) {
 
     console.log(selectedFiles);
 }
-
-
 
 
 // creates input box, waits for user to enter new name or click elsewhere
@@ -298,7 +260,7 @@ function selectFile(li_target) {
     let path = pathModule.join(Tracker.folder().path, nameFromLi(li_target));
     let isDirectory = fs.lstatSync(path).isDirectory()
 
-    selectedFiles.addTentative(path, isDirectory);
+    selectedFiles.addTentative(path, isDirectory, li_target);
 }
 
 
@@ -307,7 +269,6 @@ function pasteSelectedFiles() {
     if (!selectedFiles.pendingAction) {
         return;
     }
-
 
     for (selectedFile of selectedFiles.locked) {
         let fileName = pathModule.basename(selectedFile.path);
@@ -331,48 +292,7 @@ function pasteSelectedFiles() {
         setTimeout(function(){ Tracker.refresh() }, 100);
     } // end of for loop
 
-
-
     pendingAction = null;
-    //refresh();
-}
-
-
-
-
-// called by the tab
-function changeTab(e) {
-    Tracker.activePane.setActiveTab(this);
-    Tracker.refresh();
-}
-
-
-
-function addTab(e) {
-    handleClick(e);
-
-    // navigate to the tabBar with all the tabs in it
-    // create new tab
-    let newTab = $(templates).find('.tab')[0].cloneNode(true);
-    newTab.addEventListener('click', changeTab, false);
-
-    // add tab button must stay on the right
-    let tabBar = $(Tracker.activePane.fileField).find('.tabBar')[0];
-    let path = Tracker.folder().path;
-    Tracker.activePane.tabs.push(new Tab(path, newTab));
-    Tracker.activePane.setActiveTab(newTab);
-    tabBar.insertBefore(newTab, e.target);
-    Tracker.refresh();
-}
-
-
-function eraseTab(e) {
-    handleClick(e);
-    Tracker.removeTab.bind(PaneTabTracker)(e);
-    if (Tracker.activePane.tabs.length <= 0) {
-        let elementToDelete = Tracker.activePane.fileField;
-        elementToDelete.parentNode.removeChild(elementToDelete);
-    }
 }
 
 
@@ -404,7 +324,7 @@ function startProgram(event) {
         filePath = fileOrFolderPath;
     }
 
-    // only open program if it can open that folder
+    // only open program if it can open that folder or file
     if (folderPath && program.canOpenFolder) {
         runExtProgram(program.path, folderPath);
     } else if (filePath && program.canOpenFile) {

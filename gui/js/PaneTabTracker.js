@@ -7,10 +7,9 @@ function PaneTabTracker(fileFieldParent, path) {
 
 
     this.removeTab = (event) => {
-        let tabIndex = Tracker.tabIndex(event.target);
-        console.log(tabIndex);
-        let pane = Tracker.findPane(event.target);
-        let activeTabWasErased = (this.activePane.tabs[tabIndex] == this.activePane.activeTab);
+        let tabIndex = this.tabIndex(event);
+        let pane = Tracker.activePane;
+        let activeTabWasErased = (event.target.parentNode == this.activePane.activeTab.element);
         $(pane.tabs[tabIndex].element).remove();
         pane.tabs.splice(tabIndex, 1);
 
@@ -32,7 +31,6 @@ function PaneTabTracker(fileFieldParent, path) {
     };
 
     this.addPane = function (path) {
-        console.log('one');
         let newPane = new Pane(path);
         this.panes.push(newPane);
         newPane.refresh();
@@ -52,12 +50,13 @@ function PaneTabTracker(fileFieldParent, path) {
         }
     };
 
-    this.tabIndex = function (node) {
+    this.tabIndex = function (e) {
+        let node = e.target;
         if (node.parentNode.classList.contains('tab')) {
             node = node.parentNode;
         }
 
-        let pane = this.findPane(node);
+        let pane = this.activePane;
         for (let k in pane.tabs) {
             if (pane.tabs[k].element == node) {
                 return k;

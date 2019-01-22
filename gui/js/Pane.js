@@ -26,18 +26,20 @@ function Pane(path) {
             this.activeTab = this.tabs[index];
             $(this.activeTab.element).addClass('activeTab');
         } else {
-            console.log('couldn\'t find tab to select')
+            console.error('couldn\'t find tab to select')
         }
     }
 
     this.refresh = function () {
         // this.activeTab.folder = new Folder(this.activeTab.folder.path);
+        this.activeTab.folder = new Folder(this.activeTab.folder.path);
         this.activeTab.folder.read().then(() => {
             updateGuiFiles(this.activeTab.folder, this);
         });
 
     }
 }
+
 
 Pane.prototype.path = function () {
     return this.activeTab.folder.path;
