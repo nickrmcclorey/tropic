@@ -104,8 +104,11 @@ function updateGuiFiles(folderObj, pane) {
     pane.pathBox.value = folderObj.path;
 
     // wipe the list of files because we just changed directories
-    fileList.innerHTML = '<li><span></span><span>Name</span><span>Size</span></li>';
-
+    if (Object.keys(folderObj.children).length == 0) {
+        fileList.innerHTML = "<li><span></span><span>Folder is empty</span></li>";    
+    } else {
+        fileList.innerHTML = '<li><span></span><span>Name</span><span>Size</span></li>';
+    }
 
     // folderObj.children is an associative array indexed by strings corresponding to the files' names
     for (let fileName in folderObj.children) {
@@ -164,7 +167,6 @@ function appendExeIcons(pane) {
         let child = pane.activeTab.folder.children[key];
         if (child.element) {
             child.imgPromise.then((img64Object) => {
-                console.log(child.element.children[0]);
                 child.element.children[0].setAttribute('src', 'data:image/png;base64, ' + img64Object.img64);
             });
         }
@@ -200,21 +202,6 @@ function fileClicked(e) {
     }
 
     selectFile(this);
-}
-
-
-function refreshSelectedFiles() {
-    let fileList_ul = active.fileList();
-
-    for (li of fileList_ul.children) {
-        li.style.backgroundColor = '';
-    }
-
-
-    for (file of selectedFiles.tentative) {
-        //console.log(file.li.style.backgroundColor);
-        file.li.style.backgroundColor = 'rgb(35, 219, 220)';
-    }
 }
 
 
@@ -275,24 +262,11 @@ function numTabs(tabBar) {
 }
 
 
-// adds another box that the user can browse with
-function newFileField() {
-    let fields = document.getElementsByClassName('fileFieldParent')[0];
-    let newField = fields.children[0].cloneNode(true);
-    fields.appendChild(newField);
-    let domTraverser = new Active(newField);
-    domTraverser.tabBar().children[0].active = true;
-    domTraverser.tabBar().children[0].path = active.tab().path;
-    updateGuiFiles();
-    adjustFileFieldParentCss();
-}
-
-
 function adjustFileFieldParentCss() {
     let fields = document.getElementsByClassName('fileFieldParent')[0];
     // using css grid to evenly space the fileFields
     let gridTemplateColumns = '';
-    for (k of fields.children) {
+    for (let k = 0; k < Tracker.panes.length; k++) {
         // 1fr for each child of fileFieldParent
         gridTemplateColumns += ' 1fr';
     }

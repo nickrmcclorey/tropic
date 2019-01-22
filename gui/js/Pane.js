@@ -26,7 +26,7 @@ function Pane(path) {
             this.activeTab = this.tabs[index];
             $(this.activeTab.element).addClass('activeTab');
         } else {
-            console.log('couldn\'t find tab to select')
+            console.error('couldn\'t find tab to select')
         }
     }
 

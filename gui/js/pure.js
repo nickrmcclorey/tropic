@@ -38,7 +38,6 @@ function sizeOf(size) {
 
 function preparePathForCmd(path) {
     let paths = path.trim().replace('/', '\\').split('\\');
-    console.log(paths);
     for (let k in paths) {
         if (paths[k].includes(' ')) {
             paths[k] = "\"" + paths[k] + "\"";

@@ -147,6 +147,10 @@ span {
     cursor: pointer;
 }
 
+.topMenu {
+    white-space: nowrap;
+}
+
 .topMenu > span {
     height:100%;
     padding: 5px;

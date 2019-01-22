@@ -6,8 +6,11 @@ function Tab(path, tabElement) {
 
 // called by the tab
 function changeTab(e) {
-    Tracker.activePane.setActiveTab(this);
-    Tracker.refresh();
+    if (e.target.classList.contains('label')) {
+        handleClick(e);
+        Tracker.activePane.setActiveTab(this);
+        Tracker.refresh();
+    }
 }
 
 
@@ -35,5 +38,7 @@ function eraseTab(e) {
     if (Tracker.activePane.tabs.length <= 0) {
         let elementToDelete = Tracker.activePane.fileField;
         elementToDelete.parentNode.removeChild(elementToDelete);
+        Tracker.activePane = Tracker.panes[0];
     }
+    adjustFileFieldParentCss();
 }

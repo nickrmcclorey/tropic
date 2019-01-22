@@ -110,15 +110,6 @@ function loadDefaultIcons() {
 }
 
 
-function injectIcons() {
-    for (el of $('.fileEntry')) {
-        let fileName = el.children[1].textContent;
-        let img64 = currentFolder.children[fileName].img64;
-        el.children[0].setAttribute('src', 'data:image/png;base64,' + img64);
-    }
-}
-
-
 // returns the path to the file that should be used.
 // settings.json can be used to set file icons
 function fileIconPath(folder, fileName) {
@@ -157,24 +148,11 @@ function clearSelectedFiles() {
 }
 
 
-// reloads the page with any file changes
-function refresh() {
-
-    for (fileField of document.getElementsByClassName('fileField')) {
-        let domTraverser = new Active(fileField);
-        let newFolder = new Folder(domTraverser.inputBox().value);
-        newFolder.read().then(() => {
-            updateGuiFiles(newFolder, domTraverser.fileList());
-        });
-    }
-}
-
-
 // function to make a new folder or file
 // makeDir should be boolean that is true if creating folder, false if creating file
 function createNewChild(makeDir) {
     console.log(makeDir);
-    let fileList = active.fileList();
+    let fileList = Tracker.activePane.fileList;
     let inputEl = newInputBox();
     inputEl.setAttribute('id', 'newFileInput');
 
@@ -184,18 +162,19 @@ function createNewChild(makeDir) {
             let userInput = inputEl.value;
 
             if (makeDir && !fs.existsSync()) {
-                fs.mkdirSync(userInput);
+                newDirPath = pathModule.join(Tracker.folder().path, userInput);
+                fs.mkdirSync(newDirPath);
             } else {
                 fs.writeFile(userInput, '', () => {});
             }
 
-            refresh();
+            Tracker.refresh();
         }
     }, false);
 
     // if inputEl loses focus, cancel the creation of new file
     inputEl.addEventListener('blur', () => { inputEl.style.display = 'none' }, false);
-    fileList.prepend(inputEl);
+    fileList.insertBefore(inputEl, fileList.children[1]);
     inputEl.focus();
 }
 
@@ -291,7 +270,6 @@ function pasteSelectedFiles() {
         return;
     }
 
-
     for (selectedFile of selectedFiles.locked) {
         let fileName = pathModule.basename(selectedFile.path);
 
@@ -314,10 +292,7 @@ function pasteSelectedFiles() {
         setTimeout(function(){ Tracker.refresh() }, 100);
     } // end of for loop
 
-
-
     pendingAction = null;
-    //refresh();
 }
 
 
@@ -349,7 +324,7 @@ function startProgram(event) {
         filePath = fileOrFolderPath;
     }
 
-    // only open program if it can open that folder
+    // only open program if it can open that folder or file
     if (folderPath && program.canOpenFolder) {
         runExtProgram(program.path, folderPath);
     } else if (filePath && program.canOpenFile) {
