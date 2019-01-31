@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/nickrmcclorey/tropic-file-browser#readme",
   "dependencies": {
+    "adm-zip": "^0.4.13",
     "ajv": "^6.5.4",
     "associated-icon": "^1.2.0",
     "file-icon-info": "^1.0.16",

@@ -76,6 +76,14 @@ function setInitListeners() {
         el.addEventListener('click', openProgramList, false);
     }
 
+    for (el of document.getElementsByClassName('unzipButton')) {
+        el.addEventListener('click', unzip, false);
+    }
+
+    for (el of document.getElementsByClassName('zipButton')) {
+        el.addEventListener('click', zip, false);
+    }
+
     for (el of document.getElementsByClassName('newPaneButton')) {
         el.addEventListener('click', () => {
             Tracker.addPane(homePath());
@@ -207,10 +215,15 @@ function fileClicked(e) {
 
 function hideContextMenu() {
     document.getElementById('contextMenu').style.display = 'none';
+    $('.unzipButton').attr('hidden', true);
 }
 
 
 function showContextMenu(e) {
+    if (selectedFiles.tentative[0] && findFileExtension(selectedFiles.tentative[0].path) == 'zip') {
+        $('.unzipButton').removeAttr('hidden');
+    }
+
     let contextMenu = document.getElementById('contextMenu');
     if (e) {
         contextMenu.style.left = e.pageX + 'px';

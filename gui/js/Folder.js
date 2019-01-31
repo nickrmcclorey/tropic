@@ -1,4 +1,3 @@
-
 function Folder(path) {
     if (!path.includes('%')) {
         path = pathModule.resolve(path);
@@ -45,8 +44,8 @@ Folder.prototype.collectFolderContents = function (path) {
             return this.type == 'directory';
         }
 
+        // TODO: i think this if can be removed
         if (file.type == 'exe') {
-            console.log(path + '/' + fileName);
             this.promises.push(extractIconFromFile(path + '/' + fileName));
         }
         // we create an associative array where the filename is the index of it's correpsonding info
@@ -141,15 +140,7 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
             }
 
             // === finding name === \\
-
-            // ignoring whitespace until we reach file name
-            for (let i in line) {
-                if (line[i]) {
-                    // cut off the whitespace before, leaving us the name of the file
-                    line.splice(0, i);
-                    name = line.join(' ');
-                }
-            }
+            name = line.filter(string => string != '').join(' ');
 
             // parsing the file extension, if file
             if (newFile.size != 'folder') {

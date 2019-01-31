@@ -6,6 +6,7 @@ const { ipcRenderer } = require('electron');
 const $ = require('jquery')
 const fii = require('file-icon-info');
 const ncp = require('ncp')
+const AdmZip = require('adm-zip')
 
 // ==== global variables ==== \\
 let currentFolder = {};
@@ -165,7 +166,7 @@ function createNewChild(makeDir) {
                 newDirPath = pathModule.join(Tracker.folder().path, userInput);
                 fs.mkdirSync(newDirPath);
             } else {
-                fs.writeFile(userInput, '', () => {});
+                fs.writeFile(pathModule.join(Tracker.folder().path, userInput), '', () => {});
             }
 
             Tracker.refresh();
@@ -349,4 +350,28 @@ function homePath() {
     } else {
         return settings.homeFolder
     }
+}
+
+function unzip() {
+    let newFilename = pathModule.basename(selectedFiles.tentative[0].path).replace('.zip', '');
+    let newPath = pathModule.join(Tracker.folder().path, newFilename);
+    let zip = new AdmZip(selectedFiles.tentative[0].path);
+    zip.extractAllTo(newPath, false);
+    hideContextMenu();
+    Tracker.activePane.refresh();
+}
+
+function zip() {
+    let zip = new AdmZip();
+    for (let file of selectedFiles.tentative) {
+        if (file.isDirectory) {
+            zip.addLocalFolder(file.path);
+        } else {
+            zip.addLocalFile(file.path);
+        }
+    }
+    let zipName = pathModule.basename(selectedFiles.tentative[0].path) + ".zip"
+    zip.writeZip(pathModule.join(Tracker.folder().path, zipName));
+    hideContextMenu();
+    Tracker.activePane.refresh();
 }
