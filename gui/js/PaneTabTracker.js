@@ -40,7 +40,6 @@ function PaneTabTracker(fileFieldParent, path) {
 
     this.findPane = function (node) {
         for (let pane of this.panes) {
-            console.log($(node).parents())
             for (let parent of $(node).parents()) {
                 if (parent == pane.fileField) {
                     return pane;

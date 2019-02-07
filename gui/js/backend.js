@@ -36,7 +36,8 @@ function init() {
     Tracker = new PaneTabTracker(fileFieldParent, openingPath);
     Tracker.refresh();
 
-    loadExternalPrograms();
+    loadExternalProgramList();
+    loadLocations();
 }
 
 
@@ -59,6 +60,11 @@ function handleClick(e) {
     let programMenu = document.getElementById('programMenu');
     if (!e.path.includes(programMenu) && e.target.getAttribute('class') != 'openWithButton') {
         programMenu.style.display = 'none';
+    }
+
+    let locationMenu = $('.locationList')[0];
+    if (!e.path.includes(locationMenu) && !e.target.classList.contains('locations')) {
+        locationMenu.style.display = 'none';
     }
 
     if (e.target.classList.contains('fileField')) {
@@ -152,7 +158,6 @@ function clearSelectedFiles() {
 // function to make a new folder or file
 // makeDir should be boolean that is true if creating folder, false if creating file
 function createNewChild(makeDir) {
-    console.log(makeDir);
     let fileList = Tracker.activePane.fileList;
     let inputEl = newInputBox();
     inputEl.setAttribute('id', 'newFileInput');
@@ -193,7 +198,6 @@ function deleteFile() {
 
 // usually results in contextMenu being shown
 function fileRightClicked(e) {
-    //console.log(e);
     if (!e.ctrlKey && selectedFiles.tentative.length == 1) {
         clearSelectedFiles();
     }
@@ -201,8 +205,6 @@ function fileRightClicked(e) {
     selectFile(this);
 
     showContextMenu(e);
-
-    console.log(selectedFiles);
 }
 
 
@@ -240,7 +242,6 @@ function renameFiles() {
     // if user clicks elsewhere, replace the input box with old name
     inputBox.addEventListener('blur', () => { li.children[1].innerHTML = pathModule.basename(fileToRename.path) }, false);
 
-
     // showing the input box
     let li = selectedFiles.tentative[0].li;
     li.children[1].innerHTML = '';
@@ -255,7 +256,6 @@ function renameFiles() {
 function selectFile(li_target) {
 
     // get li target as e.target could be child element of path
-
     li_target.style.backgroundColor = 'rgb(35, 219, 220)';
 
     let path = pathModule.join(Tracker.folder().path, nameFromLi(li_target));
@@ -282,7 +282,6 @@ function pasteSelectedFiles() {
             destination = pathModule.join(Tracker.folder().path, fileName);
         }
         
-        console.log(destination);
         // cut or copy depending on previous selection
         if (selectedFiles.pendingAction == 'cut') {
             fs.renameSync(selectedFile.path, destination, printError ); // end of callback and fs.rename
@@ -297,11 +296,10 @@ function pasteSelectedFiles() {
 }
 
 
-function loadExternalPrograms() {
+function loadExternalProgramList() {
     let programEl = document.getElementsByClassName('programList')[0];
     for (program in settings.programs) {
         programEl.innerHTML += '<div>' + program + '</div>';
-
     }
     programEl.addEventListener('click', startProgram, false);
 }
@@ -352,6 +350,7 @@ function homePath() {
     }
 }
 
+
 function unzip() {
     let newFilename = pathModule.basename(selectedFiles.tentative[0].path).replace('.zip', '');
     let newPath = pathModule.join(Tracker.folder().path, newFilename);
@@ -360,6 +359,7 @@ function unzip() {
     hideContextMenu();
     Tracker.activePane.refresh();
 }
+
 
 function zip() {
     let zip = new AdmZip();
@@ -374,4 +374,30 @@ function zip() {
     zip.writeZip(pathModule.join(Tracker.folder().path, zipName));
     hideContextMenu();
     Tracker.activePane.refresh();
+}
+
+
+function loadLocations() {
+    for (let name in settings.locations) {
+        let element = document.createElement('div');
+        element.append(document.createTextNode(name));
+        element.addEventListener('click', () => {
+            Tracker.activePane.cd(settings.locations[name]);
+        }, false);
+        $('.locationList')[0].appendChild(element);
+    }
+}
+
+function addPicToFileIcons() {
+    let file = selectedFiles.tentative[0];
+    if (file.isDirectory) {
+
+    } else {
+
+        let imgPath = pathModule.join(__dirname, 'img', pathModule.basename(file.path));
+        if (!fs.existsSync(imgPath)) {
+            console.log(imgPath);
+            fs.copyFileSync(file.path, imgPath);
+        }
+    }
 }

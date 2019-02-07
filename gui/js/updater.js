@@ -84,10 +84,22 @@ function setInitListeners() {
         el.addEventListener('click', zip, false);
     }
 
+    for (el of document.getElementsByClassName('moreButton')) {
+        el.addEventListener('click', expandContextMenu, false);
+    }
+
+    for (el of document.getElementsByClassName('locations')) {
+        el.addEventListener('click', openLocationList, false);
+    }
+
     for (el of document.getElementsByClassName('newPaneButton')) {
         el.addEventListener('click', () => {
             Tracker.addPane(homePath());
         }, false);
+    }
+
+    for (el of $('.addToFileIcons')) {
+        el.addEventListener('click', addPicToFileIcons, false);
     }
 
     document.addEventListener('click', handleClick, false);
@@ -214,6 +226,8 @@ function fileClicked(e) {
 
 
 function hideContextMenu() {
+    $('.contextMenu').find('.more').hide();
+    $('.contextMenu').find('.moreButton').show();
     document.getElementById('contextMenu').style.display = 'none';
     $('.unzipButton').attr('hidden', true);
 }
@@ -239,7 +253,6 @@ function pathBoxKeyDown(e) {
     let keyPressed = e.which;
     if (keyPressed === 13) { // enter button
         handleClick(e);
-        console.log(e.target.value)
         Tracker.activePane.cd(this.value);
     }
 }
@@ -292,12 +305,28 @@ function adjustFileFieldParentCss() {
 
 
 function openProgramList(e) {
-    let list = document.getElementsByClassName('programList')[0];
-    console.log(list);
-    let location = document.getElementsByClassName('openWithButton')[0].getBoundingClientRect();
+    let list = $('.programList')[0];
+    let openButton = e.target;
+    pinUnderElement(openButton, list);
+}
 
-    list.style.left = location.x + 'px';
-    list.style.top = location.bottom + 'px';
-    list.style.display = 'block';
 
+function openLocationList(e) {
+    let menu = $('.locationList')[0];
+    let openButton = e.target;
+    pinUnderElement(openButton, menu);
+}
+
+
+function pinUnderElement(element, menu) {
+    let location = element.getBoundingClientRect();
+    menu.style.left = location.x + 'px';
+    menu.style.top = location.bottom + 'px';
+    menu.style.display = 'block';
+}
+
+
+function expandContextMenu() {
+    $('.contextMenu').find('.more').show();
+    $('.contextMenu').find('.moreButton').hide();
 }

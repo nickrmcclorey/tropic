@@ -215,7 +215,7 @@ span {
     color: darkred;
 }
 
-.programList {
+.programList, .locationList {
     z-index: 1000;
     position: absolute;
     background-color: rgb(217, 217, 217);
@@ -223,11 +223,11 @@ span {
     width:100px;
 }
 
-.programList div {
+.programList div, .locationList div {
     padding: 5px;
 }
 
-.programList div:hover {
+.programList div:hover, .locationList div:hover {
     background-color: rgb(0, 182, 58);
     cursor: pointer;
 }

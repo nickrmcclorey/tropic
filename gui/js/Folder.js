@@ -43,11 +43,6 @@ Folder.prototype.collectFolderContents = function (path) {
         file.isDirectory = function () {
             return this.type == 'directory';
         }
-
-        // TODO: i think this if can be removed
-        if (file.type == 'exe') {
-            this.promises.push(extractIconFromFile(path + '/' + fileName));
-        }
         // we create an associative array where the filename is the index of it's correpsonding info
         this.children[fileName] = file;
     }
@@ -63,7 +58,7 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
     exec(command, (error, raw) => {
         // catch error calling dir and invalid path
         if (error) {
-            console.log(error);
+            reject();
             return;
         } else if (raw.includes('File Not Found')) {
             console.log('path is invalid');
@@ -165,14 +160,11 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
         } // end of loop
 
         if (resolve) {
-            resolve(Promise.all(this.promises));
+            resolve();
         }
     });
 }
 
-function findFileSize(dirLine) {
-
-}
 
 function extractIcon(path) {
     return new Promise(function(resolve, reject) {

@@ -1,3 +1,4 @@
+
 function Pane(path) {
     this.fileField = $(templates).find('.fileField')[0].cloneNode(true); // html element
     this.pathBox = $(this.fileField).find('.pathBox')[0];
@@ -30,11 +31,18 @@ function Pane(path) {
         }
     }
 
-    this.refresh = function () {
+    this.refresh = function (fallbackPath) {
         // this.activeTab.folder = new Folder(this.activeTab.folder.path);
         this.activeTab.folder = new Folder(this.activeTab.folder.path);
         this.activeTab.folder.read().then(() => {
             updateGuiFiles(this.activeTab.folder, this);
+        }).catch(() => {
+            if (fallbackPath) {
+                this.activeTab.folder = new Folder(fallbackPath);
+                this.activeTab.folder.read().then(() => {
+                    updateGuiFiles(this.activeTab.folder, this);
+                });
+            }
         });
 
     }
@@ -47,6 +55,7 @@ Pane.prototype.path = function () {
 
 
 Pane.prototype.cd = function (path) {
+    let oldPath = this.activeTab.folder.path;
     this.activeTab.folder = new Folder(path);
-    this.refresh();
+    this.refresh(oldPath);
 };

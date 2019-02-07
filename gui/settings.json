@@ -1,5 +1,5 @@
 {
-    "homeFolder": "C:/users/nick/documents",
+    "homeFolder": "C:/users/nick/batch_files",
     "fileTypes": {
         "exe": {
             "img": "batalt.png"
@@ -16,6 +16,9 @@
         },
         "class": {
             "img": "jar.ico"
+        },
+        "blend": {
+            "img": "obj.png"
         }
     },
     "programs": {
@@ -34,5 +37,10 @@
             "canOpenFolder": false,
             "canOpenFile": true
         }
+    },
+    "locations": {
+        "Documents": "C:\\users\\nick\\documents",
+        "Dev": "C:\\dev",
+        "Classes": "C:\\users\\nick\\documents\\college_classes"
     }
 }
