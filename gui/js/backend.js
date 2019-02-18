@@ -383,6 +383,7 @@ function loadLocations() {
         element.append(document.createTextNode(name));
         element.addEventListener('click', () => {
             Tracker.activePane.cd(settings.locations[name]);
+            $('.locationList').hide();
         }, false);
         $('.locationList')[0].appendChild(element);
     }
@@ -390,9 +391,7 @@ function loadLocations() {
 
 function addPicToFileIcons() {
     let file = selectedFiles.tentative[0];
-    if (file.isDirectory) {
-
-    } else {
+    if (!file.isDirectory) {
 
         let imgPath = pathModule.join(__dirname, 'img', pathModule.basename(file.path));
         if (!fs.existsSync(imgPath)) {

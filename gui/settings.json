@@ -41,6 +41,7 @@
     "locations": {
         "Documents": "C:\\users\\nick\\documents",
         "Dev": "C:\\dev",
-        "Classes": "C:\\users\\nick\\documents\\college_classes"
+        "Classes": "C:\\users\\nick\\documents\\college_classes",
+        "batch_files": "C:\\users\\nick\\batch_files"
     }
 }

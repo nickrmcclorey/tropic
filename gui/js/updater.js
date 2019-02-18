@@ -1,114 +1,5 @@
 // Nicholas McClorey - 7/30/2018
 
-
-function setFileListListeners() {
-
-    // button to go to parent directory
-    for (el of $('.backButton')) {
-        el.addEventListener('click', goToParentDirectory, false);
-    }
-    // user entered path into path box
-    for (el of $('.pathBox')) {
-        el.addEventListener('keypress', pathBoxKeyDown, false);
-    }
-
-    for (pane of $('fileField')) {
-        pane.addEventListener('click', (e) => {
-            if (e.target.getAttribute('class') == 'fileField') {
-                clearSelectedFiles();
-            }
-        }, false);
-    }
-
-    for (let filebar of $('.fileEntry')) {
-        // open file on double click
-        filebar.addEventListener('dblclick', file_dbl_clicked, false);
-        // file selected
-        filebar.addEventListener('click', fileClicked, false);
-        // file right clicked, open contextMenu
-        filebar.addEventListener('contextmenu', fileRightClicked, false);
-    }
-
-    for (el of document.getElementsByClassName('addTabButton')) {
-        el.addEventListener('click', addTab, false);
-    }
-
-    for (el of document.getElementsByClassName('xButton')) {
-        el.addEventListener('click', eraseTab, false);
-    }
-
-    for (el of document.getElementsByClassName('tab')) {
-        el.addEventListener('click', changeTab, false);
-    }
-}
-
-
-function setInitListeners() {
-    // hide right click menu whne user clicks elsewhere
-    // document.addEventListener('click', handleClick, false);
-
-    // rename buttons
-    for (el of document.getElementsByClassName('renameButton')) {
-        el.addEventListener('click', renameFiles, false);
-    }
-    // delete button
-    for (el of document.getElementsByClassName('deleteButton')) {
-        el.addEventListener('click', deleteFile,false);
-    }
-    // copy button
-    for (el of document.getElementsByClassName('copyButton')) {
-        el.addEventListener('click', () => { selectedFiles.lockSelection('copy'); hideContextMenu();},false);
-    }
-    // cut button
-    for (el of document.getElementsByClassName('cutButton')) {
-        el.addEventListener('click', () => { selectedFiles.lockSelection('cut'); hideContextMenu();},false);
-    }
-    // paste buttons
-    for (el of document.getElementsByClassName('pasteButton')) {
-        el.addEventListener('click', pasteSelectedFiles, false);
-    }
-    // open buttons
-    for (el of document.getElementsByClassName('openButton')) {
-        el.addEventListener('click', () => {openFile(pathModule.join(Tracker.folder().path, nameFromLi(selectedFiles.tentative[0].li)))},false);
-    }
-
-    for (el of document.getElementsByClassName('openWithButton')) {
-        el.addEventListener('click', openProgramList, false);
-    }
-
-    for (el of document.getElementsByClassName('unzipButton')) {
-        el.addEventListener('click', unzip, false);
-    }
-
-    for (el of document.getElementsByClassName('zipButton')) {
-        el.addEventListener('click', zip, false);
-    }
-
-    for (el of document.getElementsByClassName('moreButton')) {
-        el.addEventListener('click', expandContextMenu, false);
-    }
-
-    for (el of document.getElementsByClassName('locations')) {
-        el.addEventListener('click', openLocationList, false);
-    }
-
-    for (el of document.getElementsByClassName('newPaneButton')) {
-        el.addEventListener('click', () => {
-            Tracker.addPane(homePath());
-        }, false);
-    }
-
-    for (el of $('.addToFileIcons')) {
-        el.addEventListener('click', addPicToFileIcons, false);
-    }
-
-    document.addEventListener('click', handleClick, false);
-
-    document.getElementsByClassName('newDirButton')[0].addEventListener('click', () => {createNewChild(true)})
-    document.getElementsByClassName('newFileButton')[0].addEventListener('click', () => {createNewChild(false)}, false);
-}
-
-
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(folderObj, pane) {
     // if pane is not passed in, we stick with the active pane (selectedFileList)
@@ -329,4 +220,19 @@ function pinUnderElement(element, menu) {
 function expandContextMenu() {
     $('.contextMenu').find('.more').show();
     $('.contextMenu').find('.moreButton').hide();
+}
+
+
+function addFolderToLocations() {
+    console.log(selectedFiles.tentative);
+    let fileSelected = selectedFiles.tentative[0];
+    let newBookmarkPath = (fileSelected.isDirectory) ? fileSelected.path : Tracker.folder().path;
+    let label = pathModule.basename(newBookmarkPath);
+
+    settings.locations[label] = newBookmarkPath;
+    saveSettingsToFile();
+
+    $('.locationList')[0].innerHTML = '';
+    loadLocations();
+    hideContextMenu();
 }
