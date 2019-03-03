@@ -1,9 +1,6 @@
 {
     "homeFolder": "C:/users/nick/batch_files",
     "fileTypes": {
-        "exe": {
-            "img": "batalt.png"
-        },
         "png": {
             "img": "png.png"
         },
@@ -23,7 +20,7 @@
     },
     "programs": {
         "CMD": {
-            "path": "C:\\Users\\Nick\\appdata\\local\\programs\\cmder\\cmder.exe",
+            "path": "cmder.exe",
             "canOpenFolder": true,
             "canOpenFile": false
         },
@@ -41,7 +38,6 @@
     "locations": {
         "Documents": "C:\\users\\nick\\documents",
         "Dev": "C:\\dev",
-        "Classes": "C:\\users\\nick\\documents\\college_classes",
-        "batch_files": "C:\\users\\nick\\batch_files"
+        "Classes": "C:\\users\\nick\\documents\\college_classes"
     }
 }

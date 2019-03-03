@@ -205,15 +205,16 @@ function openProgramList(e) {
 function openLocationList(e) {
     let menu = $('.locationList')[0];
     let openButton = e.target;
-    pinUnderElement(openButton, menu);
+    pinUnderElement(openButton, menu, 'grid');
 }
 
 
-function pinUnderElement(element, menu) {
+function pinUnderElement(element, menu, newDisplay='block') {
     let location = element.getBoundingClientRect();
     menu.style.left = location.x + 'px';
     menu.style.top = location.bottom + 'px';
-    menu.style.display = 'block';
+    $(element).removeAttr('hidden');
+    menu.style.display = newDisplay;
 }
 
 

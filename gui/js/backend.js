@@ -2,11 +2,13 @@ const {exec} = require('child_process');
 const os = require('os');
 const fs = require('fs');
 const pathModule = require('path');
+const args = require('electron').remote.getGlobal('args');
 const { ipcRenderer } = require('electron');
 const $ = require('jquery')
 const fii = require('file-icon-info');
 const ncp = require('ncp')
-const AdmZip = require('adm-zip')
+const AdmZip = require('adm-zip');
+const sudo = require('sudo-prompt');
 
 // ==== global variables ==== \\
 let currentFolder = {};
@@ -20,6 +22,7 @@ let settingsInputBox = null;
 
 
 function init() {
+
     setInitListeners();
     templates = $('#templates').remove()[0];
     templates.removeAttribute('hidden');
@@ -169,7 +172,15 @@ function createNewChild(makeDir) {
 
             if (makeDir && !fs.existsSync()) {
                 newDirPath = pathModule.join(Tracker.folder().path, userInput);
-                fs.mkdirSync(newDirPath);
+                try {
+                    fs.mkdirSync(newDirPath);
+                } catch (exception) {
+                    let options = {
+                        name: 'Electron',
+                        icns: '/Applications/Electron.app/Contents/Resources/Electron.icns', // (optional)
+                    };
+                    sudo.exec('mkdir "' + newDirPath + '"');
+                }
             } else {
                 fs.writeFile(pathModule.join(Tracker.folder().path, userInput), '', () => {});
             }
@@ -191,6 +202,8 @@ function deleteFile() {
     let filesToDelete = selectedFiles.tentativePaths().join(' ');
     exec(pathToExe + ' ' + filesToDelete, () => {
         Tracker.refresh();
+    }, (error) => {
+        console.log(error)
     });
     hideContextMenu();
 }
@@ -386,6 +399,16 @@ function loadLocations() {
             $('.locationList').hide();
         }, false);
         $('.locationList')[0].appendChild(element);
+
+        let XButton = document.createElement('div');
+        XButton.appendChild(document.createTextNode('x'));
+        XButton.addEventListener('click', (e) => {
+            settings.locations[name] = undefined;
+            saveSettingsToFile();
+            $(e.target.previousSibling).remove();
+            $(e.target).remove();
+        }, false);
+        $('.locationList')[0].appendChild(XButton);
     }
 }
 

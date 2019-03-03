@@ -19,31 +19,36 @@ function showSettings() {
         extension = settings.fileTypes[extensionName];
 
         let newRow = document.createElement('li');
+        newRow.innerHTML += '<img src="./img/' + extension.img + '"/>'
         newRow.innerHTML += '<label class="fileType">' + extensionName + '</label>'
-        newRow.innerHTML += '<input type="text" class="fileIconName" size="13" value='+extension.img+'>'
+        newRow.innerHTML += '<input type="text" class="fileIconName" size="13" value='+ extension.img + '>'
         newRow.innerHTML += '<button class="iconButtons">select</button>'
+        newRow.innerHTML += '<button class="removeEntry">X</button>';
 
         ul.appendChild(newRow);
     }
 
+    
     // append buttons
     let appendExtensionButton = document.createElement('button')
     appendExtensionButton.innerHTML = 'new file extension'
     appendExtensionButton.addEventListener('click', appendNewFileExtension)
-
+    
     let applyButton = document.createElement('button')
     applyButton.innerHTML = 'apply'
+    applyButton.setAttribute('disabled', true);
+    applyButton.id = 'applyButton';
     applyButton.addEventListener('click', saveIconSettings, false);
-
+    
     let buttonContainer = document.createElement('div')
     buttonContainer.setAttribute('id', 'buttonContainer')
     buttonContainer.appendChild(appendExtensionButton)
     buttonContainer.appendChild(applyButton)
-
+    
     settings_el.innerHTML = '';
     settings_el.appendChild(ul);
     settings_el.appendChild(buttonContainer)
-
+    
     setSettingsListeners();
 }
 
@@ -89,12 +94,15 @@ function selectIcon(e) {
     }
 
     // set value of picture in input box
-    settingsInputBox.value = pathModule.basename(e.target.src)
+    settingsInputBox.value = pathModule.basename(e.target.src);
+    let picture = settingsInputBox.previousSibling.previousSibling;
+    picture.setAttribute('src', e.target.src);
     settingsInputBox = null;
 
     // hide the icon selecor
     let elToDelete = document.getElementsByClassName('iconSelector')[0]
-    elToDelete.parentNode.removeChild(elToDelete)
+    elToDelete.parentNode.removeChild(elToDelete);
+    $('#applyButton').removeAttr('disabled');
 
 }
 
@@ -135,8 +143,19 @@ function loadIconSelector() {
 }
 
 
-function setSettingsListeners() {
-    $('.iconButtons').on('click', setSelectedInputBox)
+function setSettingsListeners(e) {
+    $('.iconButtons').on('click', setSelectedInputBox);
+    $('.fileIconName').on('keydown', () => {$('#applyButton').removeAttr('disabled');});
+
+    for (el of $('.removeEntry')) {
+        el.addEventListener('click', (e) => {
+            let fileType = $(e.target.parentNode).find('.fileType')[0].textContent;
+            console.log(fileType)
+            settings.fileTypes[fileType] = undefined;
+            $(e.target.parentNode).remove();
+            $('#applyButton').removeAttr('disabled');
+        }, false);
+    }
 }
 
 

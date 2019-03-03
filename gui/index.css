@@ -219,8 +219,12 @@ span {
     z-index: 1000;
     position: absolute;
     background-color: rgb(217, 217, 217);
-    display: none;
     width:100px;
+}
+
+.locationList {
+    width: 120px;
+    grid-template-columns: 1fr 20px;
 }
 
 .programList div, .locationList div {
@@ -236,7 +240,7 @@ span {
     background-color: white;
     padding: 10px;
     display:none;
-    grid-template-columns: 270px 3fr;
+    grid-template-columns: 300px 3fr;
     grid-gap: 10px;
 }
 
