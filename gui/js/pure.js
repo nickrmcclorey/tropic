@@ -2,7 +2,7 @@
 // it doesn't rely on, nor does it affect, any global variables
 
 // parses file extension from full file name (i.e. 'myBook.xlsx' as a parameter returns 'xlsx')
-function findFileExtension(fileName) {
+function fileExtension(fileName) {
     if (fileName.lastIndexOf('.') == -1) {
         return null;
     } else {
@@ -50,4 +50,8 @@ function printError(error) {
     if (error) {
         console.log(error);
     }
+}
+
+function isNullOrWhitespace(input) {
+    return !(input != null && input.trim().length > 0);
 }

@@ -81,6 +81,21 @@
             <p style="grid-column:1/3">settings</p>
         </section>
 
+        <section hidden id="programSettings">
+            <table id="programSettingTable">
+                <tr style="width:30px">
+                    <th>Label</th>
+                    <th>Opens File</th>
+                    <th>Opens Folder</th>
+                    <th>Path</th>
+                </tr>
+            </table>
+            <div class="buttonSection">
+                <button class="newProgramEntry">New Entry</button>
+                <button class="Apply">Apply</button>
+            </div>
+        </section>
+
     </body>
 
     <script src="js/PaneTabTracker.js"></script>
@@ -93,6 +108,7 @@
     <script src="js/EventListeners.js"></script>
     <script src="js/updater.js"></script>
     <script src="js/iconSettings.js"></script>
+    <script src="js/programSettings.js"></script>
     <script> init(); </script>
     <link rel="stylesheet" type="text/css" href="index.css"/>
 

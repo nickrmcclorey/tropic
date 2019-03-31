@@ -14,7 +14,7 @@ const sudo = require('sudo-prompt');
 let currentFolder = {};
 let Tracker = {};
 let templates = null;
-const settings = require('./settings.json');
+let settings = require('./settings.json');
 let selectedFiles = new SelectedFiles();
 let defaultIcons = new Object();
 let settingsInputBox = null;
@@ -61,7 +61,7 @@ function handleClick(e) {
     }
 
     let programMenu = document.getElementById('programMenu');
-    if (!e.path.includes(programMenu) && e.target.getAttribute('class') != 'openWithButton') {
+    if (e.target.getAttribute('class') != 'openWithButton') {
         programMenu.style.display = 'none';
     }
 
@@ -125,7 +125,7 @@ function loadDefaultIcons() {
 function fileIconPath(folder, fileName) {
     let fileObj = folder.children[fileName];
     let iconFileName = defaultIcons[fileObj.type];
-    let iconSettings = settings.fileTypes[findFileExtension(fileName)];
+    let iconSettings = settings.fileTypes[fileExtension(fileName)];
     if (fileObj.img64) {
         return 'data:img/png; base64 ' + fileObj.img64;
     }
@@ -300,7 +300,6 @@ function pasteSelectedFiles() {
             fs.renameSync(selectedFile.path, destination, printError ); // end of callback and fs.rename
         } else if (selectedFiles.pendingAction == 'copy') {
             ncp(selectedFile.path, destination, printError);
-            // fs.copyFileSync(selectedFile.path, pathModule.join(Tracker.folder().path, fileName), printError);
         }
         setTimeout(function(){ Tracker.refresh() }, 100);
     } // end of for loop
@@ -342,15 +341,16 @@ function startProgram(event) {
     } else if (filePath && program.canOpenFile) {
         runExtProgram(program.path, filePath);
     }
+
+    
 }
 
 
 function runExtProgram(programPath, fileOrFolderPath) {
     if (fileOrFolderPath) {
-        console.log(' "' + programPath + '" "' + fileOrFolderPath + '"');
         exec(' "' + programPath + '" "' + fileOrFolderPath + '"', null);
     } else {
-        exec('program.path');
+        exec(program.path);
     }
 }
 
@@ -418,7 +418,6 @@ function addPicToFileIcons() {
 
         let imgPath = pathModule.join(__dirname, 'img', pathModule.basename(file.path));
         if (!fs.existsSync(imgPath)) {
-            console.log(imgPath);
             fs.copyFileSync(file.path, imgPath);
         }
     }

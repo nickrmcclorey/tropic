@@ -54,7 +54,7 @@ function updateGuiFiles(folderObj, pane) {
         fileList.appendChild(file_li);
 
         // provide pointer to element so we can append the correct icon later on
-        if (folderObj.children[fileName].type == 'exe') {
+        if (folderObj.children[fileName].imgPromise) {
             folderObj.children[fileName].element = file_li;
         }
 
@@ -125,7 +125,7 @@ function hideContextMenu() {
 
 
 function showContextMenu(e) {
-    if (selectedFiles.tentative[0] && findFileExtension(selectedFiles.tentative[0].path) == 'zip') {
+    if (selectedFiles.tentative[0] && fileExtension(selectedFiles.tentative[0].path) == 'zip') {
         $('.unzipButton').removeAttr('hidden');
     }
 

@@ -4,7 +4,8 @@ function Folder(path) {
     }
 
     this.children = new Object();
-    this.path = path
+    this.path = path;
+    this.numExtractedIcons = 0;
     this.promises = new Array();
 }
 
@@ -38,7 +39,7 @@ Folder.prototype.collectFolderContents = function (path) {
 
         file.lastModified = fsInfo.mtime;
 
-        file.type = (fsInfo.isDirectory()) ? 'directory' : findFileExtension(fileName);
+        file.type = (fsInfo.isDirectory()) ? 'directory' : fileExtension(fileName);
 
         file.isDirectory = function () {
             return this.type == 'directory';
@@ -61,7 +62,6 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
             reject();
             return;
         } else if (raw.includes('File Not Found')) {
-            console.log('path is invalid');
             return;
         }
 
@@ -139,7 +139,7 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
 
             // parsing the file extension, if file
             if (newFile.size != 'folder') {
-                newFile.type = findFileExtension(name);
+                newFile.type = fileExtension(name);
             } else {
                 newFile.type = 'directory';
             }
@@ -154,8 +154,10 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
             this.children[name] = newFile;
             fileId++;
 
-            if (this.children[name].type == 'exe') {
+            fileSettings = settings.fileTypes[fileExtension(name)];
+            if (newFile.type != 'directory' && fileSettings && fileSettings.src == 'extract') {
                 this.children[name].imgPromise = extractIcon(pathModule.join(this.path, name));
+                this.numExtractedIcons++;
             }
         } // end of loop
 

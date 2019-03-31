@@ -1,5 +1,5 @@
 {
-    "homeFolder": "C:/users/nick/batch_files",
+    "homeFolder": "C:/users/nick/documents",
     "fileTypes": {
         "png": {
             "img": "png.png"
@@ -16,11 +16,15 @@
         },
         "blend": {
             "img": "obj.png"
+        },
+        "exe": {
+            "src": "extract",
+            "img": "bat.png"
         }
     },
     "programs": {
         "CMD": {
-            "path": "cmder.exe",
+            "path": "C:\\Users\\Nick\\AppData\\Local\\Programs\\cmder\\Cmder.exe",
             "canOpenFolder": true,
             "canOpenFile": false
         },

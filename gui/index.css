@@ -291,3 +291,12 @@ label {
 #buttonContainer button {
     margin: 7px;
 }
+
+.buttonSection {
+    padding-top: 20px;
+    padding-left: 3px;
+}
+
+#programSettingTable .label {
+    width: 60px;
+}

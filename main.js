@@ -55,6 +55,7 @@ const template = [
         submenu: [
             { label: "file icons", click: () => { runFunction('showSettings') } },
             { label: "advanced", click: () => { exec('"' + __dirname + '\\gui\\settings.json"') } },
+            { label: "programs", click: () => { runFunction('showProgramSettings') } },
             { label: "exit settings", click: () => { runFunction('hideSettings') } }
         ]
     },
