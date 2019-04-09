@@ -110,6 +110,10 @@ function setInitListeners() {
         el.addEventListener('click', addFolderToLocations, false);
     }
 
+    for (el of $('.useAsHome')) {
+        el.addEventListener('click', useAsHome, false);
+    }
+
     document.addEventListener('click', handleClick, false);
 
     document.getElementsByClassName('newDirButton')[0].addEventListener('click', () => {createNewChild(true)})

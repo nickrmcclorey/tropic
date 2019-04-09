@@ -83,6 +83,7 @@ function hideSettings() {
     document.getElementById('fileFieldParent').style.display = 'grid';
     let settings = document.getElementById('settings');
     settings.style.display = 'none';
+    $('#programSettings').hide();
 }
 
 

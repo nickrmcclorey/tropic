@@ -1,4 +1,5 @@
 function showProgramSettings() {
+    hideSettings();
     document.getElementById('fileFieldParent').style.display = 'none';
     $('#programSettings').show();
     

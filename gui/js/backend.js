@@ -422,3 +422,13 @@ function addPicToFileIcons() {
         }
     }
 }
+
+function useAsHome() {
+    if (selectedFiles.tentative[0] && selectedFiles.tentative[0].isDirectory) {
+        settings.homeFolder = selectedFiles.tentative[0].path;
+    } else if (selectedFiles.tenative[0] == undefined) {
+        settings.homeFolder = Tracker.currentFolder().path
+    }
+    saveSettingsToFile();
+    hideContextMenu();
+}
