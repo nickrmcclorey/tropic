@@ -192,6 +192,7 @@ function adjustFileFieldParentCss() {
 
     // activate buttons on new element
     setFileListListeners();
+    updatePaneStyling();
 }
 
 
@@ -236,4 +237,11 @@ function addFolderToLocations() {
     $('.locationList')[0].innerHTML = '';
     loadLocations();
     hideContextMenu();
+}
+
+function updatePaneStyling() {
+    for (let pane of Tracker.panes) {
+        pane.fileField.classList.remove('activeField');
+    }
+    Tracker.activePane.fileField.classList.add('activeField');
 }

@@ -115,8 +115,41 @@ function setInitListeners() {
     }
 
     document.addEventListener('click', handleClick, false);
+    document.addEventListener('keydown', handleKeypress, false);
 
     document.getElementsByClassName('newDirButton')[0].addEventListener('click', () => {createNewChild(true)})
     document.getElementsByClassName('newFileButton')[0].addEventListener('click', () => {createNewChild(false)}, false);
 }
 
+function handleKeypress(e) {
+    let keyPressed = e.key.toUpperCase();
+
+    if (e.ctrlKey) {
+        if (keyPressed == 'C') {
+            selectedFiles.lockSelection('copy');
+        } else if (keyPressed == 'X') {
+            selectedFiles.lockSelection('cut');
+        } else if (keyPressed == 'V') {
+            pasteSelectedFiles();
+        } else if (keyPressed == 'TAB' && Tracker.activePane.tabs.length > 1) {
+            let index = Tracker.activePane.tabs.indexOf(Tracker.activePane.activeTab);
+            // set index to the next element, looping to 0 if necessary
+            index = (Tracker.activePane.tabs.length - 1 == index) ? 0 : index + 1;
+            Tracker.activePane.setActiveTab(Tracker.activePane.tabs[index].element);
+            Tracker.refresh();
+        } else if ((keyPressed == 'Q' && Tracker.panes.length > 1) || keyPressed == 'TAB') {
+            let index = Tracker.panes.indexOf(Tracker.activePane);
+            // set index to the next element, looping to 0 if necessary
+            index = (Tracker.panes.length - 1 == index) ? 0 : index + 1;
+            Tracker.activePane = Tracker.panes[index];
+            updatePaneStyling();
+        } else if (keyPressed == 'T' && !e.shiftKey) {
+            $(Tracker.activePane.fileField).find('.addTabButton').click();
+        } else if (keyPressed == 'T' && e.shiftKey) {
+            Tracker.addPane(Tracker.folder().path);
+        } else if (keyPressed == 'W' && !e.shiftKey) {
+            e.preventDefault();
+            Tracker.activePane.activeTab.element.children[1].click();
+        }
+    }
+}

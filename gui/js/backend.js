@@ -50,6 +50,7 @@ function handleClick(e) {
             for (pane of Tracker.panes) {
                 if (pane.fileField == fileField) {
                     Tracker.activePane = pane;
+                    updatePaneStyling();
                 }
             }
         }
