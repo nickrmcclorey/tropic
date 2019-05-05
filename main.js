@@ -1,7 +1,6 @@
 const path = require('path');
 const { app, BrowserWindow } = require('electron');
 const Menu = require('electron').Menu;
-const fs = require('fs');
 const { exec } = require('child_process');
 
 

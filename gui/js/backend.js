@@ -349,6 +349,7 @@ function startProgram(event) {
 
 function runExtProgram(programPath, fileOrFolderPath) {
     if (fileOrFolderPath) {
+        console.log(' "' + programPath + '" "' + fileOrFolderPath + '"')
         exec(' "' + programPath + '" "' + fileOrFolderPath + '"', null);
     } else {
         exec(program.path);

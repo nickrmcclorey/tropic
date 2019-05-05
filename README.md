@@ -17,10 +17,10 @@ npm start
 ```
 
 ## Future Improvments
-- startup time
 - extracting icons from exe files more efficiently
 - keyboard shortcuts
 - drag/drop files (compatable with other file browsers?)
 - perform terminal commands
 - view file info and properties
 - tool to find file or folder
+- deployment system and first time startup

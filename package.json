@@ -1,12 +1,12 @@
 {
   "name": "tropic",
-  "version": "1.4.2",
+  "version": "1.4.4",
   "description": "A file browser",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build": "rmdir /q /s tropic-win32-x64 & electron-packager . --icon=./gui/img/palm_trees.ico"
+    "build": "rmdir /q /s tropic-win32-x64 & electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js"
   },
   "repository": {
     "type": "git",
@@ -24,13 +24,12 @@
     "associated-icon": "^1.2.0",
     "file-icon-info": "^1.1.1",
     "hoek": ">=5.0.3",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.1",
     "ncp": "^2.0.0",
-    "node-powershell": "^3.3.1",
     "sudo-prompt": "^8.2.5"
   },
   "devDependencies": {
     "electron": "^2.0.18",
-    "electron-builder": "^20.39.0"
+    "electron-builder": "^20.40.2"
   }
 }
