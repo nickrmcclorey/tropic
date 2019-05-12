@@ -25,10 +25,7 @@ namespace tropic_updater
             DownloadFiles(filesToUpdate);
             Console.WriteLine("Installing files");
             InstallFiles(filesToUpdate);
-            if (Directory.Exists("./web_downloads"))
-            {
-                Directory.Delete("./web_downloads", true);
-            }
+            DeleteDownloadsFolder();
             Console.WriteLine("downloaded and installed " + filesToUpdate.Count + " file(s)");
         }
 
@@ -114,6 +111,22 @@ namespace tropic_updater
                 using (var stream = File.OpenRead(filePath))
                 {
                     return Convert.ToBase64String(sha.ComputeHash(stream));
+                }
+            }
+        }
+
+        private static void DeleteDownloadsFolder()
+        {
+            if (Directory.Exists("./web_downloads"))
+            {
+                try
+                {
+                    Directory.Delete("./web_downloads", true);
+                }
+                catch (System.IO.IOException)
+                {
+                    Console.WriteLine("failed to delete web_downloads directory. Install still succeeded.");
+                    return;
                 }
             }
         }

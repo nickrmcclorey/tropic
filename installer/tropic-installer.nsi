@@ -4,12 +4,12 @@ Name "Tropic-Installer"
 ; The file to write
 OutFile "tropicInstaller.exe"
 
-; The default installation directory
-InstallDir $PROGRAMFILES\tropic
+; install in C:\program files
+InstallDir $PROGRAMFILES64\tropic
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
-InstallDirRegKey HKLM "Software\NSIS_Example2" "Install_Dir"
+InstallDirRegKey HKLM "Software\TROPIC" "Install_Dir"
 
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
@@ -41,13 +41,13 @@ Section "Tropic-Installer (required)"
   File ".\Updater.exe"
   
   ; Write the installation path into the registry
-  WriteRegStr HKLM SOFTWARE\NSIS_Example2 "Install_Dir" "$INSTDIR"
+  WriteRegStr HKLM SOFTWARE\TROPIC "Install_Dir" "$INSTDIR"
   
   ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example2" "DisplayName" "Tropic File Browser"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example2" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example2" "NoModify" 1
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example2" "NoRepair" 1
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TROPIC" "DisplayName" "Tropic File Browser"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TROPIC" "UninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TROPIC" "NoModify" 1
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TROPIC" "NoRepair" 1
   WriteUninstaller "$INSTDIR\uninstall.exe"
   
 SectionEnd
@@ -56,8 +56,8 @@ SectionEnd
 Section "Uninstall"
   
   ; Remove registry keys
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example2"
-  DeleteRegKey HKLM SOFTWARE\NSIS_Example2
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TROPIC"
+  DeleteRegKey HKLM SOFTWARE\TROPIC
 
   ; Remove files and uninstaller
   Delete "$INSTDIR\tropic-win32-x64\*"
@@ -67,5 +67,6 @@ Section "Uninstall"
   Delete "$INSTDIR\uninstall.exe"
   RMDir /r "$INSTDIR\tropic-win32-x64"
   RMDir /r "$INSTDIR\web_downloads"
+  RMDir "$PROGRAMFILES64\tropic"
 
 SectionEnd
