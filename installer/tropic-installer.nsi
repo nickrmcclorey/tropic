@@ -37,7 +37,6 @@ Section "Tropic-Installer (required)"
   
   ; Put file there
   File /r ".\tropic-win32-x64"
-  File ".\installed_version.txt" 
   File ".\Newtonsoft.Json.dll"
   File ".\Updater.exe"
   
@@ -64,7 +63,6 @@ Section "Uninstall"
   Delete "$INSTDIR\tropic-win32-x64\*"
   Delete "$INSTDIR\web_downloads\*"
   Delete "$INSTDIR\Updater.exe"
-  Delete "$INSTDIR\installed_version.txt"
   Delete "$INSTDIR\Newtonsoft.Json.dll"
   Delete "$INSTDIR\uninstall.exe"
   RMDir /r "$INSTDIR\tropic-win32-x64"

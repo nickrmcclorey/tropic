@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "prebuild": "rm -r -f ./installer/tropic-win32-x64",
-    "build": "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --out=installer",
+    "build": "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --ignore=/Newtonsoft.Json.dll --ignore=updater.exe --ignore=hasher.exe --out=installer",
     "build-installer": "makensis ./installer/tropic-installer.nsi"
   },
   "repository": {
