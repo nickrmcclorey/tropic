@@ -4,9 +4,10 @@
   "description": "A file browser",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "build": "rmdir /q /s tropic-win32-x64 & electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js"
+    "prebuild": "rm -r -f ./installer/tropic-win32-x64",
+    "build": "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --out=installer",
+    "build-installer": "makensis ./installer/tropic-installer.nsi"
   },
   "repository": {
     "type": "git",
