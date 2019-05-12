@@ -3,4 +3,4 @@ test.js
 *.dll
 *.exe
 tropic-win32-x64
-gui/img
+installer/web_downloads

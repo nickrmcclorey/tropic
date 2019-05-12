@@ -2,6 +2,7 @@
 using System.Net;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
@@ -10,30 +11,24 @@ namespace tropic_updater
 {
     class Updater
     {
-        private const string remoteUrl = "https://raw.githubusercontent.com/nickrmcclorey/tropic-bin/master/";
-        private static string latestVersion = "";
+        private const string remoteUrl = "https://raw.githubusercontent.com/nickrmcclorey/tropic/gh-pages/";
 
         static void Main(string[] args)
         {
-            latestVersion = GetRequest("latest_version.txt");
-            string currentVersion = File.ReadAllText("installed_version.txt");
-            if (latestVersion == currentVersion)
-            {
-                Console.WriteLine("Latest version of Tropic file browser is installed");
-                return;
-            }
 
-            Console.WriteLine("Updating Tropic from " + currentVersion + " to " + latestVersion);
-            DownloadFile("tropic-binaries/hashes.json");
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             Console.WriteLine("Calculating Hashes");
-            Dictionary<string, string> latestHashes = JsonConvert.DeserializeObject<Dictionary<string, string>>(GetRequest("tropic-binaries/hashes.json"));
+            Dictionary<string, string> latestHashes = JsonConvert.DeserializeObject<Dictionary<string, string>>(GetRequest("tropic-win32-x64-hashes.json"));
             List<string> filesToUpdate = filesToDownload(latestHashes);
             Console.WriteLine("Downloading " + filesToUpdate.Count + " file(s)");
             DownloadFiles(filesToUpdate);
             Console.WriteLine("Installing files");
             InstallFiles(filesToUpdate);
-            Directory.Delete("./web_downloads", true);
-            File.WriteAllText("installed_version.txt", latestVersion);
+            if (Directory.Exists("./web_downloads"))
+            {
+                Directory.Delete("./web_downloads", true);
+            }
             Console.WriteLine("downloaded and installed " + filesToUpdate.Count + " file(s)");
         }
 
@@ -41,7 +36,7 @@ namespace tropic_updater
         {
             foreach (string file in filesToUpdate)
             {
-                Directory.CreateDirectory("./tropic-win32-x64/" + file.Substring(0, file.LastIndexOf("\\")));
+                Directory.CreateDirectory("./tropic-win32-x64/" + Path.GetDirectoryName(file));
                 File.Copy("web_downloads/" + file, "./tropic-win32-x64/" + file, true);
             }
         }
@@ -52,7 +47,7 @@ namespace tropic_updater
             {
                 foreach (string file in files)
                 {
-                    string myStringWebResource = remoteUrl + "tropic-binaries/tropic-win32-x64/" + file;
+                    string myStringWebResource = remoteUrl + "tropic-win32-x64/" + file;
                     myStringWebResource = myStringWebResource.Replace("\\", "/").Replace("#", "%23");
                     try
                     {
