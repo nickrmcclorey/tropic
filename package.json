@@ -6,8 +6,8 @@
   "scripts": {
     "start": "electron .",
     "prebuild": "rm -r -f ./installer/tropic-win32-x64",
-    "build": "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --ignore=/Newtonsoft.Json.dll --ignore=updater.exe --ignore=hasher.exe --out=installer",
-    "build-updater": "csc ./installer/updater.cs -r:./installer/Newtonsoft.Json.dll",
+    "build": "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --ignore=/Newtonsoft.Json.dll --ignore=updater.exe --ignore=hasher.exe --ignore=gui/settings.json --out=installer",
+    "build-updater": "csc ./installer/updater.cs -r:./installer/Newtonsoft.Json.dll -win32manifest:./installer/updater-manifest.xml",
     "build-installer": "makensis ./installer/tropic-installer.nsi"
   },
   "repository": {
@@ -22,7 +22,6 @@
   "homepage": "https://github.com/nickrmcclorey/tropic-file-browser#readme",
   "dependencies": {
     "adm-zip": "^0.4.13",
-    "ajv": "^6.5.4",
     "associated-icon": "^1.2.0",
     "file-icon-info": "^1.1.1",
     "hoek": ">=5.0.3",
