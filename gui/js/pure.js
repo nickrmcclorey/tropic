@@ -55,3 +55,12 @@ function printError(error) {
 function isNullOrWhitespace(input) {
     return !(input != null && input.trim().length > 0);
 }
+
+export { 
+    fileExtension,
+    printError,
+    isNullOrWhitespace,
+    preparePathForCmd,
+    sizeOf,
+    nameFromLi
+}
