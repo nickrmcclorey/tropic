@@ -14,7 +14,7 @@ const sudo = require('sudo-prompt');
 let currentFolder = {};
 let Tracker = {};
 let templates = null;
-let settings = require('./settings.json');
+let settings = null;
 let selectedFiles = new SelectedFiles();
 let defaultIcons = new Object();
 let settingsInputBox = null;
@@ -22,7 +22,7 @@ let settingsInputBox = null;
 
 
 function init() {
-
+    settings = getStartupSettings();
     setInitListeners();
     templates = $('#templates').remove()[0];
     templates.removeAttribute('hidden');

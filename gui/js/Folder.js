@@ -28,7 +28,12 @@ Folder.prototype.collectFolderContents = function (path) {
         let file = {};
         file.size = null;
 
-        let fsInfo = fs.statSync(path +'/'+ fileName);
+        let fsInfo = null;
+        try {
+            fsInfo = fs.statSync(path +'/'+ fileName);
+        } catch (e) {
+            continue;
+        }
 
         // converts raw size of bytes to string in terms of KB, MB or GB
         if (fsInfo.isDirectory()) {

@@ -75,7 +75,7 @@ ul.fileList  {
     height:100%;
     padding-left: 0px;
     list-style-type: none;
-    max-height: 27rem;
+    /* max-height: 27rem; */
     overflow-y: scroll;
 }
 

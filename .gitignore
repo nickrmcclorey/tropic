@@ -5,3 +5,4 @@ test.js
 tropic-win32-x64
 installer/web_downloads
 *.zip
+gui/settings.json
