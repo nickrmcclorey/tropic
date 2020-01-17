@@ -1,7 +1,11 @@
 // Nicholas McClorey - 7/30/2018
 // Nicholas McClorey - 1/16/2020
 
-import { fileIconPath } from "./backend.js"
+const pathModule = require("path")
+
+import { fileIconPath, clearSelectedFiles } from "./backend.js"
+import { setFileListListeners } from "./EventListeners.js"
+
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(folderObj, pane) {
     // if pane is not passed in, we stick with the active pane (selectedFileList)
@@ -67,11 +71,13 @@ function updateGuiFiles(folderObj, pane) {
     tab.path = folderObj.path;
     let label = pathModule.basename(folderObj.path);
     // tab's label is the basename or the path if in root folder
-    $(tab).find('.label')[0].innerHTML = (label == '') ? folderObj.path : label;
-
+    tab.getElementsByClassName('label')[0].innerHTML = (label == '') ? folderObj.path : label;
+	try {
     highlightTabs();
     setFileListListeners();
+	console.log('set file listeners')
     appendExeIcons(pane);
+	} catch (e) {console.log(e)}
 }
 
 
@@ -99,6 +105,18 @@ function file_dbl_clicked(e) {
     } else {
         openFile(newPath);
     }
+}
+
+
+// usually results in contextMenu being shown
+function fileRightClicked(e) {
+    if (!e.ctrlKey && selectedFiles.tentative.length == 1) {
+        clearSelectedFiles();
+    }
+    // 'this' is the li element
+    selectFile(this);
+
+    showContextMenu(e);
 }
 
 
@@ -170,17 +188,18 @@ function newInputBox() {
 
 // active tabs are a different color than the others
 function highlightTabs() {
-    $('.tab').removeClass('activeTab');
-    for (let pane of Tracker.panes) {
-        $(pane.activeTab.element).addClass('activeTab')
-    }
+    for (let el of document.getElementsByClassName('tab'))
+		el.classList.remove('activeTab')
+
+    for (let pane of Tracker.panes)
+        pane.activeTab.element.classList.add('activeTab')
 }
 
 
 // returns number of tabs in a specific tabBar
 function numTabs(tabBar) {
     let numTabs = 0;
-    for (tab of tabBar.children) {
+    for (let tab of tabBar.children) {
         if (tab.className == 'tab') {
             numTabs++;
         }
@@ -256,6 +275,10 @@ function updatePaneStyling() {
     Tracker.activePane.fileField.classList.add('activeField');
 }
 
+const callbacks = {
+	fileClicked,
+	fileRightClicked
+}
 
 export {
     openProgramList,
@@ -263,5 +286,8 @@ export {
     openLocationList,
     addFolderToLocations,
 	updateGuiFiles,
-	hideContextMenu
+	hideContextMenu,
+	pathBoxKeyDown,
+	file_dbl_clicked,
+	callbacks
 }

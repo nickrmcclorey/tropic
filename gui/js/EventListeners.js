@@ -1,19 +1,19 @@
-import { renameFiles, deleteFile, pasteSelectedFiles, unzip, zip, addPicToFileIcons, useAsHome, handleClick } from "./backend.js"
-import { openProgramList, expandContextMenu, openLocationList, addFolderToLocations } from "./updater.js"
+import { renameFiles, deleteFile, pasteSelectedFiles, unzip, zip, addPicToFileIcons, useAsHome, handleClick, goToParentDirectory, clearSelectedFiles } from "./backend.js"
+import { callbacks, openProgramList, expandContextMenu, openLocationList, addFolderToLocations, pathBoxKeyDown, file_dbl_clicked } from "./updater.js"
+import { addTab, eraseTab, changeTab } from "./Tab.js"
 
 
 function setFileListListeners() {
 
     // button to go to parent directory
-    for (el of document.getElementsByClassName('backButton')) {
+    for (let el of document.getElementsByClassName('backButton'))
         el.addEventListener('click', goToParentDirectory, false);
-    }
-    // user entered path into path box
-    for (el of document.getElementsByClassName('pathBox')) {
-        el.addEventListener('keypress', pathBoxKeyDown, false);
-    }
 
-    for (pane of $('fileField')) {
+    // user entered path into path box
+    for (let el of document.getElementsByClassName('pathBox'))
+        el.addEventListener('keypress', pathBoxKeyDown, false);
+
+    for (let pane of document.getElementsByClassName('fileField')) {
         pane.addEventListener('click', (e) => {
             if (e.target.getAttribute('class') == 'fileField') {
                 clearSelectedFiles();
@@ -21,26 +21,23 @@ function setFileListListeners() {
         }, false);
     }
 
-    for (let filebar of $('.fileEntry')) {
+    for (let filebar of document.getElementsByClassName('fileEntry')) {
         // open file on double click
         filebar.addEventListener('dblclick', file_dbl_clicked, false);
         // file selected
-        filebar.addEventListener('click', fileClicked, false);
+        filebar.addEventListener('click', callbacks.fileClicked, false);
         // file right clicked, open contextMenu
-        filebar.addEventListener('contextmenu', fileRightClicked, false);
+        filebar.addEventListener('contextmenu', callbacks.fileRightClicked, false);
     }
 
-    for (el of document.getElementsByClassName('addTabButton')) {
+    for (let el of document.getElementsByClassName('addTabButton'))
         el.addEventListener('click', addTab, false);
-    }
 
-    for (el of document.getElementsByClassName('xButton')) {
+    for (let el of document.getElementsByClassName('xButton'))
         el.addEventListener('click', eraseTab, false);
-    }
 
-    for (el of document.getElementsByClassName('tab')) {
+    for (let el of document.getElementsByClassName('tab'))
         el.addEventListener('click', changeTab, false);
-    }
 }
 
 
@@ -158,4 +155,7 @@ function handleKeypress(e) {
     }
 }
 
-export { setInitListeners }
+export {
+	setInitListeners,
+	setFileListListeners
+}

@@ -67,6 +67,7 @@ function handleClick(e) {
 
 
 function goToParentDirectory(e) {
+	console.log('inside')
     handleClick(e);
     let newPath = pathModule.join(Tracker.folder().path, '..') ;
     Tracker.activePane.cd(newPath);
@@ -173,18 +174,6 @@ function deleteFile() {
         console.log(error)
     });
     hideContextMenu();
-}
-
-
-// usually results in contextMenu being shown
-function fileRightClicked(e) {
-    if (!e.ctrlKey && selectedFiles.tentative.length == 1) {
-        clearSelectedFiles();
-    }
-    // 'this' is the li element
-    selectFile(this);
-
-    showContextMenu(e);
 }
 
 
@@ -438,5 +427,7 @@ export {
     handleClick,
 	loadDefaultIcons,
 	loadExternalProgramList,
-	fileIconPath
+	fileIconPath,
+	goToParentDirectory,
+	clearSelectedFiles
 };

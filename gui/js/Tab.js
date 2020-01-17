@@ -46,3 +46,8 @@ function eraseTab(e) {
 }
 
 export default Tab
+export {
+	addTab,
+	eraseTab,
+	changeTab
+}
