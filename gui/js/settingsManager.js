@@ -1,3 +1,4 @@
+const fs = require("fs")
 
 function getStartupSettings() {
     if (!fs.existsSync("./gui/settings.json")) {
@@ -7,3 +8,5 @@ function getStartupSettings() {
     let text = fs.readFileSync("./gui/settings.json", {encoding: 'utf8'})
     return JSON.parse(text)
 }
+
+export { getStartupSettings }

@@ -2,24 +2,13 @@ const {exec} = require('child_process');
 const os = require('os');
 const fs = require('fs');
 const pathModule = require('path');
-const args = require('electron').remote.getGlobal('args');
-const { ipcRenderer } = require('electron');
 const $ = require('jquery')
 const fii = require('file-icon-info');
 const ncp = require('ncp')
 const AdmZip = require('adm-zip');
 const sudo = require('sudo-prompt');
 
-// ==== global variables ==== \\
-let currentFolder = {};
-let Tracker = {};
-let templates = null;
-let settings = null;
-let selectedFiles = new SelectedFiles();
-let defaultIcons = new Object();
-let settingsInputBox = null;
-// ==== end of global variables ====\\
-
+import { hideContextMenu } from "./updater.js"
 
 function init() {
     settings = getStartupSettings();
@@ -45,9 +34,9 @@ function init() {
 
 
 function handleClick(e) {
-    for (fileField of $('.fileField')) {
+    for (let fileField of $('.fileField')) {
         if (e.path.includes(fileField) && Tracker.activePane.fileField != fileField) {
-            for (pane of Tracker.panes) {
+            for (let pane of Tracker.panes) {
                 if (pane.fileField == fileField) {
                     Tracker.activePane = pane;
                     updatePaneStyling();
@@ -107,7 +96,7 @@ function openFile(rawPath) {
 // i.e. putting an picture called xlsx.png in the img folder
 // will cause the program to use that picture as the .xlsx icon
 function loadDefaultIcons() {
-    let raw = fs.readdirSync(pathModule.resolve(__dirname,'img'));
+    let raw = fs.readdirSync(pathModule.resolve('./gui/img'));
 
     // chopping off extensions
     for (let fileName of raw) {
@@ -121,29 +110,6 @@ function loadDefaultIcons() {
 }
 
 
-// returns the path to the file that should be used.
-// settings.json can be used to set file icons
-function fileIconPath(folder, fileName) {
-    let fileObj = folder.children[fileName];
-    let iconFileName = defaultIcons[fileObj.type];
-    let iconSettings = settings.fileTypes[fileExtension(fileName)];
-    if (fileObj.img64) {
-        return 'data:img/png; base64 ' + fileObj.img64;
-    }
-    if (iconSettings == undefined) {
-        if (iconFileName == undefined) {
-            return 'img/blank.png';
-        } else {
-            return 'img/' + iconFileName;
-        }
-    } else if (iconSettings.src == 'self') {
-        return pathModule.join(folder.path, fileName);
-    } else if (iconSettings.src == 'extract') {
-        return 'data:image/png;base64,' + folder.children[fileName].img64;
-    } else {
-        return 'img/' + iconFileName;
-    }
-}
 
 
 function clearSelectedFiles() {
@@ -365,6 +331,31 @@ function homePath() {
     }
 }
 
+// returns the path to the file that should be used.
+// settings.json can be used to set file icons
+function fileIconPath(folder, fileName) {
+	return 'img/blank.png'
+    let fileObj = folder.children[fileName];
+    let iconFileName = defaultIcons[fileObj.type];
+    let iconSettings = settings.fileTypes[fileExtension(fileName)];
+    if (fileObj.img64) {
+        return 'data:img/png; base64 ' + fileObj.img64;
+    }
+    if (iconSettings == undefined) {
+        if (iconFileName == undefined) {
+            return 'img/blank.png';
+        } else {
+            return 'img/' + iconFileName;
+        }
+    } else if (iconSettings.src == 'self') {
+        return pathModule.join(folder.path, fileName);
+    } else if (iconSettings.src == 'extract') {
+        return 'data:image/png;base64,' + folder.children[fileName].img64;
+    } else {
+        return 'img/' + iconFileName;
+    }
+}
+
 
 function unzip() {
     let newFilename = pathModule.basename(selectedFiles.tentative[0].path).replace('.zip', '');
@@ -434,3 +425,18 @@ function useAsHome() {
     saveSettingsToFile();
     hideContextMenu();
 }
+
+export {
+    init,
+    renameFiles,
+    deleteFile,
+    pasteSelectedFiles,
+    unzip,
+    zip,
+    addPicToFileIcons,
+    useAsHome,
+    handleClick,
+	loadDefaultIcons,
+	loadExternalProgramList,
+	fileIconPath
+};

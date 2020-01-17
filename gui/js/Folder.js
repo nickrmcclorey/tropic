@@ -1,3 +1,7 @@
+import { sizeOf, fileExtension } from "./pure.js"
+const pathModule = require("path")
+const fs = require("fs")
+
 function Folder(path) {
     if (!path.includes('%')) {
         path = pathModule.resolve(path);
@@ -183,3 +187,5 @@ function extractIcon(path) {
         });
     });
 }
+
+export default Folder

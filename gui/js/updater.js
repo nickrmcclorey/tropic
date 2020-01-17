@@ -1,5 +1,7 @@
 // Nicholas McClorey - 7/30/2018
+// Nicholas McClorey - 1/16/2020
 
+import { fileIconPath } from "./backend.js"
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(folderObj, pane) {
     // if pane is not passed in, we stick with the active pane (selectedFileList)
@@ -117,10 +119,18 @@ function fileClicked(e) {
 
 
 function hideContextMenu() {
-    $('.contextMenu').find('.more').hide();
-    $('.contextMenu').find('.moreButton').show();
+    let elements = document.getElementsByClassName('contextMenu')[0].getElementsByClassName('more')
+	for (let el of elements) {
+		el.setAttribute('hidden', 'hidden')
+	}
+
+    elements = document.getElementsByClassName('contextMenu')[0].getElementsByClassName('moreButton')
+	for (let el of elements) {
+		el.setAttribute('hidden', 'hidden')
+	}
+
     document.getElementById('contextMenu').style.display = 'none';
-    $('.unzipButton').attr('hidden', true);
+    document.getElementsByClassName('unzipButton')[0].setAttribute('hidden', true);
 }
 
 
@@ -244,4 +254,14 @@ function updatePaneStyling() {
         pane.fileField.classList.remove('activeField');
     }
     Tracker.activePane.fileField.classList.add('activeField');
+}
+
+
+export {
+    openProgramList,
+    expandContextMenu,
+    openLocationList,
+    addFolderToLocations,
+	updateGuiFiles,
+	hideContextMenu
 }

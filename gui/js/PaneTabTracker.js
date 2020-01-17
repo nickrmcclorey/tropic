@@ -1,3 +1,5 @@
+import Pane from "./Pane.js"
+
 function PaneTabTracker(fileFieldParent, path) {
     this.activePane = new Pane(path);
     this.panes = [this.activePane];
@@ -68,3 +70,5 @@ function PaneTabTracker(fileFieldParent, path) {
         return this.findPane(node).tabs[index];
     };
 };
+
+export { PaneTabTracker }

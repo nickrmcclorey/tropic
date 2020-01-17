@@ -1,3 +1,5 @@
+import Folder from "./Folder.js"
+
 function Tab(path, tabElement) {
     this.element = tabElement
     this.folder = new Folder(path);
@@ -42,3 +44,5 @@ function eraseTab(e) {
     }
     adjustFileFieldParentCss();
 }
+
+export default Tab
