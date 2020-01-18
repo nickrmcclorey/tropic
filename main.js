@@ -19,9 +19,7 @@ function createWindow() {
 
 app.on('ready', createWindow);
 
-app.on('window-all-closed', () => {
-    app.quit()
-});
+app.on('window-all-closed', app.quit);
 
 
 // this is needed because the path changes from development to deployment

@@ -2,39 +2,15 @@ const {exec} = require('child_process');
 const os = require('os');
 const fs = require('fs');
 const pathModule = require('path');
-const $ = require('jquery')
 const fii = require('file-icon-info');
-const ncp = require('ncp')
 const AdmZip = require('adm-zip');
 const sudo = require('sudo-prompt');
 
 import { hideContextMenu } from "./updater.js"
 
-function init() {
-    settings = getStartupSettings();
-    setInitListeners();
-    templates = $('#templates').remove()[0];
-    templates.removeAttribute('hidden');
-    loadDefaultIcons();
-
-    let openingPath = "";
-    if (Object.keys(settings).includes('homeFolder')) {
-        openingPath = settings.homeFolder;
-    } else {
-        openingPath = os.homedir();
-    }
-
-    let fileFieldParent = $('#fileFieldParent')[0];
-    Tracker = new PaneTabTracker(fileFieldParent, openingPath);
-    Tracker.refresh();
-
-    loadExternalProgramList();
-    loadLocations();
-}
-
 
 function handleClick(e) {
-    for (let fileField of $('.fileField')) {
+    for (let fileField of document.getElementsByClassName('fileField')) {
         if (e.path.includes(fileField) && Tracker.activePane.fileField != fileField) {
             for (let pane of Tracker.panes) {
                 if (pane.fileField == fileField) {
@@ -55,7 +31,7 @@ function handleClick(e) {
         programMenu.style.display = 'none';
     }
 
-    let locationMenu = $('.locationList')[0];
+    let locationMenu = document.getElementsByClassName('locationList')[0];
     if (!e.path.includes(locationMenu) && !e.target.classList.contains('locations')) {
         locationMenu.style.display = 'none';
     }
@@ -241,7 +217,7 @@ function pasteSelectedFiles() {
         if (selectedFiles.pendingAction == 'cut') {
             fs.renameSync(selectedFile.path, destination, printError ); // end of callback and fs.rename
         } else if (selectedFiles.pendingAction == 'copy') {
-            ncp(selectedFile.path, destination, printError);
+            fs.copyFile(selectedFile.path, destination, printError);
         }
         setTimeout(function(){ Tracker.refresh() }, 100);
     } // end of for loop
@@ -362,21 +338,23 @@ function loadLocations() {
     for (let name in settings.locations) {
         let element = document.createElement('div');
         element.append(document.createTextNode(name));
+		let locationList = document.getElementsByClassName('locationList')[0]
         element.addEventListener('click', () => {
             Tracker.activePane.cd(settings.locations[name]);
-            $('.locationList').hide();
+            locationList.style.display = 'none';
         }, false);
-        $('.locationList')[0].appendChild(element);
+        locationList.appendChild(element);
 
         let XButton = document.createElement('div');
         XButton.appendChild(document.createTextNode('x'));
         XButton.addEventListener('click', (e) => {
             settings.locations[name] = undefined;
             saveSettingsToFile();
-            $(e.target.previousSibling).remove();
-            $(e.target).remove();
+			let toRemove = e.target.previousSibling
+			toRemove.parentNode.removeChild(toRemove)
+			e.target.parentNode.removeChild(e.target)
         }, false);
-        $('.locationList')[0].appendChild(XButton);
+        document.getElementsByClassName('locationList')[0].appendChild(XButton);
     }
 }
 
