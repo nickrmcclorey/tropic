@@ -2,6 +2,7 @@ import Tab from "./Tab.js"
 import Folder from "./Folder.js"
 import { updateGuiFiles } from "./updater.js"
 
+
 function Pane(path) {
     this.fileField = templates.getElementsByClassName('fileField')[0].cloneNode(true); // html element
     this.pathBox = this.fileField.getElementsByClassName('pathBox')[0];
@@ -15,7 +16,6 @@ function Pane(path) {
     this.activeTab = this.tabs[0];
     this.pathBox.value = this.path();
 
-
     this.setActiveTab = function(tab) {
         let index = -1;
         for (let k in this.tabs) {
@@ -26,9 +26,9 @@ function Pane(path) {
         }
 
         if (index > -1) {
-            $(this.activeTab.element).removeClass('activeTab');
+            this.activeTab.element.classList.remove('activeTab');
             this.activeTab = this.tabs[index];
-            $(this.activeTab.element).addClass('activeTab');
+            this.activeTab.element.classList.add('activeTab');
         } else {
             console.error('couldn\'t find tab to select')
         }
@@ -59,9 +59,13 @@ Pane.prototype.path = function () {
 
 
 Pane.prototype.cd = function (path) {
-    let oldPath = this.activeTab.folder.path;
-    this.activeTab.folder = new Folder(path);
-    this.refresh(oldPath);
+	let newFolder = new Folder(path);
+	newFolder.read().then(() => {
+		this.activeTab.folder = newFolder	
+		
+		updateGuiFiles(this.activeTab.folder, this)
+	})
 };
+
 
 export default Pane

@@ -7,7 +7,6 @@ function PaneTabTracker(fileFieldParent, path) {
 
     fileFieldParent.appendChild(this.activePane.fileField);
 
-
     this.removeTab = (event) => {
         let tabIndex = this.tabIndex(event);
         let pane = Tracker.activePane;

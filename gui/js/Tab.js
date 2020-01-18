@@ -1,4 +1,5 @@
 import Folder from "./Folder.js"
+import { handleClick } from "./backend.js"
 
 function Tab(path, tabElement) {
     this.element = tabElement
@@ -21,11 +22,11 @@ function addTab(e) {
 
     // navigate to the tabBar with all the tabs in it
     // create new tab
-    let newTab = $(templates).find('.tab')[0].cloneNode(true);
+    let newTab = templates.getElementsByClassName('tab')[0].cloneNode(true);
     newTab.addEventListener('click', changeTab, false);
 
     // add tab button must stay on the right
-    let tabBar = $(Tracker.activePane.fileField).find('.tabBar')[0];
+    let tabBar = Tracker.activePane.fileField.getElementsByClassName('tabBar')[0];
     let path = Tracker.folder().path;
     Tracker.activePane.tabs.push(new Tab(path, newTab));
     Tracker.activePane.setActiveTab(newTab);

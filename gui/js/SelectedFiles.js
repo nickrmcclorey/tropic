@@ -1,3 +1,5 @@
+const pathModule = require("path")
+
 function SelectedFiles() {
     this.pendingAction = null;
     this.tentative = [];
@@ -26,7 +28,7 @@ SelectedFiles.prototype.lockSelection = function (copyOrPaste) {
 
 
 SelectedFiles.prototype.tentativeContains = function(liToCheck) {
-    for (entry of this.tentative) {
+    for (let entry of this.tentative) {
         if (entry.li == liToCheck) {
             return true;
         }
@@ -36,7 +38,7 @@ SelectedFiles.prototype.tentativeContains = function(liToCheck) {
 
 
 SelectedFiles.prototype.tentativeRemove = function(liToRemove) {
-    for (k in this.tentative) {
+    for (let k in this.tentative) {
         // when we find the index, we remove the selected file
         if (this.tentative[k].li == liToRemove) {
             this.tentative.splice(k, 1);
@@ -53,3 +55,7 @@ SelectedFiles.prototype.tentativePaths = function () {
     }
     return pathArray;
 };
+
+export default SelectedFiles
+
+	

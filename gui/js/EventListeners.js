@@ -1,5 +1,5 @@
-import { renameFiles, deleteFile, pasteSelectedFiles, unzip, zip, addPicToFileIcons, useAsHome, handleClick, goToParentDirectory, clearSelectedFiles } from "./backend.js"
-import { callbacks, openProgramList, expandContextMenu, openLocationList, addFolderToLocations, pathBoxKeyDown, file_dbl_clicked } from "./updater.js"
+import { fileOps, useAsHome, handleClick, goToParentDirectory, clearSelectedFiles } from "./backend.js"
+import { callbacks } from "./updater.js"
 import { addTab, eraseTab, changeTab } from "./Tab.js"
 
 
@@ -11,7 +11,7 @@ function setFileListListeners() {
 
     // user entered path into path box
     for (let el of document.getElementsByClassName('pathBox'))
-        el.addEventListener('keypress', pathBoxKeyDown, false);
+        el.addEventListener('keypress', callbacks.pathBoxKeyDown, false);
 
     for (let pane of document.getElementsByClassName('fileField')) {
         pane.addEventListener('click', (e) => {
@@ -23,7 +23,7 @@ function setFileListListeners() {
 
     for (let filebar of document.getElementsByClassName('fileEntry')) {
         // open file on double click
-        filebar.addEventListener('dblclick', file_dbl_clicked, false);
+        filebar.addEventListener('dblclick', callbacks.file_dbl_clicked, false);
         // file selected
         filebar.addEventListener('click', callbacks.fileClicked, false);
         // file right clicked, open contextMenu
@@ -47,11 +47,11 @@ function setInitListeners() {
 
     // rename buttons
     for (let el of document.getElementsByClassName('renameButton')) {
-        el.addEventListener('click', renameFiles, false);
+        el.addEventListener('click', fileOps.renameFiles, false);
     }
     // delete button
     for (let el of document.getElementsByClassName('deleteButton')) {
-        el.addEventListener('click', deleteFile,false);
+        el.addEventListener('click', fileOps.deleteFile,false);
     }
     // copy button
     for (let el of document.getElementsByClassName('copyButton')) {
@@ -63,36 +63,38 @@ function setInitListeners() {
     }
     // paste buttons
     for (let el of document.getElementsByClassName('pasteButton')) {
-        el.addEventListener('click', pasteSelectedFiles, false);
+        el.addEventListener('click', fileOps.pasteSelectedFiles, false);
     }
     // open a file or folder
     for (let el of document.getElementsByClassName('openButton')) {
-        el.addEventListener('click', () => {openFile(pathModule.join(Tracker.folder().path, nameFromLi(selectedFiles.tentative[0].li)))},false);
+        el.addEventListener('click', () => {
+			fileOps.openFile(pathModule.join(Tracker.folder().path, nameFromLi(selectedFiles.tentative[0].li)))
+		},false);
     }
 
     // ask what they want to open with
     for (let el of document.getElementsByClassName('openWithButton')) {
-        el.addEventListener('click', openProgramList, false);
+        el.addEventListener('click', callbacks.openProgramList, false);
     }
 
     // unzip selected file
     for (let el of document.getElementsByClassName('unzipButton')) {
-        el.addEventListener('click', unzip, false);
+        el.addEventListener('click', fileOps.unzip, false);
     }
 
     // zip selected file
     for (let el of document.getElementsByClassName('zipButton')) {
-        el.addEventListener('click', zip, false);
+        el.addEventListener('click', fileOps.zip, false);
     }
 
     // shows more options in the context menu
     for (let el of document.getElementsByClassName('moreButton')) {
-        el.addEventListener('click', expandContextMenu, false);
+        el.addEventListener('click', callbacks.expandContextMenu, false);
     }
 
     // opens up the menu under the "jump" button to show shortcuts to file locations
     for (let el of document.getElementsByClassName('locations')) {
-        el.addEventListener('click', openLocationList, false);
+        el.addEventListener('click', callbacks.openLocationList, false);
     }
 
     // opens a new pane next to the current one
@@ -104,11 +106,11 @@ function setInitListeners() {
 
     // add image to the list of available file icons
     for (let el of document.getElementsByClassName('addToFileIcons')) {
-        el.addEventListener('click', addPicToFileIcons, false);
+        el.addEventListener('click', fileOps.addPicToFileIcons, false);
     }
 
     for (let el of document.getElementsByClassName('addToLocations')) {
-        el.addEventListener('click', addFolderToLocations, false);
+        el.addEventListener('click', callbacks.addFolderToLocations, false);
     }
 
     for (let el of document.getElementsByClassName('useAsHome')) {

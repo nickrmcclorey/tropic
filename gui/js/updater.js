@@ -2,9 +2,11 @@
 // Nicholas McClorey - 1/16/2020
 
 const pathModule = require("path")
+const fs = require("fs")
 
-import { fileIconPath, clearSelectedFiles } from "./backend.js"
+import { fileIconPath, clearSelectedFiles, handleClick } from "./backend.js"
 import { setFileListListeners } from "./EventListeners.js"
+import { nameFromLi } from "./pure.js"
 
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(folderObj, pane) {
@@ -105,6 +107,20 @@ function file_dbl_clicked(e) {
     } else {
         openFile(newPath);
     }
+}
+
+
+// these files will be highlighted and held as global variables
+// for future use. i.e. copy, paste
+function selectFile(li_target) {
+
+    // get li target as e.target could be child element of path
+    li_target.style.backgroundColor = 'rgb(35, 219, 220)';
+
+    let path = pathModule.join(Tracker.folder().path, nameFromLi(li_target));
+    let isDirectory = fs.lstatSync(path).isDirectory()
+
+    selectedFiles.addTentative(path, isDirectory, li_target);
 }
 
 
@@ -277,17 +293,17 @@ function updatePaneStyling() {
 
 const callbacks = {
 	fileClicked,
-	fileRightClicked
+	fileRightClicked,
+	file_dbl_clicked,
+	expandContextMenu,
+	openLocationList,
+    openProgramList,
+	addFolderToLocations,
+	pathBoxKeyDown
 }
 
 export {
-    openProgramList,
-    expandContextMenu,
-    openLocationList,
-    addFolderToLocations,
-	updateGuiFiles,
 	hideContextMenu,
-	pathBoxKeyDown,
-	file_dbl_clicked,
+	updateGuiFiles,
 	callbacks
 }

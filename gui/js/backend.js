@@ -116,13 +116,13 @@ function loadDefaultIcons() {
 function clearSelectedFiles() {
     let fileList_uls = document.getElementsByClassName('fileList');
 
-    for (fileList_ul of fileList_uls) {
+    for (let fileList_ul of fileList_uls) {
         // reset color of files in browser
-        for (li of fileList_ul.children) {
-            li.style.backgroundColor = '';
+        for (let li of fileList_ul.children) {
+            li.style.backgroundColor = ''
         }
     }
-    selectedFiles.tentative = new Array();
+    selectedFiles.tentative = []
 }
 
 
@@ -218,20 +218,6 @@ function renameFiles() {
     inputBox.focus();
 
 } // end of rename sequence
-
-
-// these files will be highlighted and held as global variables
-// for future use. i.e. copy, paste
-function selectFile(li_target) {
-
-    // get li target as e.target could be child element of path
-    li_target.style.backgroundColor = 'rgb(35, 219, 220)';
-
-    let path = pathModule.join(Tracker.folder().path, nameFromLi(li_target));
-    let isDirectory = fs.lstatSync(path).isDirectory()
-
-    selectedFiles.addTentative(path, isDirectory, li_target);
-}
 
 
 function pasteSelectedFiles() {
@@ -415,8 +401,18 @@ function useAsHome() {
     hideContextMenu();
 }
 
+const fileOps = {
+	renameFiles,
+	deleteFile,
+	pasteSelectedFiles,
+	unzip,
+	zip,
+	addPicToFileIcons,
+	openFile
+}
+
 export {
-    init,
+	fileOps,
     renameFiles,
     deleteFile,
     pasteSelectedFiles,
@@ -431,3 +427,4 @@ export {
 	goToParentDirectory,
 	clearSelectedFiles
 };
+
