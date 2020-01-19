@@ -7,7 +7,8 @@ const AdmZip = require('adm-zip');
 const sudo = require('sudo-prompt');
 
 import { hideContextMenu } from "./updater.js"
-
+import { fileExtension, printError } from "./pure.js"
+import SystemI from "./SystemI.ts"
 
 function handleClick(e) {
     for (let fileField of document.getElementsByClassName('fileField')) {
@@ -142,14 +143,11 @@ function createNewChild(makeDir) {
 
 // uses executable that recycles files
 function deleteFile() {
-    let pathToExe = pathModule.join(__dirname, "/programs/recycle/recycle.exe");
-    let filesToDelete = selectedFiles.tentativePaths().join(' ');
-    exec(pathToExe + ' ' + filesToDelete, () => {
-        Tracker.refresh();
-    }, (error) => {
-        console.log(error)
-    });
     hideContextMenu();
+	getSystem().deleteFile(selectedFiles.tentativePaths())
+	Tracker.refresh()
+
+	return
 }
 
 
@@ -202,7 +200,7 @@ function pasteSelectedFiles() {
         return;
     }
 
-    for (selectedFile of selectedFiles.locked) {
+    for (let selectedFile of selectedFiles.locked) {
         let fileName = pathModule.basename(selectedFile.path);
 
         let destination = '';
@@ -222,7 +220,7 @@ function pasteSelectedFiles() {
         setTimeout(function(){ Tracker.refresh() }, 100);
     } // end of for loop
 
-    pendingAction = null;
+    selectedFiles.pendingAction = null;
 }
 
 
@@ -285,13 +283,10 @@ function homePath() {
 // returns the path to the file that should be used.
 // settings.json can be used to set file icons
 function fileIconPath(folder, fileName) {
-	return 'img/blank.png'
     let fileObj = folder.children[fileName];
     let iconFileName = defaultIcons[fileObj.type];
     let iconSettings = settings.fileTypes[fileExtension(fileName)];
-    if (fileObj.img64) {
-        return 'data:img/png; base64 ' + fileObj.img64;
-    }
+
     if (iconSettings == undefined) {
         if (iconFileName == undefined) {
             return 'img/blank.png';
@@ -300,8 +295,6 @@ function fileIconPath(folder, fileName) {
         }
     } else if (iconSettings.src == 'self') {
         return pathModule.join(folder.path, fileName);
-    } else if (iconSettings.src == 'extract') {
-        return 'data:image/png;base64,' + folder.children[fileName].img64;
     } else {
         return 'img/' + iconFileName;
     }
@@ -379,6 +372,8 @@ function useAsHome() {
     hideContextMenu();
 }
 
+var getSystem = SystemI.getCorrectSystem
+
 const fileOps = {
 	renameFiles,
 	deleteFile,
@@ -392,6 +387,7 @@ const fileOps = {
 export {
 	fileOps,
     renameFiles,
+	getSystem,
     deleteFile,
     pasteSelectedFiles,
     unzip,

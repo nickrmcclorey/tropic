@@ -1,5 +1,5 @@
 import { fileOps, useAsHome, handleClick, goToParentDirectory, clearSelectedFiles } from "./backend.js"
-import { callbacks } from "./updater.js"
+import { callbacks, hideContextMenu } from "./updater.js"
 import { addTab, eraseTab, changeTab } from "./Tab.js"
 
 

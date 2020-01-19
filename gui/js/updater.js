@@ -37,7 +37,11 @@ function updateGuiFiles(folderObj, pane) {
 
         // icon of file
         let img = document.createElement('img');
-        img.setAttribute('src', fileIconPath(folderObj, fileName));
+		try {
+			img.setAttribute('src', fileIconPath(folderObj, fileName));
+		} catch (e) {
+			console.error (e)
+		}
         img.setAttribute('id', folderObj.children[fileName].id)
 
         // name of file

@@ -9,5 +9,14 @@ module.exports = {
     },
     externals: {
         settings: "settings"
-    }
+    },
+	module: {
+		rules: [
+			{
+				test: /\.tsx?$/,
+				use: 'ts-loader',
+				exclude: /node_modules/
+			}
+		]
+	}
 }
