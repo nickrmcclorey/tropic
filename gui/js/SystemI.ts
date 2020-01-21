@@ -4,7 +4,7 @@ import WindowsSystem from "./WindowsSystem.ts"
 declare var process: any;
 
 abstract class SystemI {
-	abstract deleteFile(files: string[]): void;
+	abstract deleteFiles(files: string[]): void;
 	abstract readDirectory(path: string): any;
 	static getCorrectSystem() {
 		if (process.platform == 'linux')

@@ -144,7 +144,7 @@ function createNewChild(makeDir) {
 // uses executable that recycles files
 function deleteFile() {
     hideContextMenu();
-	getSystem().deleteFile(selectedFiles.tentativePaths())
+	getSystem().deleteFiles(selectedFiles.tentativePaths())
 	Tracker.refresh()
 
 	return

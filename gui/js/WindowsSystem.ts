@@ -6,10 +6,10 @@ declare var Tracker: any;
 declare var selectedFiles: any;
 
 class WindowsSystem implements SystemI {
-	deleteFile(file: string[]) {
+	deleteFiles(files: string[]) {
 	
 		let pathToExe = pathModule.join(__dirname, "/programs/recycle/recycle.exe");
-		let filesToDelete = selectedFiles.tentativePaths().join(' ');
+		let filesToDelete = files.join(' ');
 		exec(pathToExe + ' ' + filesToDelete, () => {
 			Tracker.refresh();
 		}, (error: any) => {
