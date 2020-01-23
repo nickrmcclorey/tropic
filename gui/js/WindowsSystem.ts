@@ -6,7 +6,7 @@ declare var Tracker: any;
 declare var selectedFiles: any;
 
 class WindowsSystem implements SystemI {
-	deleteFiles(files: string[]) {
+	deleteFiles(files: string[]): void {
 	
 		let pathToExe = pathModule.join(__dirname, "/programs/recycle/recycle.exe");
 		let filesToDelete = files.join(' ');
@@ -17,9 +17,12 @@ class WindowsSystem implements SystemI {
 		});
 	}
 
-	readDirectory(path: string) {
-	
-	}	
+	openFile(path: string): void {
+		let afterC = path.substr(path.indexOf('\\')+1);
+        exec('start C:\\"'+afterC + '"');
+	}
+
+	readDirectory(path: string): void {	}	
 }
 
 export default WindowsSystem

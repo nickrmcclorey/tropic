@@ -4,9 +4,9 @@
 const pathModule = require("path")
 const fs = require("fs")
 
-import { fileIconPath, clearSelectedFiles, handleClick } from "./backend.js"
+import { fileOps, fileIconPath, clearSelectedFiles, handleClick } from "./backend.js"
 import { setFileListListeners } from "./EventListeners.js"
-import { nameFromLi } from "./pure.js"
+import { nameFromLi, fileExtension } from "./pure.js"
 
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(folderObj, pane) {
@@ -109,7 +109,7 @@ function file_dbl_clicked(e) {
     if (Tracker.folder().children[selectedFile].type == 'directory') {
         Tracker.activePane.cd(newPath);
     } else {
-        openFile(newPath);
+        fileOps.openFile(newPath);
     }
 }
 
@@ -164,7 +164,7 @@ function hideContextMenu() {
 
     elements = document.getElementsByClassName('contextMenu')[0].getElementsByClassName('moreButton')
 	for (let el of elements) {
-		el.setAttribute('hidden', 'hidden')
+		el.removeAttribute('hidden');
 	}
 
     document.getElementById('contextMenu').style.display = 'none';
@@ -174,7 +174,9 @@ function hideContextMenu() {
 
 function showContextMenu(e) {
     if (selectedFiles.tentative[0] && fileExtension(selectedFiles.tentative[0].path) == 'zip') {
-        $('.unzipButton').removeAttr('hidden');
+		for (let el of document.getElementsByClassName('unzipButton')) {
+			el.removeAttribute('hidden')
+		}
     }
 
     let contextMenu = document.getElementById('contextMenu');
@@ -246,14 +248,14 @@ function adjustFileFieldParentCss() {
 
 
 function openProgramList(e) {
-    let list = $('.programList')[0];
+    let list = document.getElementsByClassName('programList')[0];
     let openButton = e.target;
     pinUnderElement(openButton, list);
 }
 
 
 function openLocationList(e) {
-    let menu = $('.locationList')[0];
+    let menu = document.getElementsByClassName('locationList')[0];
     let openButton = e.target;
     pinUnderElement(openButton, menu, 'grid');
 }
@@ -263,14 +265,17 @@ function pinUnderElement(element, menu, newDisplay='block') {
     let location = element.getBoundingClientRect();
     menu.style.left = location.x + 'px';
     menu.style.top = location.bottom + 'px';
-    $(element).removeAttr('hidden');
+    element.removeAttribute('hidden');
     menu.style.display = newDisplay;
 }
 
 
 function expandContextMenu() {
-    $('.contextMenu').find('.more').show();
-    $('.contextMenu').find('.moreButton').hide();
+	for (let el of document.getElementsByClassName('more'))
+		el.removeAttribute('hidden')
+
+	let el = document.getElementsByClassName('moreButton')[0]
+	el.setAttribute('hidden', true);
 }
 
 
@@ -283,7 +288,7 @@ function addFolderToLocations() {
     settings.locations[label] = newBookmarkPath;
     saveSettingsToFile();
 
-    $('.locationList')[0].innerHTML = '';
+    document.getElementsByClassName('locationList')[0].innerHTML = '';
     loadLocations();
     hideContextMenu();
 }
@@ -311,3 +316,4 @@ export {
 	updateGuiFiles,
 	callbacks
 }
+

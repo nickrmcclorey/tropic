@@ -28,6 +28,7 @@
     "sudo-prompt": "^8.2.5"
   },
   "devDependencies": {
+    "@types/node": "^13.1.8",
     "electron": "^2.0.18",
     "electron-builder": "^20.40.2",
     "ts-loader": "^6.2.1",

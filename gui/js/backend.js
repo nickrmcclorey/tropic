@@ -53,19 +53,13 @@ function goToParentDirectory(e) {
 
 // opens a file in a seperate program
 function openFile(rawPath) {
+	hideContextMenu();
+
     if (Tracker.folder().children[pathModule.basename(rawPath)].type == 'directory') {
         Tracker.activePane.cd(rawPath);
-        hideContextMenu();
-        return;
-    }
-
-    // some quotes are added to deal with paths with spaces
-    if (process.platform == 'win32') {
-        let afterC = rawPath.substr(rawPath.indexOf('\\')+1);
-        exec('start C:\\"'+afterC + '"');
     } else {
-        alert('Support for your operating system isn\'t available yet');
-    }
+		SystemI.instance.openFile(rawPath);
+	}
 }
 
 
@@ -144,7 +138,7 @@ function createNewChild(makeDir) {
 // uses executable that recycles files
 function deleteFile() {
     hideContextMenu();
-	getSystem().deleteFiles(selectedFiles.tentativePaths())
+	SystemI.instance.deleteFiles(selectedFiles.tentativePaths())
 	Tracker.refresh()
 
 	return
@@ -372,7 +366,6 @@ function useAsHome() {
     hideContextMenu();
 }
 
-var getSystem = SystemI.getCorrectSystem
 
 const fileOps = {
 	renameFiles,
@@ -387,7 +380,6 @@ const fileOps = {
 export {
 	fileOps,
     renameFiles,
-	getSystem,
     deleteFile,
     pasteSelectedFiles,
     unzip,
@@ -399,6 +391,7 @@ export {
 	loadExternalProgramList,
 	fileIconPath,
 	goToParentDirectory,
-	clearSelectedFiles
+	clearSelectedFiles,
+	loadLocations
 };
 

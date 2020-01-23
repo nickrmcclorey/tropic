@@ -6,6 +6,9 @@ declare var process: any;
 abstract class SystemI {
 	abstract deleteFiles(files: string[]): void;
 	abstract readDirectory(path: string): any;
+	abstract openFile(path: string): any;
+
+	static instance: SystemI = SystemI.getCorrectSystem();
 	static getCorrectSystem() {
 		if (process.platform == 'linux')
 			return new LinuxSystem();
