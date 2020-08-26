@@ -23,9 +23,11 @@ function init() {
         openingPath = os.homedir();
     }
 
+
     let fileFieldParent = document.getElementById('fileFieldParent');
     Tracker = new PaneTabTracker(fileFieldParent, openingPath);
- 	Tracker.refresh();
+    Tracker.refresh();
+     
 
     loadExternalProgramList();
     // loadLocations();

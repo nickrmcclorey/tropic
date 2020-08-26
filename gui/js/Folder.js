@@ -15,12 +15,8 @@ function Folder(path) {
 
 
 Folder.prototype.read = function () {
-    if (process.platform == 'win32') {
-        return new Promise((resolve, reject) => {this.parseWinDir(resolve, reject)});
-    } else {
-        this.collectFolderContents(this.path);
-        return Promise.resolve();
-    }
+    this.collectFolderContents(this.path);
+    return Promise.resolve();
 };
 
 
