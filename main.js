@@ -8,7 +8,14 @@ let win;
 function createWindow() {
     global.args = process.argv;
     // Create the browser window.
-    win = new BrowserWindow({ width: 800, height: 610, icon: iconPath() })
+    win = new BrowserWindow({
+        width: 800,
+        height: 610,
+        icon: iconPath(),
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
     win.setMenu(null);
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);

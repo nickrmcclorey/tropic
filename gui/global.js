@@ -1,7 +1,6 @@
 // ==== global variables ==== \\
 // TODO: find better solution then global variables
 
-const args = require('electron').remote.getGlobal('args');
 const { ipcRenderer } = require('electron');
 
 let currentFolder = {}
