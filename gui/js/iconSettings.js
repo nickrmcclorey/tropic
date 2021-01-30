@@ -1,11 +1,16 @@
 const pathModule = require("path")
 const fs = require('fs')
+import { showProgramSettings }   from "./programSettings.js" 
 
 ipcRenderer.on('sayHello', (evt, msg) => console.log(msg));
 
 ipcRenderer.on('executeFunction', (event, functionName) => {
-    console.log(functionName);
-    window[functionName]();
+    console.log(functionName)
+    const functionMap = {
+        "showProgramSettings": showProgramSettings,
+        "hideSettings": hideSettings
+    }
+    functionMap[functionName]();
 });
 
 
@@ -85,7 +90,7 @@ function hideSettings() {
     document.getElementById('fileFieldParent').style.display = 'grid';
     let settings = document.getElementById('settings');
     settings.style.display = 'none';
-    $('#programSettings').hide();
+    document.getElementById('programSettings').style.display = 'none';
 }
 
 
@@ -185,5 +190,6 @@ function saveSettingsToFile() {
 
 export {
     saveSettingsToFile,
-    showSettings
+    showSettings,
+    hideSettings
 }

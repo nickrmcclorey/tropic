@@ -1,16 +1,17 @@
+import { hideSettings } from "./iconSettings.js"
+
 function showProgramSettings() {
     hideSettings();
     document.getElementById('fileFieldParent').style.display = 'none';
-    $('#programSettings').show();
+    document.getElementById('programSettings').style.display = '';
     
-    let list = $('#programSettingTable')[0];
+    let pList = document.getElementById('programSettingTable');
     // clear list except for header
-    while (list.children.length > 1) {
-        list.removeChild(list.children[1]);
+    while (pList.children.length > 1) {
+        pList.removeChild(pList.children[1]);
     }
 
     for (let key of Object.keys(settings.programs)) {
-        console.log(key);
         let entry = document.createElement('tr');
         entry.setAttribute('class', 'programEntry')
         entry.innerHTML = '<td><input class="label"/></td><td><input type="checkbox"/></td><td><input type="checkbox"/></td><td><input/></td><td><button class="removeProgram">X</button></td>';
@@ -21,15 +22,17 @@ function showProgramSettings() {
         list.appendChild(entry);
     }
 
-    $('.newProgramEntry').on('click', () => {
-        let entry = document.createElement('tr');
-        entry.innerHTML = '<td><input class="label"/></td><td><input type="checkbox"/></td><td><input type="checkbox"/></td><td><input/></td><td><button>X</button></td>';
-        list.appendChild(entry);
-    });
+    for (let el of document.getElementsByClassName('newProgramEntry')) {
+        el.addEventListener('click', () => {
+            let entry = document.createElement('tr');
+            entry.innerHTML = '<td><input class="label"/></td><td><input type="checkbox"/></td><td><input type="checkbox"/></td><td><input/></td><td><button>X</button></td>';
+            list.appendChild(entry);
+        },false);
+    }
 
-    $('.Apply').on('click', () => {
+    document.getElementsByClassName('Apply')[0].addEventListener('click', () => {
         let programSettings = {};
-        for (let row of $('.programEntry')) {
+        for (let row of document.getElementsByClassName('programEntry')) {
 
             let programInfo = {};
             programInfo.canOpenFile = row.children[1].children[0].checked;
@@ -44,12 +47,17 @@ function showProgramSettings() {
 
         settings.programs = programSettings;
         saveSettingsToFile();
-    });
+    }, false);
 
-    for (el of $('.removeProgram')) {
+    for (el of document.getElementsByClassName('removeProgram')) {
         el.addEventListener('click', (e) => {
             let row = e.target.parentNode.parentNode;
             row.parentNode.removeChild(row);
         }, false);
     }
+}
+
+
+export {
+    showProgramSettings
 }
