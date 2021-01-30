@@ -27,5 +27,6 @@
         "Documents": "/home/nick/Documents",
         "Dev": "/home/nick/code",
         "Classes": "/home/nick/classes"
-    }
+    },
+    "showHiddenFiles": false
 }

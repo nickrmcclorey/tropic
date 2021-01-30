@@ -49,8 +49,11 @@ Folder.prototype.collectFolderContents = function (path) {
         file.isDirectory = function () {
             return this.type == 'directory';
         }
-        // we create an associative array where the filename is the index of it's correpsonding info
-        this.children[fileName] = file;
+        
+        if (fileName[0] != '.' || settings.showHiddenFiles) {
+            // we create a dictionary mapping the filename to correpsonding info
+            this.children[fileName] = file;
+        }
     }
 }
 

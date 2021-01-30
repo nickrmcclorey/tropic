@@ -1,3 +1,5 @@
+const pathModule = require("path")
+const fs = require('fs')
 
 ipcRenderer.on('sayHello', (evt, msg) => console.log(msg));
 
@@ -179,4 +181,9 @@ function saveSettingsToFile() {
     let pathToSettings = pathModule.join(__dirname, 'settings.json');
     let outputString = JSON.stringify(settings, null, 4);
     fs.writeFile(pathToSettings, outputString, () => {});
+}
+
+export {
+    saveSettingsToFile,
+    showSettings
 }

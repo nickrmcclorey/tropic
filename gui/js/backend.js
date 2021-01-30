@@ -6,7 +6,7 @@ const fii = require('file-icon-info');
 const AdmZip = require('adm-zip');
 const sudo = require('sudo-prompt');
 
-import { hideContextMenu } from "./updater.js"
+import { hideContextMenu, newInputBox } from "./updater.js"
 import { fileExtension, printError } from "./pure.js"
 import SystemI from "./SystemI.ts"
 
@@ -110,14 +110,10 @@ function createNewChild(makeDir) {
             let userInput = inputEl.value;
 
             if (makeDir && !fs.existsSync()) {
-                newDirPath = pathModule.join(Tracker.folder().path, userInput);
+                let newDirPath = pathModule.join(Tracker.folder().path, userInput);
                 try {
                     fs.mkdirSync(newDirPath);
                 } catch (exception) {
-                    let options = {
-                        name: 'Electron',
-                        icns: '/Applications/Electron.app/Contents/Resources/Electron.icns', // (optional)
-                    };
                     sudo.exec('mkdir "' + newDirPath + '"');
                 }
             } else {
@@ -392,6 +388,7 @@ export {
 	fileIconPath,
 	goToParentDirectory,
 	clearSelectedFiles,
-	loadLocations
+    loadLocations,
+    createNewChild
 };
 

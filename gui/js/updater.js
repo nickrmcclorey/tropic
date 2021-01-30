@@ -314,6 +314,7 @@ const callbacks = {
 export {
 	hideContextMenu,
 	updateGuiFiles,
-	callbacks
+    callbacks,
+    newInputBox
 }
 
