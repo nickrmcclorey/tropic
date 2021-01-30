@@ -1,5 +1,5 @@
-import { fileOps, useAsHome, handleClick, goToParentDirectory, clearSelectedFiles, createNewChild } from "./backend.js"
-import { callbacks, hideContextMenu } from "./updater.js"
+import { fileOps, useAsHome, handleClick, goToParentDirectory, clearSelectedFiles, createNewChild, pasteSelectedFiles } from "./backend.js"
+import { callbacks, hideContextMenu, updatePaneStyling } from "./updater.js"
 import { addTab, eraseTab, changeTab } from "./Tab.js"
 import { saveSettingsToFile } from "./iconSettings.js"
 
@@ -159,6 +159,15 @@ function handleKeypress(e) {
             Tracker.refresh();
             saveSettingsToFile();
         }
+    }
+}
+
+
+function homePath() {
+    if (settings.homeFolder == undefined) {
+        return os.homedir();
+    } else {
+        return settings.homeFolder
     }
 }
 

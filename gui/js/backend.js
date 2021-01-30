@@ -6,7 +6,7 @@ const fii = require('file-icon-info');
 const AdmZip = require('adm-zip');
 const sudo = require('sudo-prompt');
 
-import { hideContextMenu, newInputBox } from "./updater.js"
+import { hideContextMenu, newInputBox, updatePaneStyling } from "./updater.js"
 import { fileExtension, printError } from "./pure.js"
 import SystemI from "./SystemI.ts"
 
@@ -44,7 +44,6 @@ function handleClick(e) {
 
 
 function goToParentDirectory(e) {
-	console.log('inside')
     handleClick(e);
     let newPath = pathModule.join(Tracker.folder().path, '..') ;
     Tracker.activePane.cd(newPath);
@@ -220,6 +219,7 @@ function loadExternalProgramList() {
         programEl.innerHTML += '<div>' + program + '</div>';
     }
     programEl.addEventListener('click', startProgram, false);
+    console.log(programEl)
 }
 
 
@@ -261,14 +261,6 @@ function runExtProgram(programPath, fileOrFolderPath) {
     }
 }
 
-
-function homePath() {
-    if (settings.homeFolder == undefined) {
-        return os.homedir();
-    } else {
-        return settings.homeFolder
-    }
-}
 
 // returns the path to the file that should be used.
 // settings.json can be used to set file icons

@@ -1,4 +1,5 @@
 import Pane from "./Pane.js"
+import { adjustFileFieldParentCss } from "./updater.js"
 
 function PaneTabTracker(fileFieldParent, path) {
     this.activePane = new Pane(path);

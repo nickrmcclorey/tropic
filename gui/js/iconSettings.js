@@ -90,7 +90,6 @@ function hideSettings() {
 
 
 function selectIcon(e) {
-    console.log(e.target);
     if (e.target.nodeName != 'IMG' || settingsInputBox == null) {
         hideIconSelector();
         return
@@ -178,9 +177,10 @@ function saveIconSettings() {
 
 
 function saveSettingsToFile() {
-    let pathToSettings = pathModule.join(__dirname, 'settings.json');
+    let pathToSettings = pathModule.join(process.cwd(), 'gui/settings.json');
     let outputString = JSON.stringify(settings, null, 4);
     fs.writeFile(pathToSettings, outputString, () => {});
+    console.log(pathToSettings)
 }
 
 export {

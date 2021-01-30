@@ -3,7 +3,7 @@ const os = require('os')
 import { fileExtension } from "./js/pure.js"
 import { getStartupSettings } from "./js/settingsManager.js"
 import { setInitListeners } from "./js/EventListeners.js"
-import { loadDefaultIcons, loadExternalProgramList } from "./js/backend.js"
+import { loadDefaultIcons, loadExternalProgramList, loadLocations } from "./js/backend.js"
 import { PaneTabTracker } from "./js/PaneTabTracker.js"
 import SelectedFiles from "./js/SelectedFiles.js"
 
@@ -30,7 +30,7 @@ function init() {
      
 
     loadExternalProgramList();
-    // loadLocations();
+    loadLocations();
 }
 
 init();

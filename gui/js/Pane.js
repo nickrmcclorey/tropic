@@ -39,7 +39,6 @@ function Pane(path) {
         this.activeTab.folder = new Folder(this.activeTab.folder.path);
         this.activeTab.folder.read().then(() => {
             updateGuiFiles(this.activeTab.folder, this);
-			console.log('after')
         }).catch(() => {
             if (fallbackPath) {
                 this.activeTab.folder = new Folder(fallbackPath);

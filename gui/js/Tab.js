@@ -1,5 +1,6 @@
 import Folder from "./Folder.js"
 import { handleClick } from "./backend.js"
+import { adjustFileFieldParentCss } from "./updater.js"
 
 function Tab(path, tabElement) {
     this.element = tabElement

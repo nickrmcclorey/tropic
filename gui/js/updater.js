@@ -81,7 +81,6 @@ function updateGuiFiles(folderObj, pane) {
 	try {
     highlightTabs();
     setFileListListeners();
-	console.log('set file listeners')
     appendExeIcons(pane);
 	} catch (e) {console.log(e)}
 }
@@ -255,6 +254,7 @@ function openProgramList(e) {
 
 
 function openLocationList(e) {
+    console.log('location')
     let menu = document.getElementsByClassName('locationList')[0];
     let openButton = e.target;
     pinUnderElement(openButton, menu, 'grid');
@@ -266,7 +266,9 @@ function pinUnderElement(element, menu, newDisplay='block') {
     menu.style.left = location.x + 'px';
     menu.style.top = location.bottom + 'px';
     element.removeAttribute('hidden');
+    menu.removeAttribute('hidden')
     menu.style.display = newDisplay;
+    console.log(menu)
 }
 
 
@@ -293,6 +295,7 @@ function addFolderToLocations() {
     hideContextMenu();
 }
 
+
 function updatePaneStyling() {
     for (let pane of Tracker.panes) {
         pane.fileField.classList.remove('activeField');
@@ -315,6 +318,8 @@ export {
 	hideContextMenu,
 	updateGuiFiles,
     callbacks,
-    newInputBox
+    newInputBox,
+    updatePaneStyling,
+    adjustFileFieldParentCss
 }
 
