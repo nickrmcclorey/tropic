@@ -3,7 +3,8 @@ test.js
 *.dll
 *.exe
 tropic-win32-x64
-installer/web_downloads
+installers
+builds
 *.zip
 gui/settings.json
 gui/dist.js

@@ -1,3 +1,5 @@
+if (require('electron-squirrel-startup')) return;
+
 const path = require('path');
 const { app, BrowserWindow } = require('electron');
 const Menu = require('electron').Menu;
