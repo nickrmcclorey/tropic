@@ -6,8 +6,11 @@
   "scripts": {
     "prestart": "webpack",
     "start": "electron .",
-    "build-win": "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=win32",
-    "build-mac": "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=darwin",
+    "build-win-installer":  "node installer-win.js",
+    "build-mac-installer":  "electron-installer-dmg ./builds/tropic-darwin-x64/tropic.app tropic --out=./installers",
+    "build-linux-installer": "",
+    "build-win":   "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=win32",
+    "build-mac":   "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=darwin",
     "build-linux": "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=linux"
   },
   "repository": {
@@ -31,6 +34,7 @@
   "devDependencies": {
     "@types/node": "^13.13.52",
     "electron": "^11.1.1",
+    "electron-installer-dmg": "^3.0.0",
     "electron-packager": "^15.2.0",
     "electron-winstaller": "^5.0.0",
     "ts-loader": "^6.2.2",

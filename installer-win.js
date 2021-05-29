@@ -16,6 +16,7 @@ function getInstallerConfig () {
     noMsi: true,
     outputDirectory: 'installers/windows',
     exe: 'tropic.exe',
+    iconUrl: 'https://raw.githubusercontent.com/nickrmcclorey/tropic/master/gui/img/palm_trees.ico',
     setupExe: 'tropic_install.exe',
     setupIcon: 'gui/img/palm_trees.ico'
   })
