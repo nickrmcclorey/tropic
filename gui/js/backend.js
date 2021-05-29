@@ -9,6 +9,7 @@ const sudo = require('sudo-prompt');
 import { hideContextMenu, newInputBox, updatePaneStyling } from "./updater.js"
 import { fileExtension, printError } from "./pure.js"
 import SystemI from "./SystemI.ts"
+import { appPath } from "./settingsManager.js"
 
 function handleClick(e) {
     for (let fileField of document.getElementsByClassName('fileField')) {
@@ -67,7 +68,7 @@ function openFile(rawPath) {
 // i.e. putting an picture called xlsx.png in the img folder
 // will cause the program to use that picture as the .xlsx icon
 function loadDefaultIcons() {
-    let raw = fs.readdirSync(pathModule.resolve('./gui/img'));
+    let raw = fs.readdirSync(pathModule.join(appPath(), 'gui/img'));
 
     // chopping off extensions
     for (let fileName of raw) {

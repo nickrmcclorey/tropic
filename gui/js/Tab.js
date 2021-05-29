@@ -1,4 +1,5 @@
 import Folder from "./Folder.js"
+import { PaneTabTracker } from "./PaneTabTracker.js"
 import { handleClick } from "./backend.js"
 import { adjustFileFieldParentCss } from "./updater.js"
 

@@ -31,7 +31,7 @@ app.on('window-all-closed', app.quit);
 
 // this is needed because the path changes from development to deployment
 function iconPath() {
-    return path.resolve(__dirname, 'gui/img/palm_trees.ico');
+    return path.resolve(app.getAppPath(), 'gui/img/palm_trees.ico');
 }
 
 function runFunction(functionName) {

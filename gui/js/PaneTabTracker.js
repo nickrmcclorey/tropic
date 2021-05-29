@@ -12,7 +12,7 @@ function PaneTabTracker(fileFieldParent, path) {
         let tabIndex = this.tabIndex(event);
         let pane = Tracker.activePane;
         let activeTabWasErased = (event.target.parentNode == this.activePane.activeTab.element);
-        $(pane.tabs[tabIndex].element).remove();
+        let el = pane.tabs[tabIndex].element.remove()
         pane.tabs.splice(tabIndex, 1);
 
         if (pane.tabs.length <= 0) {

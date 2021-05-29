@@ -9,7 +9,7 @@ Key Features:
 - open other programs in active folder
 
 ## Getting Started
-Clone it and use npm. You can do it. I believe in you.
+Clone it and use npm
 ```
 git clone https://github.com/nickrmcclorey/tropic.git
 cd tropic
