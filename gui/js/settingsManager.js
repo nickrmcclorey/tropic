@@ -25,5 +25,6 @@ function appPath() {
 
 export { 
     getStartupSettings,
-    appPath 
+    appPath,
+    cleanPath
 };

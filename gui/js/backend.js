@@ -1,6 +1,6 @@
 const {exec} = require('child_process');
 const os = require('os');
-const fs = require('fs');
+const fs = require('fs-extra');
 const pathModule = require('path');
 const fii = require('file-icon-info');
 const AdmZip = require('adm-zip');
@@ -205,7 +205,7 @@ function pasteSelectedFiles() {
         if (selectedFiles.pendingAction == 'cut') {
             fs.renameSync(selectedFile.path, destination, printError ); // end of callback and fs.rename
         } else if (selectedFiles.pendingAction == 'copy') {
-            fs.copyFile(selectedFile.path, destination, printError);
+            fs.copy(selectedFile.path, destination, printError);
         }
         setTimeout(function(){ Tracker.refresh() }, 100);
     } // end of for loop
@@ -248,8 +248,6 @@ function startProgram(event) {
     } else if (filePath && program.canOpenFile) {
         runExtProgram(program.path, filePath);
     }
-
-    
 }
 
 
