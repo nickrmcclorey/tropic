@@ -4,14 +4,15 @@
   "description": "A file browser",
   "main": "main.js",
   "scripts": {
+    "clean": "rm -rf installers builds",
     "prestart": "webpack",
     "start": "electron .",
     "build-win-installer":  "node installer-win.js",
-    "build-mac-installer":  "electron-installer-dmg ./builds/tropic-darwin-x64/tropic.app tropic --out=./installers",
+    "build-mac-installer":  "electron-installer-dmg ./builds/tropic-darwin-x64/tropic.app tropic --out=./installers --overwrite",
     "build-linux-installer": "",
-    "build-win":   "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=win32",
-    "build-mac":   "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=darwin",
-    "build-linux": "electron-packager . --icon=./gui/img/palm_trees.ico --ignore=test.js --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=linux"
+    "build-win":   "electron-packager . --icon=./gui/img/palm_trees.ico  --ignore=installer-win.js --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=win32",
+    "build-mac":   "electron-packager . --icon=./gui/img/palm_trees.icns --ignore=installer-win.js --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=darwin",
+    "build-linux": "electron-packager . --icon=./gui/img/palm_trees.ico  --ignore=installer-win.js --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=linux"
   },
   "repository": {
     "type": "git",

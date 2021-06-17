@@ -1,0 +1,21 @@
+name: Release Tropic
+
+on: workflow_dispatch
+
+jobs:
+  build-win:
+    name: Build Windows Installer
+    runs-on: windows-latest
+
+    steps:
+
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - run: npm install
+
+    - name: Package Application
+      run: npm run build-win
+
+    - name: Create Installer
+      run: npm run build-win-installer
