@@ -14,7 +14,7 @@ jobs:
 
     - name: Checkout Code
       uses: actions/checkout@v2
-      
+
     - name: Get Version
       id: get-version
       run: |
@@ -57,7 +57,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - run: npm install
+      - name: npm install
+        run: |
+          npm install
+          npm i electron-installer-dmg -g
 
       - name: Package Application
         run: npm run build-mac
@@ -75,7 +78,10 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v2
 
-    - run: npm install
+    - name: npm install
+      run: |
+        npm install
+        npm install -g electron-installer-debian
 
     - name: Package Application
       run: npm run build-linux
