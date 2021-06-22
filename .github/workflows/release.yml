@@ -15,7 +15,7 @@ jobs:
     - name: Get Version
       id: get-version
       run: |
-        version=$(node scripts/get-version.js)
+        version=$(awk -F "\"" '/"version":/ {print $4}' package.json)
         matches=$(git tag | grep $version | wc -l)
         if [ "$matches" != "0" ]
         then
@@ -47,6 +47,7 @@ jobs:
   build-mac:
       name: Build Mac Installer
       runs-on: macos-latest
+      needs: get-version
 
       steps:
 
