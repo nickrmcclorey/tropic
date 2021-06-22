@@ -82,4 +82,4 @@ jobs:
     - name: Create Linux binary tarball
       run: npm run build-linux-bin-tar
 
-    - run: echo "${{ jobs.get-version.outputs.version }}"
+    - run: echo "${{ needs.get-version.outputs.version }}"
