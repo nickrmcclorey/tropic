@@ -3,6 +3,27 @@ name: Release Tropic
 on: workflow_dispatch
 
 jobs:
+
+  # TODO: get version and create git tag
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.version }}
+    setps:
+      name: Get Version
+      id: get-version
+      run: |
+        version=$(node scripts/get-version.js)
+        matches=$(git tag | grep $version | wc -l)
+        if [ "$matches" != "0" ]
+        then
+          echo "Update the version in package.json to release new version"
+          exit 1
+        fi
+
+        echo "::set-output name=version::$version"
+
+
   build-win:
     name: Build Windows Installer
     runs-on: windows-latest
@@ -19,3 +40,42 @@ jobs:
 
     - name: Create Installer
       run: npm run build-win-installer
+
+  build-mac:
+      name: Build Mac Installer
+      runs-on: 
+
+      steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - run: npm install
+
+      - name: Package Application
+        run: npm run build-mac
+
+      - name: Create Installer
+        run: npm run build-mac-installer
+
+  build-linux:
+    name: Build Linux Installers
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - run: npm install
+
+    - name: Package Application
+      run: npm run build-linux
+
+    - name: Create Debian Installer
+      run: npm run build-deb-installer
+
+    - name: Create Linux binary tarball
+      run: npm run build-linux-bin-tar
+
+    - run: echo "${{ jobs.get-version.outputs.version }}"
