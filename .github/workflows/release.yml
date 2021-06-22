@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get-version.version }}
-    setps:
-      name: Get Version
+    steps:
+    - name: Get Version
       id: get-version
       run: |
         version=$(node scripts/get-version.js)
