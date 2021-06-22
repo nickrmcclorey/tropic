@@ -80,11 +80,8 @@ jobs:
 
     - name: npm install
       run: |
-        mkdir ~/.npm-global
-        npm config set prefix '~/.npm-global'
-        export PATH=~/.npm-global/bin:$PATH
         npm install
-        npm install -g electron-installer-debian
+        npm install electron-installer-debian --save-dev
 
     - name: Package Application
       run: npm run build-linux

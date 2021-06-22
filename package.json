@@ -9,7 +9,7 @@
     "start": "electron .",
     "build-win-installer": "node scripts/installer-win.js",
     "build-mac-installer": "electron-installer-dmg ./builds/tropic-darwin-x64/tropic.app tropic --icon=./gui/img/palm_trees.icns --out=./installers --overwrite",
-    "build-deb-installer": "electron-installer-debian --src builds/tropic-linux-x64/ --dest installers/ --arch amd64",
+    "build-deb-installer": "node scripts/installer-debian.js",
     "build-linux-bin-tar": "tar -czf installers/tropic-linux-x64.tar.gz builds/tropic-linux-x64/",
     "build-win": "  electron-packager . --icon=./gui/img/palm_trees.ico  --ignore=scripts --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=win32",
     "build-mac": "  electron-packager . --icon=./gui/img/palm_trees.icns --ignore=scripts --ignore=gui/settings.json --out=builds --overwrite --arch=x64 --platform=darwin",
