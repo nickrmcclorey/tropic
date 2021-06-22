@@ -43,7 +43,7 @@ jobs:
 
   build-mac:
       name: Build Mac Installer
-      runs-on: 
+      runs-on: macos-latest
 
       steps:
 
