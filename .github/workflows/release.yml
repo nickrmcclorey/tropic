@@ -146,7 +146,7 @@ jobs:
         draft: true
         prerelease: false
 
-    - name: Upload Release Asset
+    - name: Upload Windows Installer
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -154,8 +154,9 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ./windows_installer/tropic_install.exe
         asset_name: tropic_install.exe
+        asset_content_type: application/octet-stream
 
-    - name: Upload Release Asset
+    - name: Upload Mac Installer
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -163,8 +164,9 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ./mac_installer/tropic.dmg
         asset_name: tropic.dmg
+        asset_content_type: application/octet-stream
 
-    - name: Upload Release Asset
+    - name: Upload Debian Installer
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -172,8 +174,9 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ./debian_installer/tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
         asset_name: tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
+        asset_content_type: application/vnd.debian.binary-package
 
-    - name: Upload Release Asset
+    - name: Upload Tarball
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -181,6 +184,7 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ./tropic_tarball/tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
         asset_name: tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
+        asset_content_type: application/gzip
   
 
       
