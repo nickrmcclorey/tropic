@@ -49,7 +49,12 @@ jobs:
     - name: Create Installer
       run: npm run build-win-installer
 
-    - run: ls installers/windows
+    - name: Upload Linux Binary Tarball
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows_installer
+        path: installers/windows/tropic_install.exe
+        retention-days: 2
 
   build-mac:
       name: Build Mac Installer
@@ -75,7 +80,7 @@ jobs:
       - name: Upload Mac Installer
         uses: actions/upload-artifact@v2
         with:
-          name: tropic_dmg
+          name: mac_installer
           path: installers/tropic.dmg
           retention-days: 2
 
@@ -106,7 +111,7 @@ jobs:
     - name: Upload Debian Installer
       uses: actions/upload-artifact@v2
       with:
-        name: tropic_debain
+        name: debian_installer
         path: installers/tropic_${{ needs.setup.outputs.version }}_amd64.deb
         retention-days: 2
 
@@ -129,13 +134,53 @@ jobs:
 
     - uses: actions/download-artifact@v2
     - run: find ./
-    #   with:
-    #     name: tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
-
-    # - uses: actions/download-artifact@v2
-    #   with:
-    #     name: tropic_${{ needs.setup.outputs.version }}_amd64.deb
     
-    # - uses: actions/download-artifact@v2
-    #   with:
-    #     name: tropic_${{ needs.setup.outputs.version }}.dmg
+    - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.setup.outputs.version }}
+          release_name: Release ${{ ${{ needs.setup.outputs.version }} }}
+          draft: true
+          prerelease: false
+
+    - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./windows_installer/tropic_install.exe
+          asset_name: tropic_install.exe
+
+    - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./mac_installer/tropic.dmg
+          asset_name: tropic.dmg
+
+    - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./debian_installer/tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
+          asset_name: tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
+
+    - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./tropic_tarball/tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
+          asset_name: tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
+  
+
+      
