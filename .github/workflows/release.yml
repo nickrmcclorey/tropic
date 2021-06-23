@@ -49,7 +49,7 @@ jobs:
     - name: Create Installer
       run: npm run build-win-installer
 
-    - name: Upload Linux Binary Tarball
+    - name: Upload Windows installer
       uses: actions/upload-artifact@v2
       with:
         name: windows_installer
@@ -139,6 +139,8 @@ jobs:
         release_name: Release ${{ needs.setup.outputs.version }}
         draft: true
         prerelease: false
+
+    - run: find ./
 
     - name: Upload Windows Installer
       uses: actions/upload-release-asset@v1
