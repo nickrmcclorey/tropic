@@ -142,7 +142,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ needs.setup.outputs.version }}
-        release_name: Release ${{ ${{ needs.setup.outputs.version }} }}
+        release_name: Release ${{ needs.setup.outputs.version }}
         draft: true
         prerelease: false
 
