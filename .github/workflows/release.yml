@@ -21,7 +21,7 @@ jobs:
         version=$(awk -F "\"" '/"version":/ {print $4}' package.json)
         echo "$version"
         matches=$(git tag | grep $version | wc -l)
-        if [ "$matches" != "0" ]
+        if [ $matches -ne 0 ]
         then
           echo "Update the version in package.json to release new version"
           exit 1
@@ -129,12 +129,6 @@ jobs:
 
     steps:
 
-    # - name: Checkout Code
-    #   uses: actions/checkout@v2
-
-    - uses: actions/download-artifact@v2
-    - run: find ./
-    
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -172,8 +166,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ./debian_installer/tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
-        asset_name: tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
+        asset_path: ./debian_installer/tropic_${{ needs.setup.outputs.version }}_amd64.deb
+        asset_name: tropic_${{ needs.setup.outputs.version }}_amd64.deb
         asset_content_type: application/vnd.debian.binary-package
 
     - name: Upload Tarball

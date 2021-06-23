@@ -1,6 +1,6 @@
 {
   "name": "tropic",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "description": "A file browser",
   "main": "main.js",
   "scripts": {
