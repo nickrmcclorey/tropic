@@ -49,7 +49,7 @@ jobs:
     - name: Create Installer
       run: npm run build-win-installer
 
-    - run: ls installers
+    - run: ls installers/windows
 
   build-mac:
       name: Build Mac Installer
@@ -75,7 +75,7 @@ jobs:
       - name: Upload Mac Installer
         uses: actions/upload-artifact@v2
         with:
-          name: tropic_${{ needs.setup.outputs.version }}.dmg
+          name: tropic_dmg
           path: installers/tropic.dmg
           retention-days: 2
 
@@ -106,14 +106,14 @@ jobs:
     - name: Upload Debian Installer
       uses: actions/upload-artifact@v2
       with:
-        name: tropic_${{ needs.setup.outputs.version }}_amd64.deb
+        name: tropic_debain
         path: installers/tropic_${{ needs.setup.outputs.version }}_amd64.deb
         retention-days: 2
 
     - name: Upload Linux Binary Tarball
       uses: actions/upload-artifact@v2
       with:
-        name: tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
+        name: tropic_tarball
         path: installers/tropic_${{ needs.setup.outputs.version }}_x64.tar.gz
         retention-days: 2
 
