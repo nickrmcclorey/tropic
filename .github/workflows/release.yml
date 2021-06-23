@@ -41,7 +41,9 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v2
 
-    - run: npm install
+    - run: |
+        npm install
+        npm run prestart
 
     - name: Package Application
       run: npm run build-win
@@ -70,6 +72,7 @@ jobs:
         run: |
           npm install
           npm i electron-installer-dmg -g
+          npm run prestart
 
       - name: Package Application
         run: npm run build-mac
@@ -98,6 +101,7 @@ jobs:
       run: |
         npm install
         npm install electron-installer-debian --save-dev
+        npm run prestart
 
     - name: Package Application
       run: npm run build-linux
@@ -106,7 +110,7 @@ jobs:
       run: npm run build-deb-installer
 
     - name: Create Linux Binary Tarball
-      run: tar -czf installers/tropic_${{ needs.setup.outputs.version }}_x64.tar.gz builds/tropic-linux-x64/
+      run: tar -C builds -czf installers/tropic_${{ needs.setup.outputs.version }}_x64.tar.gz tropic-linux-x64
 
     - name: Upload Debian Installer
       uses: actions/upload-artifact@v2
@@ -142,8 +146,6 @@ jobs:
         release_name: Release ${{ needs.setup.outputs.version }}
         draft: true
         prerelease: false
-
-    - run: find ./
 
     - name: Upload Windows Installer
       uses: actions/upload-release-asset@v1
