@@ -60,9 +60,9 @@ const template = [
     {
         label: 'Settings',
         submenu: [
-            { label: "file icons", click: () => { runFunction('showSettings') } },
+            { label: "file icons", click: () => { runFunction('showIconSettings') } },
             { label: "programs", click: () => { runFunction('showProgramSettings') } },
-            { label: "advanced", click: () => { exec('"' + __dirname + '\\gui\\settings.json"') } },
+            { label: "advanced", click: () => { runFunction('showAdvancedSettings') } },
             { label: "exit settings", click: () => { runFunction('hideSettings') } }
         ]
     },

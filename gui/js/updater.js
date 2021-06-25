@@ -248,8 +248,9 @@ function adjustFileFieldParentCss() {
 
 function openProgramList(e) {
     let list = document.getElementsByClassName('programList')[0];
+    console.log(list.getAttribute('hidden'))
     let openButton = e.target;
-    pinUnderElement(openButton, list);
+    pinUnderElement(openButton, list, 'block');
 }
 
 
@@ -267,7 +268,8 @@ function pinUnderElement(element, menu, newDisplay='block') {
     menu.style.top = location.bottom + 'px';
     element.removeAttribute('hidden');
     menu.removeAttribute('hidden')
-    menu.style.display = newDisplay;
+    menu.style.display = 'block'
+    console.log(menu);
     console.log(menu)
 }
 

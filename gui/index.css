@@ -75,8 +75,8 @@ ul.fileList  {
     height:100%;
     padding-left: 0px;
     list-style-type: none;
-    /* max-height: 27rem; */
-    overflow-y: scroll;
+    max-height: 27rem;
+    overflow-y: scroll; 
 }
 
 /* targets the files in the file List */
@@ -186,6 +186,10 @@ span {
 
 .backButton {
     padding-right: 1.5em;
+}
+
+.backButton:hover {
+    cursor: pointer;
 }
 
 .tabBar {

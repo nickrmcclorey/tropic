@@ -1,9 +1,10 @@
-import { hideSettings } from "./iconSettings.js"
+import { saveSettingsToFile, hideSettings } from "./iconSettings.js"
+import { isNullOrWhitespace } from "./pure.js"
 
 function showProgramSettings() {
     hideSettings();
     document.getElementById('fileFieldParent').style.display = 'none';
-    document.getElementById('programSettings').style.display = '';
+    document.getElementById('programSettings').style.display = 'block';
     
     let pList = document.getElementById('programSettingTable');
     // clear list except for header
@@ -19,14 +20,15 @@ function showProgramSettings() {
         entry.children[1].children[0].checked = settings.programs[key].canOpenFile;
         entry.children[2].children[0].checked = settings.programs[key].canOpenFolder;
         entry.children[3].children[0].value = settings.programs[key].path;
-        list.appendChild(entry);
+        pList.appendChild(entry);
     }
 
     for (let el of document.getElementsByClassName('newProgramEntry')) {
         el.addEventListener('click', () => {
             let entry = document.createElement('tr');
+            entry.setAttribute('class', 'programEntry')
             entry.innerHTML = '<td><input class="label"/></td><td><input type="checkbox"/></td><td><input type="checkbox"/></td><td><input/></td><td><button>X</button></td>';
-            list.appendChild(entry);
+            pList.appendChild(entry);
         },false);
     }
 

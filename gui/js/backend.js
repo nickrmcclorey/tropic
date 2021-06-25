@@ -1,8 +1,6 @@
 const {exec} = require('child_process');
-const os = require('os');
 const fs = require('fs-extra');
 const pathModule = require('path');
-const fii = require('file-icon-info');
 const AdmZip = require('adm-zip');
 const sudo = require('sudo-prompt');
 
@@ -29,7 +27,7 @@ function handleClick(e) {
     }
 
     let programMenu = document.getElementById('programMenu');
-    if (e.target.getAttribute('class') != 'openWithButton') {
+    if (!e.target.classList.contains('openWithButton')) {
         programMenu.style.display = 'none';
     }
 
@@ -61,26 +59,6 @@ function openFile(rawPath) {
 		SystemI.instance.openFile(rawPath);
 	}
 }
-
-
-// the files in img folder are read into an array
-// if the pictures name matches an extension, it is used.
-// i.e. putting an picture called xlsx.png in the img folder
-// will cause the program to use that picture as the .xlsx icon
-function loadDefaultIcons() {
-    let raw = fs.readdirSync(pathModule.join(appPath(), 'gui/img'));
-
-    // chopping off extensions
-    for (let fileName of raw) {
-        let newEntry = fileName.substr(0, fileName.indexOf('.'));
-        defaultIcons[newEntry] = fileName;
-    }
-
-    for (let extension of Object.keys(settings.fileTypes)) {
-        defaultIcons[extension] = settings.fileTypes[extension].img;
-    }
-}
-
 
 
 
@@ -216,7 +194,7 @@ function pasteSelectedFiles() {
 
 function loadExternalProgramList() {
     let programEl = document.getElementsByClassName('programList')[0];
-    for (program in settings.programs) {
+    for (let program in settings.programs) {
         programEl.innerHTML += '<div>' + program + '</div>';
     }
     programEl.addEventListener('click', startProgram, false);
@@ -374,7 +352,6 @@ export {
     addPicToFileIcons,
     useAsHome,
     handleClick,
-	loadDefaultIcons,
 	loadExternalProgramList,
 	fileIconPath,
 	goToParentDirectory,

@@ -1,18 +1,27 @@
-const pathModule = require("path")
+const path = require("path")
 const fs = require('fs')
-import { showProgramSettings }   from "./programSettings.js" 
+import { showProgramSettings } from "./programSettings.js"
+import { appPath } from "./settingsManager.js"
+import SystemI from "./SystemI.ts";
 
 ipcRenderer.on('sayHello', (evt, msg) => console.log(msg));
 
 ipcRenderer.on('executeFunction', (event, functionName) => {
     console.log(functionName)
     const functionMap = {
+        "showIconSettings": showSettings,
         "showProgramSettings": showProgramSettings,
+        "showAdvancedSettings": showAdvancedSettings,
         "hideSettings": hideSettings
     }
     functionMap[functionName]();
 });
 
+
+function showAdvancedSettings() {
+    let pathToSettings = path.join(process.cwd(), 'gui/settings.json');
+    SystemI.instance.openFile(pathToSettings)
+}
 
 function showSettings() {
     document.getElementById('fileFieldParent').style.display = 'none';
@@ -22,40 +31,40 @@ function showSettings() {
 
     let ul = document.createElement("ul")
     ul.setAttribute('id', 'fileExtensions')
-    for (extensionName in settings.fileTypes) {
-        extension = settings.fileTypes[extensionName];
+    for (let extensionName in settings.fileTypes) {
+        let extension = settings.fileTypes[extensionName];
 
         let newRow = document.createElement('li');
         newRow.innerHTML += '<img src="./img/' + extension.img + '"/>'
         newRow.innerHTML += '<label class="fileType">' + extensionName + '</label>'
-        newRow.innerHTML += '<input type="text" class="fileIconName" size="13" value='+ extension.img + '>'
+        newRow.innerHTML += '<input type="text" class="fileIconName" size="13" value=' + extension.img + '>'
         newRow.innerHTML += '<button class="iconButtons">select</button>'
         newRow.innerHTML += '<button class="removeEntry">X</button>';
 
         ul.appendChild(newRow);
     }
 
-    
+
     // append buttons
     let appendExtensionButton = document.createElement('button')
     appendExtensionButton.innerHTML = 'new file extension'
     appendExtensionButton.addEventListener('click', appendNewFileExtension)
-    
+
     let applyButton = document.createElement('button')
     applyButton.innerHTML = 'apply'
     applyButton.setAttribute('disabled', true);
     applyButton.id = 'applyButton';
     applyButton.addEventListener('click', saveIconSettings, false);
-    
+
     let buttonContainer = document.createElement('div')
     buttonContainer.setAttribute('id', 'buttonContainer')
     buttonContainer.appendChild(appendExtensionButton)
     buttonContainer.appendChild(applyButton)
-    
+
     settings_el.innerHTML = '';
     settings_el.appendChild(ul);
     settings_el.appendChild(buttonContainer)
-    
+
     setSettingsListeners();
 }
 
@@ -101,7 +110,7 @@ function selectIcon(e) {
     }
 
     // set value of picture in input box
-    settingsInputBox.value = pathModule.basename(e.target.src);
+    settingsInputBox.value = path.basename(e.target.src);
     let picture = settingsInputBox.previousSibling.previousSibling;
     picture.setAttribute('src', e.target.src);
     settingsInputBox = null;
@@ -109,7 +118,7 @@ function selectIcon(e) {
     // hide the icon selecor
     let elToDelete = document.getElementsByClassName('iconSelector')[0]
     elToDelete.parentNode.removeChild(elToDelete);
-    $('#applyButton').removeAttr('disabled');
+    document.getElementById('applyButton').removeAttribute('disabled');
 
 }
 
@@ -121,7 +130,7 @@ function hideIconSelector() {
 
 
 function setSelectedInputBox(e) {
-    if (e.target.getAttribute('class') != 'iconButtons' || $('.iconSelector').length > 0) {
+    if (e.target.getAttribute('class') != 'iconButtons' || document.getElementsByClassName('iconSelector').length > 0) {
         return
     }
 
@@ -129,7 +138,9 @@ function setSelectedInputBox(e) {
     let settings = document.getElementById('settings')
     settings.appendChild(loadIconSelector())
 
-    $('.iconSelector').on('click', selectIcon)
+    for (let el of document.getElementsByClassName('iconSelector')) {
+        el.addEventListener('click', selectIcon, false)
+    }
 }
 
 
@@ -138,11 +149,11 @@ function loadIconSelector() {
     iconSelector.setAttribute('class', 'iconSelector')
     iconSelector.setAttribute('id', 'iconSelector')
 
-    let icons = fs.readdirSync(__dirname + '\\img')
+    let icons = fs.readdirSync(__dirname + '/img')
 
-    for (iconName of icons) {
+    for (let iconName of icons) {
         let img_el = document.createElement('img')
-        img_el.setAttribute('src', "img\\" + iconName)
+        img_el.setAttribute('src', "img/" + iconName)
         iconSelector.appendChild(img_el);
     }
 
@@ -151,16 +162,23 @@ function loadIconSelector() {
 
 
 function setSettingsListeners(e) {
-    $('.iconButtons').on('click', setSelectedInputBox);
-    $('.fileIconName').on('keydown', () => {$('#applyButton').removeAttr('disabled');});
+    for (let el of document.getElementsByClassName('iconButtons')) {
+        el.addEventListener('click', setSelectedInputBox, false)
+    }
 
-    for (el of $('.removeEntry')) {
+    for (let el of document.getElementsByClassName('fileIconName')) {
+        el.addEventListener('keydown', () => {
+            document.getElementById('applyButton').removeAttribute('disabled');
+        });
+    }
+
+    for (let el of document.getElementsByClassName('removeEntry')) {
         el.addEventListener('click', (e) => {
-            let fileType = $(e.target.parentNode).find('.fileType')[0].textContent;
+            let fileType = e.target.parentNode.children[1].textContent;
             console.log(fileType)
             settings.fileTypes[fileType] = undefined;
-            $(e.target.parentNode).remove();
-            $('#applyButton').removeAttr('disabled');
+            e.target.parentNode.remove()
+            document.getElementById('applyButton').removeAttribute('disabled');
         }, false);
     }
 }
@@ -168,7 +186,7 @@ function setSettingsListeners(e) {
 
 function saveIconSettings() {
     // fileExtension will be the element with the file extension in it
-    for( let fileExtension_el of $('.fileType')) {
+    for (let fileExtension_el of document.getElementsByClassName('fileType')) {
         let fileExtension = fileExtension_el.textContent;
         if (settings.fileTypes[fileExtension] == undefined) {
             settings.fileTypes[fileExtension] = new Object();
@@ -182,14 +200,35 @@ function saveIconSettings() {
 
 
 function saveSettingsToFile() {
-    let pathToSettings = pathModule.join(process.cwd(), 'gui/settings.json');
+    let pathToSettings = path.join(process.cwd(), 'gui/settings.json');
     let outputString = JSON.stringify(settings, null, 4);
-    fs.writeFile(pathToSettings, outputString, () => {});
+    fs.writeFile(pathToSettings, outputString, () => { });
     console.log(pathToSettings)
 }
+
+
+// the files in img folder are read into an array
+// if the pictures name matches an extension, it is used.
+// i.e. putting an picture called xlsx.png in the img folder
+// will cause the program to use that picture as the .xlsx icon
+function loadDefaultIcons() {
+    let raw = fs.readdirSync(path.join(appPath(), 'gui/img'));
+
+    // chopping off extensions
+    for (let fileName of raw) {
+        let newEntry = fileName.substr(0, fileName.indexOf('.'));
+        defaultIcons[newEntry] = fileName;
+    }
+
+    for (let extension of Object.keys(settings.fileTypes)) {
+        defaultIcons[extension] = settings.fileTypes[extension].img;
+    }
+}
+
 
 export {
     saveSettingsToFile,
     showSettings,
-    hideSettings
+    hideSettings,
+    loadDefaultIcons
 }
