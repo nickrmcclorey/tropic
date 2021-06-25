@@ -15,7 +15,8 @@ function createWindow() {
         height: 610,
         icon: iconPath(),
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            contextIsolation: false
         }
     });
     win.setMenu(null);

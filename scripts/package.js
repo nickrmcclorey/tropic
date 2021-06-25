@@ -1,17 +1,20 @@
 const packager = require('electron-packager')
+platform = process.argv[process.argv.length-1]
 
 async function bundleElectronApp(opt) {
-    if (process.argv[1] == 'darwin')
+    if (platform == 'darwin')
         opt.icon="./gui/img/palm_trees.icns"
+
+    if (platform != 'win32')
+        opt.ignore.push("gui/programs")
 
     const appPaths = await packager(opt)
     console.log(`Electron app bundles created:\n${appPaths.join("\n")}`)
 }
 
-platform = process.argv[process.argv.length-1]
 options = {
     icon: "./gui/img/palm_trees.ico",
-    ignore: [ "scripts", "gui/settings.json", "gui/js"],
+    ignore: [ "scripts", "installers", "gui/settings.json", "webpack.config.js", "tsconfig.js", "gui/js"],
     out: "builds",
     overwrite: true,
     arch: "x64",
