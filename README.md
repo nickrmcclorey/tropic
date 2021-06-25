@@ -7,12 +7,14 @@ Key Features:
 - custom icons
 - side by side folder views
 - open other programs in active folder
+- Github Actions Workflow to release installers
 
 ## Getting Started
 Clone it and use npm
 ```
 git clone https://github.com/nickrmcclorey/tropic.git
 cd tropic
+npm install
 npm start
 ```
 
@@ -23,4 +25,4 @@ npm start
 - perform terminal commands
 - view file info and properties
 - tool to find file or folder
-- deployment system and first time startup
+- make deployments leaner
