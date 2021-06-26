@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/nickrmcclorey/tropic-file-browser#readme",
   "dependencies": {
+    "@json-editor/json-editor": "^2.5.4",
     "adm-zip": "^0.4.16",
     "electron-squirrel-startup": "^1.0.0",
     "file-icon-info": "^1.1.1",

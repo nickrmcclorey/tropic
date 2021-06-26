@@ -1,7 +1,8 @@
 const path = require("path")
 const fs = require('fs')
+import { loadLocations } from "./backend.js";
 import { showProgramSettings } from "./programSettings.js"
-import { appPath } from "./settingsManager.js"
+import { appPath, openLocationSettings } from "./settingsManager.js"
 import SystemI from "./SystemI.ts";
 
 ipcRenderer.on('sayHello', (evt, msg) => console.log(msg));
@@ -12,7 +13,8 @@ ipcRenderer.on('executeFunction', (event, functionName) => {
         "showIconSettings": showSettings,
         "showProgramSettings": showProgramSettings,
         "showAdvancedSettings": showAdvancedSettings,
-        "hideSettings": hideSettings
+        "hideSettings": hideSettings,
+        "openLocationSettings": openLocationSettings
     }
     functionMap[functionName]();
 });
@@ -96,9 +98,18 @@ function convertToLabel(e) {
 
 
 function hideSettings() {
+    document.activeElement.blur()
+    if (schemaEditor) {
+        settings.locations = schemaEditor.getValue()
+        saveSettingsToFile()
+        schemaEditor.destroy()
+        loadLocations()
+        schemaEditor = null;
+    }
+
     document.getElementById('fileFieldParent').style.display = 'grid';
-    let settings = document.getElementById('settings');
-    settings.style.display = 'none';
+    let set = document.getElementById('settings');
+    set.style.display = 'none';
     document.getElementById('programSettings').style.display = 'none';
 }
 

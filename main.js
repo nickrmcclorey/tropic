@@ -61,6 +61,7 @@ const template = [
         label: 'Settings',
         submenu: [
             { label: "file icons", click: () => { runFunction('showIconSettings') } },
+            { label: "locations", click: () => { runFunction('openLocationSettings') } },
             { label: "programs", click: () => { runFunction('showProgramSettings') } },
             { label: "advanced", click: () => { runFunction('showAdvancedSettings') } },
             { label: "exit settings", click: () => { runFunction('hideSettings') } }

@@ -10,3 +10,4 @@ let settings = null
 let selectedFiles = {}
 let defaultIcons = {}
 let settingsInputBox = null
+let schemaEditor = null

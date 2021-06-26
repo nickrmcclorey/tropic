@@ -287,16 +287,16 @@ function zip() {
 
 
 function loadLocations() {
-    for (let name in settings.locations) {
+    let locationList = document.getElementsByClassName('locationList')[0]
+    locationList.innerHTML = '';
+    for (let loc of settings.locations) {
         let element = document.createElement('div');
-        element.append(document.createTextNode(name));
-		let locationList = document.getElementsByClassName('locationList')[0]
+        element.append(document.createTextNode(loc.name));
         element.addEventListener('click', () => {
-            Tracker.activePane.cd(settings.locations[name]);
+            Tracker.activePane.cd(loc.path);
             locationList.style.display = 'none';
         }, false);
         locationList.appendChild(element);
-
     }
 }
 
