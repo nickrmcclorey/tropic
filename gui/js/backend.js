@@ -114,8 +114,6 @@ function deleteFile() {
     hideContextMenu();
 	SystemI.instance.deleteFiles(selectedFiles.tentativePaths())
 	Tracker.refresh()
-
-	return
 }
 
 
