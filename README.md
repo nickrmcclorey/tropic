@@ -19,10 +19,10 @@ npm start
 ```
 
 ## Future Improvments
-- extracting icons from exe files more efficiently
-- keyboard shortcuts
 - drag/drop files (compatable with other file browsers?)
 - perform terminal commands
 - view file info and properties
 - tool to find file or folder
-- make deployments leaner
+- change all settings through UI
+- improve trash capability and opening files for macos
+- Move trash handling to trash library

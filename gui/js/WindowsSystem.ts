@@ -25,7 +25,6 @@ class WindowsSystem implements SystemI {
         exec('start C:\\"'+afterC + '"');
 	}
 
-	readDirectory(path: string): void {	}	
 }
 
 export default WindowsSystem

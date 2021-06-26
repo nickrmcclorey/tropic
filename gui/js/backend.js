@@ -7,7 +7,7 @@ const sudo = require('sudo-prompt');
 import { hideContextMenu, newInputBox, updatePaneStyling } from "./updater.js"
 import { fileExtension, printError } from "./pure.js"
 import SystemI from "./SystemI.ts"
-import { appPath } from "./settingsManager.js"
+import {saveSettingsToFile } from "./iconSettings"
 
 function handleClick(e) {
     for (let fileField of document.getElementsByClassName('fileField')) {
@@ -297,16 +297,6 @@ function loadLocations() {
         }, false);
         locationList.appendChild(element);
 
-        let XButton = document.createElement('div');
-        XButton.appendChild(document.createTextNode('x'));
-        XButton.addEventListener('click', (e) => {
-            settings.locations[name] = undefined;
-            saveSettingsToFile();
-			let toRemove = e.target.previousSibling
-			toRemove.parentNode.removeChild(toRemove)
-			e.target.parentNode.removeChild(e.target)
-        }, false);
-        document.getElementsByClassName('locationList')[0].appendChild(XButton);
     }
 }
 

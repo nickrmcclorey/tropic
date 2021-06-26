@@ -1,9 +1,6 @@
 {
     "homeFolder": "",
     "fileTypes": {
-        "png": {
-            "img": "png.png"
-        },
         "xlsx": {
             "img": "xlsx.png"
         },
@@ -23,10 +20,6 @@
         }
     },
     "programs": {},
-    "locations": {
-        "Documents": "/home/nick/Documents",
-        "Dev": "/home/nick/code",
-        "Classes": "/home/nick/classes"
-    },
+    "locations": {},
     "showHiddenFiles": false
 }

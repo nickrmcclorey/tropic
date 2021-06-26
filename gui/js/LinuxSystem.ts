@@ -45,9 +45,6 @@ class LinuxSystem implements SystemI {
 		fs.writeFile(trashInfoFile, trashInfoContents, (e:any) => {});
 	}
 
-	readDirectory(path: string) {
-	
-	}
 }
 
 export default LinuxSystem
