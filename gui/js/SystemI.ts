@@ -1,4 +1,5 @@
 import LinuxSystem from "./LinuxSystem.ts"
+import MacSystem from "./MacSystem.ts";
 import WindowsSystem from "./WindowsSystem.ts"
 
 declare var process: any;
@@ -13,6 +14,8 @@ abstract class SystemI {
 			return new LinuxSystem();
 		if (process.platform == 'win32')
 			return new WindowsSystem();
+		if (process.platform == 'darwin')
+			return new MacSystem();
 	}
 }
 

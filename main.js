@@ -16,7 +16,8 @@ function createWindow() {
         icon: iconPath(),
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            devTools: true
         }
     });
     win.setMenu(null);

@@ -163,7 +163,7 @@ Folder.prototype.parseWinDir = function (resolve, reject) {
             fileId++;
 
             fileSettings = settings.fileTypes[fileExtension(name)];
-            if (newFile.type != 'directory' && fileSettings && fileSettings.src == 'extract') {
+            if (newFile.type != 'directory' && fileSettings?.src == 'extract') {
                 this.children[name].imgPromise = extractIcon(pathModule.join(this.path, name));
                 this.numExtractedIcons++;
             }
