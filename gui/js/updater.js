@@ -269,8 +269,6 @@ function pinUnderElement(element, menu, newDisplay='block') {
     element.removeAttribute('hidden');
     menu.removeAttribute('hidden')
     menu.style.display = 'block'
-    console.log(menu);
-    console.log(menu)
 }
 
 

@@ -8,3 +8,4 @@ builds
 *.zip
 gui/settings.json
 gui/dist.js
+gui/dist.js.map

@@ -279,7 +279,6 @@ function loadExternalProgramList() {
         programEl.innerHTML += '<div>' + program + '</div>';
     }
     programEl.addEventListener('click', startProgram, false);
-    console.log(programEl)
 }
 
 

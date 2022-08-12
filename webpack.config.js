@@ -3,6 +3,7 @@ module.exports = {
     entry: "./gui/index.js",
     target: "node",
     mode: "development",
+    devtool: 'cheap-module-source-map',
     output: {
         path: __dirname + "/gui",
         filename: "dist.js"

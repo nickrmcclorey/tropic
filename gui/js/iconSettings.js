@@ -203,7 +203,6 @@ function saveSettingsToFile() {
     let pathToSettings = path.join(process.cwd(), 'gui/settings.json');
     let outputString = JSON.stringify(settings, null, 4);
     fs.writeFile(pathToSettings, outputString, () => { });
-    console.log(pathToSettings)
 }
 
 
