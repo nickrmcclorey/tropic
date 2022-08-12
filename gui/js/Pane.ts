@@ -19,11 +19,9 @@ class Pane {
     
     
         let tabElement = this.fileField.getElementsByClassName('tab')[0];
-        console.log(path)
         this.tabs.push(new Tab(path, tabElement));
         this.activeTab = this.tabs[0];
         this.pathBox.value = path;
-        console.log(this.activeTab.folder)
 
 
     }

@@ -5,9 +5,7 @@ function getStartupSettings() {
     let setFile = cleanPath(path.join(appPath(), 'gui/settings.json'));
     if (!fs.existsSync(setFile)) {
         let defaultSet = cleanPath(path.join(appPath(), "gui/defaultSettings.json"));
-        console.log(defaultSet);
         fs.copyFileSync(defaultSet, setFile);
-        console.log('moved settings file')
     }
 
     let text = fs.readFileSync(path.join(appPath(), "gui/settings.json"), {encoding: 'utf8'})

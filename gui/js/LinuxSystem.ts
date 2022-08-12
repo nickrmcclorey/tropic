@@ -45,12 +45,16 @@ class LinuxSystem implements SystemI {
 		fs.writeFile(trashInfoFile, trashInfoContents, (e:any) => {});
 	}
 
-	mvCommand(src: string, dest: string): string {
-		return `mv ${src} ${dest}`
+	moveCommand(src: string[], dest: string, overwrite: boolean): string {
+		if (src.length <= 0) throw "No src files specified in move command";
+
+		return `mv ${src.join(' ')} ${dest}`
 	}
 
-	copyCommand(src: string, dest: string): string {
-		return `cp ${src} ${dest}`
+	copyCommand(src: string[], dest: string): string {
+		if (src.length <= 0) throw "No src files specified in copy command";
+
+		return `cp ${src.join(' ')} ${dest}`
 	}
 }
 

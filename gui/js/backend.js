@@ -100,8 +100,8 @@ function createNewChild(makeDir) {
                     }
                 }
             } else if (!fs.existsSync(newPathToCreate)) {
-                fs.writeFile(newPathToCreate, '', e => {
-                    if (e.code == 'EACCES') {
+                fs.writeFile(newPathToCreate, '', error => {
+                    if (error?.code == 'EACCES') {
                         console.log("don't have permissions to write here")
                         createErrorToast("File Access Error: Insufficient permissions")
                     }
@@ -188,34 +188,26 @@ function renameFiles() {
 } // end of rename sequence
 
 
-function pasteSelectedFiles() {
+async function pasteSelectedFiles() {
     // can't paste if files haven't been copied
     if (!selectedFiles.pendingAction) {
         return;
     }
 
     let promises = [];
+    let sudoFiles = [];
     for (let selectedFile of selectedFiles.locked) {
         let fileName = pathModule.basename(selectedFile.path);
 
         let destination = '';
-        if (selectedFiles.tentative[0] && selectedFiles.tentative[0].isDirectory) {
-            destination = selectedFiles.tentative[0].path;
-            destination = pathModule.join(destination, fileName);
-        } else {
-            destination = pathModule.join(Tracker.folder().path, fileName);
-        }
         destination = pathModule.join(Tracker.folder().path, fileName);
 
         let action = null;
-        let sudoCommand = null;
         // cut or copy depending on previous selection
         if (selectedFiles.pendingAction == 'cut') {
             action = fs.rename
-            sudoCommand = SystemI.instance.mvCommand(selectedFile.path, destination)
         } else if (selectedFiles.pendingAction == 'copy') {
             action = fs.copyFile
-            sudoCommand = SystemI.instance.coopyCommand(selectedFile.path, destination)
         } else {
             continue;
         }
@@ -223,23 +215,10 @@ function pasteSelectedFiles() {
         promises.push(new Promise((resolve, reject) => {
             action(selectedFile.path, destination, (e) => {
                 if (e) {
-                    let options = {
-                        name: "tropic"
-                    }
-                    console.log(selectedFiles.pendingAction)
-                    if (e.code == 'EACCES' && selectedFiles.pendingAction == 'cut') {
-                        sudo.exec(sudoCommand, options, 
-                            (error, stdout, stderr) => {
-                                console.log('insdie')
-                                if (error) {
-                                    console.error(error)
-                                    reject(error)
-                                }
-                                resolve();
-                            }
-                        )
-                    } else if (e.code == 'EACCES' && selectedFiles.pendingAction == 'copy') {
-                        reject(e);
+                    // If we don't have adequate file permissions, we'll save this file and try with sudo later
+                    if (e.code == 'EACCES') {
+                        sudoFiles.push(selectedFile.path)
+                        resolve()
                     } else {
                         reject(e);
                     }
@@ -250,9 +229,46 @@ function pasteSelectedFiles() {
         }))
     } // end of for loop
 
-    Promise.all(promises).then(() => {
-        Tracker.refresh();
-        selectedFiles.pendingAction = null;
+    await Promise.all(promises)
+    if (sudoFiles.length > 0) {
+        let destination = Tracker.folder().path
+        let command = '';
+        if (selectedFiles.pendingAction == 'cut') {
+            command = SystemI.instance.moveCommand(sudoFiles, destination, false)
+        } else if (selectedFiles.pendingAction == 'copy') {
+            command = SystemI.instance.copyCommand(sudoFiles, destination, false)
+        } else {
+            return;
+        }
+
+        try {
+            await sudoExec(command)
+        } catch (error) {
+            console.error('command used: ' + command)
+            console.error(error)
+            createErrorToast("Couldn't copy one or more files")
+        }
+    }
+
+    Tracker.refresh()
+    selectedFiles.pendingAction = null
+}
+
+function sudoExec(command) {
+    const options = {
+        name: "Tropic"
+    }
+
+    return new Promise((resolve, reject) => {
+        sudo.exec(command, options, 
+            (error, stdout, stderr) => {
+                if (error) {
+                    reject(error)
+                }
+
+                resolve();
+            }
+        )
     })
 }
 

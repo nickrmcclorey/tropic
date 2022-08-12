@@ -26,12 +26,20 @@ class WindowsSystem implements SystemI {
         exec('start C:\\"'+afterC + '"');
 	}
 	
-	mvCommand(src: string, dest: string): string {
-		return `move ${src} ${dest}`
+	moveCommand(src: string[], dest: string, overwrite: boolean): string {
+		if (src.length <= 0) throw "No src files specified in move command";	
+
+		return `move ${src[0]} ${dest}`
 	}
 	
-	copyCommand(src: string, dest: string): string {
-		return `copy ${src} ${dest}`
+	copyCommand(src: string[], dest: string): string {
+		if (src.length <= 0) throw "No src files specified in copy command";
+
+		let commands = [];
+		for (let file of src) {
+			commands.push(`copy ${src} ${dest}`)
+		}
+		return commands.join(' & ')
 	}
 }
 
