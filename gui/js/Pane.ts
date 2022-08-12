@@ -1,5 +1,5 @@
-import Tab from "./Tab.ts"
-import Folder from "./Folder.ts"
+import Tab from "./Tab"
+import Folder from "./Folder"
 import { updateGuiFiles } from "./updater.js"
 
 declare var templates: HTMLElement;
@@ -22,8 +22,6 @@ class Pane {
         this.tabs.push(new Tab(path, tabElement));
         this.activeTab = this.tabs[0];
         this.pathBox.value = path;
-
-
     }
 
     setActiveTab(tab: Element) {
@@ -44,7 +42,7 @@ class Pane {
         }
     }
 
-    refresh(fallbackPath: string): void {
+    refresh(fallbackPath: string = ''): void {
         // this.activeTab.folder = new Folder(this.activeTab.folder.path);
         this.activeTab.folder = new Folder(this.activeTab.folder.path);
         this.activeTab.folder.read().then(() => {

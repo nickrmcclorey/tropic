@@ -1,5 +1,5 @@
-import Folder from "./Folder.ts"
-import { PaneTabTracker } from "./PaneTabTracker.js"
+import Folder from "./Folder"
+import { PaneTabTracker } from "./PaneTabTracker"
 import { handleClick } from "./backend.js"
 import { adjustFileFieldParentCss } from "./updater.js"
 
@@ -16,7 +16,6 @@ class Tab {
 
 // called by the tab
 function changeTab(e: any) {
-    console.log(typeof(e))
     if (e.target.classList.contains('label')) {
         handleClick(e);
         Tracker.activePane.setActiveTab(this);

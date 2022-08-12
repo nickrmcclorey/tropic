@@ -8,11 +8,11 @@ class File {
 
 class SelectedFiles {
     pendingAction:string = null;
-    tentative:any = [];
-    locked:any = [];
+    tentative:File[] = [];
+    locked:File[] = [];
 
     addTentative(path: string, isDirectory: boolean, li: HTMLElement) {
-    let objToPush = {
+        let objToPush = {
             "path": pathModule.resolve(path),
             "isDirectory": isDirectory,
             "li": li
@@ -38,7 +38,7 @@ class SelectedFiles {
     }
 
     tentativeRemove(liToRemove: HTMLElement) {
-        for (let k in this.tentative) {
+        for (let k = 0; k < this.tentative.length; k++) {
             // when we find the index, we remove the selected file
             if (this.tentative[k].li == liToRemove) {
                 this.tentative.splice(k, 1);

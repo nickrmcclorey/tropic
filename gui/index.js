@@ -4,7 +4,7 @@ import { getStartupSettings } from "./js/settingsManager.js"
 import { setInitListeners } from "./js/EventListeners.js"
 import { loadDefaultIcons } from "./js/iconSettings.js"
 import { loadLocations, loadExternalProgramList } from "./js/backend.js"
-import { PaneTabTracker } from "./js/PaneTabTracker.js"
+import { PaneTabTracker } from "./js/PaneTabTracker.ts"
 import SelectedFiles from "./js/SelectedFiles.ts"
 
 function init() {

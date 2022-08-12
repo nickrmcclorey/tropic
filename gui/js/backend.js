@@ -54,7 +54,7 @@ function goToParentDirectory(e) {
 function openFile(rawPath) {
     hideContextMenu();
 
-    if (Tracker.folder().children[pathModule.basename(rawPath)].type == 'directory') {
+    if (Tracker.folder().children[pathModule.basename(rawPath)].isDirectory == 'directory') {
         Tracker.activePane.cd(rawPath);
     } else {
         SystemI.instance.openFile(rawPath);
@@ -128,8 +128,6 @@ function sudoMkdir(folderPath) {
                 console.log(error)
                 createErrorToast("Permission Denied")
             }
-
-            Tracker.refresh();
         }
     );
 }

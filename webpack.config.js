@@ -11,6 +11,9 @@ module.exports = {
     externals: {
         settings: "settings"
     },
+    resolve: {
+        extensions: ['.ts', '.js']
+    },
 	module: {
 		rules: [
 			{

@@ -16,7 +16,7 @@ class File {
 
 // TODO: this could easily be trimmed and turned into a ts file
 class Folder {
-    children:any = new Object();
+    children:{[fileName: string]: File} = {};
     
     constructor(public path: string) {}
 
