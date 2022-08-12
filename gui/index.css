@@ -112,8 +112,8 @@ li.fileEntry:hover{
 }
 
 .fileDate{
-    padding-left: 5px;
-    padding right:5px;
+    padding-left:  5px;
+    padding-right: 5px;
 }
 
 img {
@@ -307,3 +307,41 @@ label {
 #programSettingTable .label {
     width: 60px;
 }
+
+
+/* taken from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_snackbar */
+#toast {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+  }
+  
+  #toast.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+
+  #toast.error {
+    background-color: red;
+  }
+  
+  @keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+  }
+  
+  @keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+  }

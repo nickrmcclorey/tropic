@@ -45,6 +45,13 @@ class LinuxSystem implements SystemI {
 		fs.writeFile(trashInfoFile, trashInfoContents, (e:any) => {});
 	}
 
+	mvCommand(src: string, dest: string): string {
+		return `mv ${src} ${dest}`
+	}
+
+	copyCommand(src: string, dest: string): string {
+		return `cp ${src} ${dest}`
+	}
 }
 
 export default LinuxSystem

@@ -2,7 +2,7 @@
 // it doesn't rely on, nor does it affect, any global variables
 
 // parses file extension from full file name (i.e. 'myBook.xlsx' as a parameter returns 'xlsx')
-function fileExtension(fileName) {
+function fileExtension(fileName: string): string {
     if (fileName.lastIndexOf('.') == -1) {
         return null;
     } else {
@@ -12,11 +12,11 @@ function fileExtension(fileName) {
 
 
 // grabbing file name from li element
-function nameFromLi(li) {
+function nameFromLi(li: HTMLElement): string {
     return li.children[1].textContent.trim();
 }
 
-function sizeOf(size) {
+function sizeOf(size: number): string {
 
         if (size > 1000000000) { // bigger than a gig
             size /= 1000000000;
@@ -36,7 +36,7 @@ function sizeOf(size) {
 
 }
 
-function preparePathForCmd(path) {
+function preparePathForCmd(path: string): string {
     let paths = path.trim().replace('/', '\\').split('\\');
     for (let k in paths) {
         if (paths[k].includes(' ')) {
@@ -46,13 +46,13 @@ function preparePathForCmd(path) {
     return paths.join('\\');
 }
 
-function printError(error) {
+function printError(error: Error): void {
     if (error) {
         console.log(error);
     }
 }
 
-function isNullOrWhitespace(input) {
+function isNullOrWhitespace(input: string): boolean {
     return !(input != null && input.trim().length > 0);
 }
 

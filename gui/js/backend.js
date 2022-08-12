@@ -1,13 +1,14 @@
-const {exec} = require('child_process');
-const fs = require('fs-extra');
+const { exec } = require('child_process');
+const fs = require('fs');
 const pathModule = require('path');
 const AdmZip = require('adm-zip');
 const sudo = require('sudo-prompt');
 
 import { hideContextMenu, newInputBox, updatePaneStyling } from "./updater.js"
-import { fileExtension, printError } from "./pure.js"
+import { fileExtension, printError } from "./pure.ts"
 import SystemI from "./SystemI.ts"
-import {saveSettingsToFile } from "./iconSettings"
+import { saveSettingsToFile } from "./iconSettings"
+import { createErrorToast } from "./toast.ts"
 
 function handleClick(e) {
     for (let fileField of document.getElementsByClassName('fileField')) {
@@ -44,20 +45,20 @@ function handleClick(e) {
 
 function goToParentDirectory(e) {
     handleClick(e);
-    let newPath = pathModule.join(Tracker.folder().path, '..') ;
+    let newPath = pathModule.join(Tracker.folder().path, '..');
     Tracker.activePane.cd(newPath);
 }
 
 
 // opens a file in a seperate program
 function openFile(rawPath) {
-	hideContextMenu();
+    hideContextMenu();
 
     if (Tracker.folder().children[pathModule.basename(rawPath)].type == 'directory') {
         Tracker.activePane.cd(rawPath);
     } else {
-		SystemI.instance.openFile(rawPath);
-	}
+        SystemI.instance.openFile(rawPath);
+    }
 }
 
 
@@ -87,15 +88,24 @@ function createNewChild(makeDir) {
         if (keyPressed == 13) {
             let userInput = inputEl.value;
 
-            if (makeDir && !fs.existsSync()) {
-                let newDirPath = pathModule.join(Tracker.folder().path, userInput);
+            let newPathToCreate = pathModule.join(Tracker.folder().path, userInput);
+            if (makeDir && !fs.existsSync(newPathToCreate)) {
+                // TODO: This doesn't seem like good exception handling
                 try {
-                    fs.mkdirSync(newDirPath);
+                    fs.mkdirSync(newPathToCreate);
                 } catch (exception) {
-                    sudo.exec('mkdir "' + newDirPath + '"');
+                    console.log(exception.code)
+                    if (exception.code == 'EACCES') {
+                        sudoMkdir(newPathToCreate);
+                    }
                 }
-            } else {
-                fs.writeFile(pathModule.join(Tracker.folder().path, userInput), '', () => {});
+            } else if (!fs.existsSync(newPathToCreate)) {
+                fs.writeFile(newPathToCreate, '', e => {
+                    if (e.code == 'EACCES') {
+                        console.log("don't have permissions to write here")
+                        createErrorToast("File Access Error: Insufficient permissions")
+                    }
+                });
             }
 
             Tracker.refresh();
@@ -108,14 +118,30 @@ function createNewChild(makeDir) {
     inputEl.focus();
 }
 
+function sudoMkdir(folderPath) {
+    var options = {
+        name: 'Tropic',
+    };
+    sudo.exec('mkdir "' + folderPath + '"', options,
+        (error, stdout, stderr) => {
+            if (error) {
+                console.log(error)
+                createErrorToast("Permission Denied")
+            }
+
+            Tracker.refresh();
+        }
+    );
+}
+
 
 // uses executable that recycles files
 function deleteFile() {
     hideContextMenu();
-	SystemI.instance.deleteFiles(selectedFiles.tentativePaths())
-	Tracker.refresh()
+    SystemI.instance.deleteFiles(selectedFiles.tentativePaths())
+    Tracker.refresh()
 
-	return
+    return
 }
 
 
@@ -168,6 +194,7 @@ function pasteSelectedFiles() {
         return;
     }
 
+    let promises = [];
     for (let selectedFile of selectedFiles.locked) {
         let fileName = pathModule.basename(selectedFile.path);
 
@@ -178,17 +205,55 @@ function pasteSelectedFiles() {
         } else {
             destination = pathModule.join(Tracker.folder().path, fileName);
         }
-        
+        destination = pathModule.join(Tracker.folder().path, fileName);
+
+        let action = null;
+        let sudoCommand = null;
         // cut or copy depending on previous selection
         if (selectedFiles.pendingAction == 'cut') {
-            fs.renameSync(selectedFile.path, destination, printError ); // end of callback and fs.rename
+            action = fs.rename
+            sudoCommand = SystemI.instance.mvCommand(selectedFile.path, destination)
         } else if (selectedFiles.pendingAction == 'copy') {
-            fs.copy(selectedFile.path, destination, printError);
+            action = fs.copyFile
+            sudoCommand = SystemI.instance.coopyCommand(selectedFile.path, destination)
+        } else {
+            continue;
         }
-        setTimeout(function(){ Tracker.refresh() }, 100);
+
+        promises.push(new Promise((resolve, reject) => {
+            action(selectedFile.path, destination, (e) => {
+                if (e) {
+                    let options = {
+                        name: "tropic"
+                    }
+                    console.log(selectedFiles.pendingAction)
+                    if (e.code == 'EACCES' && selectedFiles.pendingAction == 'cut') {
+                        sudo.exec(sudoCommand, options, 
+                            (error, stdout, stderr) => {
+                                console.log('insdie')
+                                if (error) {
+                                    console.error(error)
+                                    reject(error)
+                                }
+                                resolve();
+                            }
+                        )
+                    } else if (e.code == 'EACCES' && selectedFiles.pendingAction == 'copy') {
+                        reject(e);
+                    } else {
+                        reject(e);
+                    }
+                } else {
+                    resolve();
+                }
+            })
+        }))
     } // end of for loop
 
-    selectedFiles.pendingAction = null;
+    Promise.all(promises).then(() => {
+        Tracker.refresh();
+        selectedFiles.pendingAction = null;
+    })
 }
 
 
@@ -290,7 +355,7 @@ function loadLocations() {
     for (let name in settings.locations) {
         let element = document.createElement('div');
         element.append(document.createTextNode(name));
-		let locationList = document.getElementsByClassName('locationList')[0]
+        let locationList = document.getElementsByClassName('locationList')[0]
         element.addEventListener('click', () => {
             Tracker.activePane.cd(settings.locations[name]);
             locationList.style.display = 'none';
@@ -323,17 +388,17 @@ function useAsHome() {
 
 
 const fileOps = {
-	renameFiles,
-	deleteFile,
-	pasteSelectedFiles,
-	unzip,
-	zip,
-	addPicToFileIcons,
-	openFile
+    renameFiles,
+    deleteFile,
+    pasteSelectedFiles,
+    unzip,
+    zip,
+    addPicToFileIcons,
+    openFile
 }
 
 export {
-	fileOps,
+    fileOps,
     renameFiles,
     deleteFile,
     pasteSelectedFiles,
@@ -342,10 +407,10 @@ export {
     addPicToFileIcons,
     useAsHome,
     handleClick,
-	loadExternalProgramList,
-	fileIconPath,
-	goToParentDirectory,
-	clearSelectedFiles,
+    loadExternalProgramList,
+    fileIconPath,
+    goToParentDirectory,
+    clearSelectedFiles,
     loadLocations,
     createNewChild
 };

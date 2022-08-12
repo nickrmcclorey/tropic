@@ -6,7 +6,7 @@ const fs = require("fs")
 
 import { fileOps, fileIconPath, clearSelectedFiles, handleClick } from "./backend.js"
 import { setFileListListeners } from "./EventListeners.js"
-import { nameFromLi, fileExtension } from "./pure.js"
+import { nameFromLi, fileExtension } from "./pure.ts"
 
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(folderObj, pane) {

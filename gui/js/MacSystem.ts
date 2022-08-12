@@ -29,6 +29,14 @@ class MacSystem implements SystemI {
         });	
 	}
 
+    mvCommand(src: string, dest: string): string {
+		return `mv ${src} ${dest}`
+	}
+
+    copyCommand(src: string, dest: string): string {
+        return `cp ${src} ${dest}`
+    }
+
 }
 
 export default MacSystem

@@ -1,12 +1,14 @@
-import Pane from "./Pane.js"
+import Pane from "./Pane.ts"
+const pathModule = require('path')
 import { adjustFileFieldParentCss } from "./updater.js"
 
 function PaneTabTracker(fileFieldParent, path) {
     this.activePane = new Pane(path);
-    this.panes = [this.activePane];
     this.element = fileFieldParent;
+    this.panes = [this.activePane];
 
-    fileFieldParent.appendChild(this.activePane.fileField);
+    this.element.appendChild(this.activePane.fileField);
+    this.activePane.refresh();
 
     this.removeTab = (event) => {
         let tabIndex = this.tabIndex(event);

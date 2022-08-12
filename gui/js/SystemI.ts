@@ -7,6 +7,8 @@ declare var process: any;
 abstract class SystemI {
 	abstract deleteFiles(files: string[]): void;
 	abstract openFile(path: string): any;
+	abstract mvCommand(src: string, dest: string): string;
+	abstract copyCommand(src: string, dest: string): string;
 
 	static instance: SystemI = SystemI.getCorrectSystem();
 	static getCorrectSystem() {

@@ -1,16 +1,22 @@
-import Folder from "./Folder.js"
+import Folder from "./Folder.ts"
 import { PaneTabTracker } from "./PaneTabTracker.js"
 import { handleClick } from "./backend.js"
 import { adjustFileFieldParentCss } from "./updater.js"
 
-function Tab(path, tabElement) {
-    this.element = tabElement
-    this.folder = new Folder(path);
+declare var Tracker: PaneTabTracker;
+declare var templates: HTMLElement;
+
+class Tab {
+    folder: Folder;
+    constructor(public path: string, public element: HTMLElement) {
+        this.folder = new Folder(path)
+    }
 }
 
 
 // called by the tab
-function changeTab(e) {
+function changeTab(e: any) {
+    console.log(typeof(e))
     if (e.target.classList.contains('label')) {
         handleClick(e);
         Tracker.activePane.setActiveTab(this);
@@ -19,12 +25,12 @@ function changeTab(e) {
 }
 
 
-function addTab(e) {
+function addTab(e: any) {
     handleClick(e);
 
     // navigate to the tabBar with all the tabs in it
     // create new tab
-    let newTab = templates.getElementsByClassName('tab')[0].cloneNode(true);
+    let newTab = <HTMLElement>templates.getElementsByClassName('tab')[0].cloneNode(true);
     newTab.addEventListener('click', changeTab, false);
 
     // add tab button must stay on the right
@@ -37,7 +43,7 @@ function addTab(e) {
 }
 
 
-function eraseTab(e) {
+function eraseTab(e: any) {
     handleClick(e);
     Tracker.removeTab.bind(PaneTabTracker)(e);
     if (Tracker.activePane.tabs.length <= 0) {

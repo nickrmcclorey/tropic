@@ -1,5 +1,7 @@
 # Tropic File Browser
 
+[![Release Tropic](https://github.com/nickrmcclorey/tropic/actions/workflows/release.yml/badge.svg)](https://github.com/nickrmcclorey/tropic/actions/workflows/release.yml)
+
 A simple file browser for multi-tasking.
 
 Key Features:

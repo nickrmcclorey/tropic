@@ -1,5 +1,5 @@
 import { saveSettingsToFile, hideSettings } from "./iconSettings.js"
-import { isNullOrWhitespace } from "./pure.js"
+import { isNullOrWhitespace } from "./pure.ts"
 
 function showProgramSettings() {
     hideSettings();

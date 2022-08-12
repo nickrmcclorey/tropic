@@ -1,12 +1,11 @@
 const os = require('os')
 
-import { fileExtension } from "./js/pure.js"
 import { getStartupSettings } from "./js/settingsManager.js"
 import { setInitListeners } from "./js/EventListeners.js"
 import { loadDefaultIcons } from "./js/iconSettings.js"
 import { loadLocations, loadExternalProgramList } from "./js/backend.js"
 import { PaneTabTracker } from "./js/PaneTabTracker.js"
-import SelectedFiles from "./js/SelectedFiles.js"
+import SelectedFiles from "./js/SelectedFiles.ts"
 
 function init() {
     settings = getStartupSettings();
@@ -24,10 +23,9 @@ function init() {
         openingPath = os.homedir();
     }
 
-
     let fileFieldParent = document.getElementById('fileFieldParent');
     Tracker = new PaneTabTracker(fileFieldParent, openingPath);
-    Tracker.refresh();
+    // Tracker.refresh();
      
 
     loadExternalProgramList();

@@ -1,6 +1,6 @@
 import { fileOps, useAsHome, handleClick, goToParentDirectory, clearSelectedFiles, createNewChild, pasteSelectedFiles } from "./backend.js"
 import { callbacks, hideContextMenu, updatePaneStyling } from "./updater.js"
-import { addTab, eraseTab, changeTab } from "./Tab.js"
+import { addTab, eraseTab, changeTab } from "./Tab.ts"
 import { saveSettingsToFile } from "./iconSettings.js"
 
 
