@@ -7,11 +7,12 @@ import SystemI from "./SystemI.js";
 
 class LinuxSystem implements SystemI {
 
-	deleteFiles(files: string[]): void {
-		// process is same for files and folders
-		for (let file of files) {
-			this.deleteFile(file)
-		}
+	deleteFiles(files: string[]): Promise<any> {
+		return new Promise((resolve, reject) => {
+			Promise.all(files.map(this.deleteFile))
+				.then(resolve)
+				.catch(reject)
+		})
 	}
 
 	openFile(path: string): void {
@@ -20,7 +21,7 @@ class LinuxSystem implements SystemI {
 
 	// linux has a trash folder at ~/.local/share/Trash
 	// files are moved to the "files" folder while metadata is stored in the "info" folder
-	private deleteFile(filePath: string): void {
+	private deleteFile(filePath: string): Promise<void> {
 		let fileName  = pathModule.basename(filePath);
 		let trashPath = pathModule.join(os.homedir(), '.local/share/Trash');
 		let destination = pathModule.join(trashPath, 'files', fileName)
@@ -42,7 +43,11 @@ class LinuxSystem implements SystemI {
 			'Path=' + filePath + '\n' +
 			`DeletionDate=${year}-${month}-${day}T${hours}:${minutes}:${seconds}\n`
 
-		fs.writeFile(trashInfoFile, trashInfoContents, (e:any) => {});
+		return new Promise((resolve, reject) => {
+			fs.writeFile(trashInfoFile, trashInfoContents, (e:any) => {
+				resolve()
+			});
+		})
 	}
 
 	moveCommand(src: string[], dest: string, overwrite: boolean): string {

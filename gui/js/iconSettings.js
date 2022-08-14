@@ -4,9 +4,11 @@ import { showProgramSettings } from "./programSettings.js"
 import { appPath } from "./settingsManager.js"
 import SystemI from "./SystemI.ts";
 
-ipcRenderer.on('sayHello', (evt, msg) => console.log(msg));
+let settingsInputBox = null
 
-ipcRenderer.on('executeFunction', (event, functionName) => {
+electron.ipcRenderer.on('sayHello', (evt, msg) => console.log(msg));
+
+electron.ipcRenderer.on('executeFunction', (event, functionName) => {
     console.log(functionName)
     const functionMap = {
         "showIconSettings": showSettings,

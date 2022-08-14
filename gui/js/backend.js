@@ -134,12 +134,10 @@ function sudoMkdir(folderPath) {
 
 
 // uses executable that recycles files
-function deleteFile() {
+async function deleteFile() {
     hideContextMenu();
-    SystemI.instance.deleteFiles(selectedFiles.tentativePaths())
+    await SystemI.instance.deleteFiles(selectedFiles.tentativePaths())
     Tracker.refresh()
-
-    return
 }
 
 
@@ -413,7 +411,6 @@ const fileOps = {
 export {
     fileOps,
     renameFiles,
-    deleteFile,
     pasteSelectedFiles,
     unzip,
     zip,

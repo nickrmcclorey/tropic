@@ -10,15 +10,20 @@ declare var selectedFiles: any;
 
 class WindowsSystem implements SystemI {
 	
-	deleteFiles(files: string[]): void {
-		let pathToExe = cleanPath(pathModule.join(appPath(), "gui/programs/recycle/recycle.exe"));
-		let filesToDelete = cleanPath(files.join(' '));
-		exec(pathToExe + ' ' + filesToDelete, (error: any) => {
-			if (error)
-			console.log(error);
-            else
-			Tracker.refresh();
-		});
+	deleteFiles(files: string[]): Promise<void> {
+
+		return new Promise((resolve, reject) => {
+			let pathToExe = cleanPath(pathModule.join(appPath(), "gui/programs/recycle/recycle.exe"));
+			let filesToDelete = cleanPath(files.join(' '));
+			exec(pathToExe + ' ' + filesToDelete, (error: any) => {
+				if (error) {
+					console.log(error);
+					reject()
+				} else {
+					resolve()
+				}
+			});
+		})
 	}
 	
 	openFile(path: string): void {

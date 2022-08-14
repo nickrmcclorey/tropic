@@ -1,11 +1,11 @@
-import LinuxSystem from "./LinuxSystem.ts"
-import MacSystem from "./MacSystem.ts";
-import WindowsSystem from "./WindowsSystem.ts"
+import LinuxSystem from "./LinuxSystem"
+import MacSystem from "./MacSystem";
+import WindowsSystem from "./WindowsSystem"
 
 declare var process: any;
 
 abstract class SystemI {
-	abstract deleteFiles(files: string[]): void;
+	abstract deleteFiles(files: string[]): Promise<any>;
 	abstract openFile(path: string): any;
 	abstract moveCommand(src: string[], dest: string, overwrite: boolean): string;
 	abstract copyCommand(src: string[], dest: string): string;
