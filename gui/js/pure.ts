@@ -1,39 +1,9 @@
 // every function in this file is pure
 // it doesn't rely on, nor does it affect, any global variables
 
-// parses file extension from full file name (i.e. 'myBook.xlsx' as a parameter returns 'xlsx')
-function fileExtension(fileName: string): string {
-    if (fileName.lastIndexOf('.') == -1) {
-        return null;
-    } else {
-        return fileName.substr(fileName.lastIndexOf('.')+1);
-    }
-}
-
-
 // grabbing file name from li element
 function nameFromLi(li: HTMLElement): string {
     return li.children[1].textContent.trim();
-}
-
-function sizeOf(size: number): string {
-
-        if (size > 1000000000) { // bigger than a gig
-            size /= 1000000000;
-            return size.toFixed(2).toString() + ' GB';
-
-        } else if (size > 1000000) { // bigger than a meg
-            size /= 1000000;
-            return size.toPrecision(3).toString() + ' MB';
-
-        } else if (size > 1000) {
-            size /= 1000;
-            return Math.round(size).toString() + ' KB';
-
-        } else {
-            return size.toString() + " Bytes"
-        }
-
 }
 
 function preparePathForCmd(path: string): string {
@@ -46,21 +16,12 @@ function preparePathForCmd(path: string): string {
     return paths.join('\\');
 }
 
-function printError(error: Error): void {
-    if (error) {
-        console.log(error);
-    }
-}
-
 function isNullOrWhitespace(input: string): boolean {
     return !(input != null && input.trim().length > 0);
 }
 
 export { 
-    fileExtension,
-    printError,
     isNullOrWhitespace,
     preparePathForCmd,
-    sizeOf,
     nameFromLi
 }

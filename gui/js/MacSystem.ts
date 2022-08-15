@@ -3,15 +3,16 @@ const pathModule = require('path')
 const sudo = require('sudo-prompt')
 
 import SystemI from "./SystemI"
-import { unlinkSync } from "fs";
-import { appPath, cleanPath } from "./settingsManager.js"
+import { appPath, cleanPath } from "./settingsManager"
 import { execFile, exec } from "child_process";
+import { createErrorToast } from "./toast"
 
 class MacSystem implements SystemI {
 
 	deleteFiles(files: string[]): Promise<void> {
-        let pathToExe = cleanPath(pathModule.join(appPath(), "gui/programs/macos-trash"));
+        let pathToExe = cleanPath(pathModule.join(appPath(), "gui/programs/trash/macos-trash"));
         let command = pathToExe + ' ' + files.join(' ')
+        console.log(command)
 
         return new Promise((resolve, reject) => {
             exec(command, (error: any, stdout: any, stderr: string) => {
@@ -40,8 +41,7 @@ class MacSystem implements SystemI {
         execFile ('open', [path], (error, _, stderr) => {
             if (error) {
                 if (stderr.includes('ApplicationNotFoundErr')) {
-                    // TODO: notify user with toast
-                    console.log("couldn't find program to open file")
+                    createErrorToast("Couldn't find program to open file")
                 } else {
                     console.log(error)
                 }

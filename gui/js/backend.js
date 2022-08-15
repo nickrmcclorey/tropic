@@ -4,8 +4,9 @@ const pathModule = require('path');
 const AdmZip = require('adm-zip');
 const sudo = require('sudo-prompt');
 
-import { hideContextMenu, newInputBox, updatePaneStyling } from "./updater.js"
-import { fileExtension, printError } from "./pure.ts"
+import { adjustFileFieldParentCss, hideContextMenu, newInputBox, updatePaneStyling } from "./updater.js"
+import Tab from "./PaneTracking/Tab.ts";
+import File from "./PaneTracking/File.ts"
 import SystemI from "./SystemI.ts"
 import { saveSettingsToFile } from "./iconSettings"
 import { createErrorToast } from "./toast.ts"
@@ -90,7 +91,6 @@ function createNewChild(makeDir) {
 
             let newPathToCreate = pathModule.join(Tracker.folder().path, userInput);
             if (makeDir && !fs.existsSync(newPathToCreate)) {
-                // TODO: This doesn't seem like good exception handling
                 try {
                     fs.mkdirSync(newPathToCreate);
                 } catch (exception) {
@@ -142,7 +142,7 @@ async function deleteFile() {
 
 
 // creates input box, waits for user to enter new name or click elsewhere
-function renameFiles() {
+function renameFileButtonPressed() {
     hideContextMenu();
     let fileToRename = selectedFiles.tentative[0];
 
@@ -152,7 +152,7 @@ function renameFiles() {
     inputBox.setAttribute('id', 'renameBox');
 
     // when user presses enter in the input box, the file will renamed
-    inputBox.addEventListener('keypress', (e) => {
+    inputBox.addEventListener('keypress', async (e) => {
 
         // did user press enter?
         let keyPressed = e.which || e.keyCode;
@@ -161,14 +161,15 @@ function renameFiles() {
             // get new name, rename file and refresh
             let newName = inputBox.value;
 
-            fs.rename(fileToRename.path, pathModule.join(Tracker.folder().path, newName), (error) => {
-                if (error) {
-                    console.log(error);
-                    alert('Failed to rename file')
-                }
-                Tracker.refresh();
-                clearSelectedFiles();
-            }); // end of fs.rename callback
+            let destination = pathModule.join(Tracker.folder().path, newName)
+            try {
+                await renameFile(fileToRename.path, destination)
+            } catch {
+                createErrorToast("Failed to rename file")
+            }
+
+            Tracker.refresh();
+            clearSelectedFiles();
         }// end of if
     }, false); // end of keypress callback
 
@@ -182,6 +183,27 @@ function renameFiles() {
     inputBox.focus();
 
 } // end of rename sequence
+
+function renameFile(src, dest) {
+    return new Promise((resolve, reject) => {
+        fs.rename(src, dest, (error) => {
+            if (error) {
+                console.log(error);
+                reject(); // TODO: remove when we filter error to permission error
+                let command = SystemI.instance.moveCommand(src, dest)
+                sudo.exec(command, {name: "Tropic"}, (error, stdout, stderr) => {
+                    if (error) {
+                        reject(error);
+                    }
+
+                    resolve();
+                })
+            }
+            resolve()
+        });
+    })
+    
+}
 
 
 async function pasteSelectedFiles() {
@@ -320,7 +342,7 @@ function runExtProgram(programPath, fileOrFolderPath) {
 function fileIconPath(folder, fileName) {
     let fileObj = folder.children[fileName];
     let iconFileName = defaultIcons[fileObj.type];
-    let iconSettings = settings.fileTypes[fileExtension(fileName)];
+    let iconSettings = settings.fileTypes[File.fileExtension(fileName)];
 
     if (iconSettings == undefined) {
         if (iconFileName == undefined) {
@@ -398,8 +420,48 @@ function useAsHome() {
 }
 
 
+// called by the tab
+function changeTab(e) {
+    if (e.target.classList.contains('label')) {
+        handleClick(e);
+        Tracker.activePane.setActiveTab(this);
+        Tracker.refresh();
+    }
+}
+
+
+function addTab(e) {
+    handleClick(e);
+
+    // navigate to the tabBar with all the tabs in it
+    // create new tab
+    let newTab = document.getElementById('templates').getElementsByClassName('tab')[0].cloneNode(true);
+    newTab.addEventListener('click', changeTab, false);
+
+    // add tab button must stay on the right
+    let tabBar = Tracker.activePane.fileField.getElementsByClassName('tabBar')[0];
+    let path = Tracker.folder().path;
+    Tracker.activePane.tabs.push(new Tab(path, newTab));
+    Tracker.activePane.setActiveTab(newTab);
+    tabBar.insertBefore(newTab, e.target);
+    Tracker.refresh();
+}
+
+
+function eraseTab(e) {
+    handleClick(e);
+    Tracker.removeTab(e)
+    if (Tracker.activePane.tabs.length <= 0) {
+        let elementToDelete = Tracker.activePane.fileField;
+        elementToDelete.parentNode.removeChild(elementToDelete);
+        Tracker.activePane = Tracker.panes[0];
+    }
+    adjustFileFieldParentCss();
+}
+
+
 const fileOps = {
-    renameFiles,
+    renameFileButtonPressed,
     deleteFile,
     pasteSelectedFiles,
     unzip,
@@ -410,7 +472,6 @@ const fileOps = {
 
 export {
     fileOps,
-    renameFiles,
     pasteSelectedFiles,
     unzip,
     zip,
@@ -422,6 +483,9 @@ export {
     goToParentDirectory,
     clearSelectedFiles,
     loadLocations,
-    createNewChild
+    createNewChild,
+    addTab,
+	eraseTab,
+	changeTab
 };
 

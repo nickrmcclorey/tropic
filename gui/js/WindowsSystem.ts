@@ -3,7 +3,7 @@ const {exec} = require('child_process');
 const sudo = require('sudo-prompt');
 
 import SystemI from "./SystemI"
-import { appPath, cleanPath } from "./settingsManager.js"
+import { appPath, cleanPath } from "./settingsManager.ts"
 
 declare var Tracker: any;
 declare var selectedFiles: any;

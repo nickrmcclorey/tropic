@@ -1,28 +1,23 @@
 import Folder from "./Folder"
 import Pane from "./Pane"
-const pathModule = require('path')
-import { adjustFileFieldParentCss } from "./updater.js"
 
-declare var Tracker: any  
-
-class PaneTabTracker {
+class PaneTracker {
 
     activePane: Pane
     panes: Pane[]
     element: HTMLElement
 
-    constructor(fileFieldParent: HTMLElement, path: string) {
-        this.activePane = new Pane(path);
+    constructor(fileFieldParent: HTMLElement, path: string, private updateUiFunction: (pane: Pane) => void) {
+        this.activePane = new Pane(path, updateUiFunction);
         this.element = fileFieldParent;
         this.panes = [this.activePane];
     
         this.element.appendChild(this.activePane.fileField);
-        this.activePane.refresh();
     }
 
     removeTab(event: any): void {
         let tabIndex = this.tabIndex(event);
-        let pane = Tracker.activePane;
+        let pane = this.activePane;
         let activeTabWasErased = (event.target.parentNode == this.activePane.activeTab.element);
         let el = pane.tabs[tabIndex].element.remove()
         pane.tabs.splice(tabIndex, 1);
@@ -32,6 +27,7 @@ class PaneTabTracker {
         } else if (activeTabWasErased) {
             pane.setActiveTab(pane.tabs[0].element);
         }
+        this.refresh()
     }
 
     folder(): Folder {
@@ -56,11 +52,10 @@ class PaneTabTracker {
     };
 
     addPane(path: string) {
-        let newPane = new Pane(path);
+        let newPane = new Pane(path, this.updateUiFunction);
         this.panes.push(newPane);
         newPane.refresh();
         this.element.appendChild(newPane.fileField);
-        adjustFileFieldParentCss();
     };
 
     tabIndex(e: any): number {
@@ -77,11 +72,11 @@ class PaneTabTracker {
         }
     };
 
-    findTab = function (node: HTMLElement) {
+    findTab(node: HTMLElement) {
         let index = this.tabIndex(node);
         return this.findPane(node).tabs[index];
     };
 
 };
 
-export { PaneTabTracker }
+export default PaneTracker

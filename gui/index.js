@@ -1,19 +1,17 @@
 const os = require('os')
 
-import { getStartupSettings } from "./js/settingsManager.js"
+import { getStartupSettings } from "./js/settingsManager.ts"
 import { setInitListeners } from "./js/EventListeners.js"
 import { loadDefaultIcons } from "./js/iconSettings.js"
 import { loadLocations, loadExternalProgramList } from "./js/backend.js"
-import { PaneTabTracker } from "./js/PaneTabTracker.ts"
+import PaneTracker from "./js/PaneTracking/PaneTracker"
 import SelectedFiles from "./js/SelectedFiles.ts"
+import { updateGuiFiles } from "./js/updater"
 
 function init() {
     settings = getStartupSettings();
 	selectedFiles = new SelectedFiles();
     setInitListeners();
-	templates = document.getElementById('templates');
-	templates.parentNode.removeChild(templates);
-    templates.removeAttribute('hidden');
     loadDefaultIcons();
 
     let openingPath = "";
@@ -24,8 +22,8 @@ function init() {
     }
 
     let fileFieldParent = document.getElementById('fileFieldParent');
-    Tracker = new PaneTabTracker(fileFieldParent, openingPath);
-    // Tracker.refresh();
+    Tracker = new PaneTracker(fileFieldParent, openingPath, updateGuiFiles);
+    Tracker.refresh();
      
 
     loadExternalProgramList();

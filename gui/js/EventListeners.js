@@ -1,6 +1,6 @@
 import { fileOps, useAsHome, handleClick, goToParentDirectory, clearSelectedFiles, createNewChild, pasteSelectedFiles } from "./backend.js"
-import { callbacks, hideContextMenu, updatePaneStyling } from "./updater.js"
-import { addTab, eraseTab, changeTab } from "./Tab.ts"
+import { adjustFileFieldParentCss, callbacks, hideContextMenu, updatePaneStyling } from "./updater.js"
+import { addTab, eraseTab, changeTab } from "./backend.js"
 import { saveSettingsToFile } from "./iconSettings.js"
 
 
@@ -48,7 +48,7 @@ function setInitListeners() {
 
     // rename buttons
     for (let el of document.getElementsByClassName('renameButton')) {
-        el.addEventListener('click', fileOps.renameFiles, false);
+        el.addEventListener('click', fileOps.renameFileButtonPressed, false);
     }
     // delete button
     for (let el of document.getElementsByClassName('deleteButton')) {
@@ -102,6 +102,7 @@ function setInitListeners() {
     for (let el of document.getElementsByClassName('newPaneButton')) {
         el.addEventListener('click', () => {
             Tracker.addPane(homePath());
+            adjustFileFieldParentCss()
         }, false);
     }
 
@@ -145,6 +146,7 @@ function handleKeypress(e) {
             Tracker.activePane.fileField.getElementsByClassName('addTabButton')[0].click();
         } else if (keyPressed == 'T' && e.shiftKey) {
             Tracker.addPane(Tracker.folder().path);
+            adjustFileFieldParentCss()
         } else if (keyPressed == 'W' && !e.shiftKey) {
             e.preventDefault();
             Tracker.activePane.activeTab.element.children[1].click();

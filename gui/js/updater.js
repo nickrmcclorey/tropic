@@ -1,36 +1,37 @@
 // Nicholas McClorey - 7/30/2018
 // Nicholas McClorey - 1/16/2020
+// Nicholas McClorey - 8/14/2022
 
 const pathModule = require("path")
 const fs = require("fs")
 
 import { fileOps, fileIconPath, clearSelectedFiles, handleClick } from "./backend.js"
 import { setFileListListeners } from "./EventListeners.js"
-import { nameFromLi, fileExtension } from "./pure.ts"
+import { nameFromLi } from "./pure.ts"
+import File from "./PaneTracking/File"
 
 // updates the display with the list of files and their relavant information
-function updateGuiFiles(folderObj, pane) {
-    // if pane is not passed in, we stick with the active pane (selectedFileList)
-    let fileList = null;
-    if (pane) {
-        fileList = pane.fileList;
-    } else {
-        pane = Tracker.activePane;
-        fileList = Tracker.activePane.fileList;
-    }
+function updateGuiFiles(pane) {
+    let folder = pane.activeTab.folder
+    let fileList = Tracker.activePane.fileList;
 
     // update the input path box to show current path
-    pane.pathBox.value = folderObj.path;
+    pane.pathBox.value = folder.path;
 
     // wipe the list of files because we just changed directories
-    if (Object.keys(folderObj.children).length == 0) {
+    if (Object.keys(folder.children).length == 0) {
         fileList.innerHTML = "<li><span></span><span>Folder is empty</span></li>";    
     } else {
         fileList.innerHTML = '<li><span></span><span>Name</span><span>Size</span></li>';
     }
 
-    // folderObj.children is an associative array indexed by strings corresponding to the files' names
-    for (let fileName in folderObj.children) {
+    // folder.children is an associative array indexed by strings corresponding to the files' names
+    for (let fileName in folder.children) {
+
+        if (!settings.showHiddenFiles && fileName.startsWith('.')) {
+            continue;
+        }
+
         // this will be one row in the file list
         let file_li = document.createElement('li');
         file_li.setAttribute('class', 'fileEntry');
@@ -38,11 +39,11 @@ function updateGuiFiles(folderObj, pane) {
         // icon of file
         let img = document.createElement('img');
 		try {
-			img.setAttribute('src', fileIconPath(folderObj, fileName));
+			img.setAttribute('src', fileIconPath(folder, fileName));
 		} catch (e) {
 			console.error (e)
 		}
-        img.setAttribute('id', folderObj.children[fileName].id)
+        img.setAttribute('id', folder.children[fileName].id)
 
         // name of file
         let spanName = document.createElement('span');
@@ -50,11 +51,11 @@ function updateGuiFiles(folderObj, pane) {
 
         // size of file - set to 'folder' if entry is directory
         let spanFileSize = document.createElement('span');
-        if (folderObj.children[fileName].isDirectory()) {
+        if (folder.children[fileName].isDirectory()) {
                 spanFileSize.appendChild(document.createTextNode('directory'));
         } else {
             // appending a textNode showing the size of the file
-            spanFileSize.appendChild(document.createTextNode(folderObj.children[fileName].size));
+            spanFileSize.appendChild(document.createTextNode(folder.children[fileName].size));
         }
 
         // appending all the elements to the <li> bar
@@ -66,18 +67,18 @@ function updateGuiFiles(folderObj, pane) {
         fileList.appendChild(file_li);
 
         // provide pointer to element so we can append the correct icon later on
-        if (folderObj.children[fileName].imgPromise) {
-            folderObj.children[fileName].element = file_li;
+        if (folder.children[fileName].imgPromise) {
+            folder.children[fileName].element = file_li;
         }
 
     }// end of for loop
 
 
     let tab = pane.activeTab.element;
-    tab.path = folderObj.path;
-    let label = pathModule.basename(folderObj.path);
+    tab.path = folder.path;
+    let label = pathModule.basename(folder.path);
     // tab's label is the basename or the path if in root folder
-    tab.getElementsByClassName('label')[0].innerHTML = (label == '') ? folderObj.path : label;
+    tab.getElementsByClassName('label')[0].innerHTML = (label == '') ? folder.path : label;
 	try {
     highlightTabs();
     setFileListListeners();
@@ -172,7 +173,7 @@ function hideContextMenu() {
 
 
 function showContextMenu(e) {
-    if (selectedFiles.tentative[0] && fileExtension(selectedFiles.tentative[0].path) == 'zip') {
+    if (selectedFiles.tentative[0] && File.fileExtension(selectedFiles.tentative[0].path) == 'zip') {
 		for (let el of document.getElementsByClassName('unzipButton')) {
 			el.removeAttribute('hidden')
 		}
@@ -214,18 +215,6 @@ function highlightTabs() {
 
     for (let pane of Tracker.panes)
         pane.activeTab.element.classList.add('activeTab')
-}
-
-
-// returns number of tabs in a specific tabBar
-function numTabs(tabBar) {
-    let numTabs = 0;
-    for (let tab of tabBar.children) {
-        if (tab.className == 'tab') {
-            numTabs++;
-        }
-    }
-    return numTabs;
 }
 
 

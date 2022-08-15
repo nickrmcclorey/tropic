@@ -1,18 +1,16 @@
 import Tab from "./Tab"
 import Folder from "./Folder"
-import { updateGuiFiles } from "./updater.js"
 
-declare var templates: HTMLElement;
 
 class Pane {
     fileField: any
-    pathBox: any
+    pathBox: HTMLInputElement
     fileList: any;
     tabs: Tab[];
     activeTab: Tab;
 
-    constructor(path: string) {
-        this.fileField = templates.getElementsByClassName('fileField')[0].cloneNode(true); // html element
+    constructor(path: string, private updateUiFunction: (pane: Pane) => void) {
+        this.fileField = document.getElementById('templates').getElementsByClassName('fileField')[0].cloneNode(true)
         this.pathBox = this.fileField.getElementsByClassName('pathBox')[0];
         this.fileList = this.fileField.getElementsByClassName('fileList')[0];
         this.tabs = []; // array of Tabs as defined in Tab.js
@@ -43,18 +41,16 @@ class Pane {
     }
 
     refresh(fallbackPath: string = ''): void {
-        // this.activeTab.folder = new Folder(this.activeTab.folder.path);
         this.activeTab.folder = new Folder(this.activeTab.folder.path);
-        this.activeTab.folder.read().then(() => {
-            updateGuiFiles(this.activeTab.folder, this);
-        }).catch(() => {
+        // TODO: no one is using the fallback path
+        try {
+            this.updateUiFunction(this);
+        } catch (error) {
             if (fallbackPath) {
                 this.activeTab.folder = new Folder(fallbackPath);
-                this.activeTab.folder.read().then(() => {
-                    updateGuiFiles(this.activeTab.folder, this);
-                });
+                this.updateUiFunction(this);
             }
-        });
+        }
 
     }
 
@@ -65,13 +61,9 @@ class Pane {
     
     cd(path: string): void {
         let newFolder = new Folder(path);
-        newFolder.read().then(() => {
-            this.activeTab.folder = newFolder	
-            
-            updateGuiFiles(this.activeTab.folder, this)
-        })
+        this.activeTab.folder = newFolder
+        this.updateUiFunction(this)
     }
-
 
 };
 
