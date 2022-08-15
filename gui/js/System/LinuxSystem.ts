@@ -3,7 +3,7 @@ const pathModule = require("path")
 const os = require("os")
 const { execFile } = require("child_process")
 
-import SystemI from "./SystemI.js";
+import SystemI from "./SystemI";
 
 class LinuxSystem implements SystemI {
 

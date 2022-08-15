@@ -7,7 +7,7 @@ const sudo = require('sudo-prompt');
 import { adjustFileFieldParentCss, hideContextMenu, newInputBox, updatePaneStyling } from "./updater.js"
 import Tab from "./PaneTracking/Tab.ts";
 import File from "./PaneTracking/File.ts"
-import SystemI from "./SystemI.ts"
+import SystemI from "./System/SystemI.ts"
 import { saveSettingsToFile } from "./iconSettings"
 import { createErrorToast } from "./toast.ts"
 
@@ -420,6 +420,7 @@ function useAsHome() {
 }
 
 
+//TODO: move some of this logic to PaneTracking module
 // called by the tab
 function changeTab(e) {
     if (e.target.classList.contains('label')) {

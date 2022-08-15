@@ -2,7 +2,7 @@ const path = require("path")
 const fs = require('fs')
 import { showProgramSettings } from "./programSettings.js"
 import { appPath } from "./settingsManager.ts"
-import SystemI from "./SystemI.ts";
+import SystemI from "./System/SystemI.ts";
 
 let settingsInputBox = null
 

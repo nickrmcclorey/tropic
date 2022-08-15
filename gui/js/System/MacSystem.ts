@@ -1,11 +1,10 @@
-const fs = require("fs")
 const pathModule = require('path')
 const sudo = require('sudo-prompt')
 
 import SystemI from "./SystemI"
-import { appPath, cleanPath } from "./settingsManager"
+import { appPath, cleanPath } from "../settingsManager"
 import { execFile, exec } from "child_process";
-import { createErrorToast } from "./toast"
+import { createErrorToast } from "../toast"
 
 class MacSystem implements SystemI {
 

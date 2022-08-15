@@ -129,6 +129,7 @@ function setInitListeners() {
 function handleKeypress(e) {
     let keyPressed = e.key.toUpperCase();
 
+    // TODO: create logic in SystemI to handle modifier keys
     if ((e.ctrlKey && process.platform != 'darwin') || (e.metaKey && process.platform == 'darwin')) {
         if (keyPressed == 'C') {
             selectedFiles.lockSelection('copy');
