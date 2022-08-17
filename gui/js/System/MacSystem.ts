@@ -59,6 +59,11 @@ class MacSystem implements SystemI {
 
 		return `cp ${src.join(' ')} ${dest}`
 	}
+
+	isModifierKeyPressed(e: KeyboardEvent | MouseEvent): boolean {
+        return e.metaKey
+    }
+
 }
 
 export default MacSystem

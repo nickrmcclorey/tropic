@@ -1,7 +1,9 @@
-import { fileOps, useAsHome, handleClick, goToParentDirectory, clearSelectedFiles, createNewChild, pasteSelectedFiles } from "./backend.js"
+import { useAsHome, handleClick, goToParentDirectory, clearSelectedFiles } from "./backend.js"
+import { renameFile, pasteSelectedFiles, deleteFile, openFile, createNewChild, unzip, zip, addPicToFileIcons } from "./fileOps.js"
 import { adjustFileFieldParentCss, callbacks, hideContextMenu, updatePaneStyling } from "./updater.js"
 import { addTab, eraseTab, changeTab } from "./backend.js"
 import { saveSettingsToFile } from "./iconSettings.js"
+import SystemI from "./System/SystemI.ts"
 
 
 function setFileListListeners() {
@@ -48,29 +50,29 @@ function setInitListeners() {
 
     // rename buttons
     for (let el of document.getElementsByClassName('renameButton')) {
-        el.addEventListener('click', fileOps.renameFileButtonPressed, false);
+        el.addEventListener('click', renameFile, false);
     }
     // delete button
     for (let el of document.getElementsByClassName('deleteButton')) {
-        el.addEventListener('click', fileOps.deleteFile,false);
+        el.addEventListener('click', deleteFile, false);
     }
     // copy button
     for (let el of document.getElementsByClassName('copyButton')) {
-        el.addEventListener('click', () => { selectedFiles.lockSelection('copy'); hideContextMenu();},false);
+        el.addEventListener('click', () => { selectedFiles.lockSelection('copy'); hideContextMenu();}, false);
     }
     // cut button
     for (let el of document.getElementsByClassName('cutButton')) {
-        el.addEventListener('click', () => { selectedFiles.lockSelection('cut'); hideContextMenu();},false);
+        el.addEventListener('click', () => { selectedFiles.lockSelection('cut'); hideContextMenu();}, false);
     }
     // paste buttons
     for (let el of document.getElementsByClassName('pasteButton')) {
-        el.addEventListener('click', fileOps.pasteSelectedFiles, false);
+        el.addEventListener('click', pasteSelectedFiles, false);
     }
     // open a file or folder
     for (let el of document.getElementsByClassName('openButton')) {
         el.addEventListener('click', () => {
-			fileOps.openFile(pathModule.join(Tracker.folder().path, nameFromLi(selectedFiles.tentative[0].li)))
-		},false);
+			openFile(pathModule.join(Tracker.folder().path, nameFromLi(selectedFiles.tentative[0].li)))
+		}, false);
     }
 
     // ask what they want to open with
@@ -80,12 +82,12 @@ function setInitListeners() {
 
     // unzip selected file
     for (let el of document.getElementsByClassName('unzipButton')) {
-        el.addEventListener('click', fileOps.unzip, false);
+        el.addEventListener('click', unzip, false);
     }
 
     // zip selected file
     for (let el of document.getElementsByClassName('zipButton')) {
-        el.addEventListener('click', fileOps.zip, false);
+        el.addEventListener('click', zip, false);
     }
 
     // shows more options in the context menu
@@ -108,7 +110,7 @@ function setInitListeners() {
 
     // add image to the list of available file icons
     for (let el of document.getElementsByClassName('addToFileIcons')) {
-        el.addEventListener('click', fileOps.addPicToFileIcons, false);
+        el.addEventListener('click', addPicToFileIcons, false);
     }
 
     for (let el of document.getElementsByClassName('addToLocations')) {
@@ -130,7 +132,7 @@ function handleKeypress(e) {
     let keyPressed = e.key.toUpperCase();
 
     // TODO: create logic in SystemI to handle modifier keys
-    if ((e.ctrlKey && process.platform != 'darwin') || (e.metaKey && process.platform == 'darwin')) {
+    if (SystemI.instance.isModifierKeyPressed(e)) {
         if (keyPressed == 'C') {
             selectedFiles.lockSelection('copy');
         } else if (keyPressed == 'X') {

@@ -29,7 +29,7 @@ function showProgramSettings() {
             entry.setAttribute('class', 'programEntry')
             entry.innerHTML = '<td><input class="label"/></td><td><input type="checkbox"/></td><td><input type="checkbox"/></td><td><input/></td><td><button>X</button></td>';
             pList.appendChild(entry);
-        },false);
+        }, false);
     }
 
     document.getElementsByClassName('Apply')[0].addEventListener('click', () => {

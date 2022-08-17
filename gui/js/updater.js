@@ -5,10 +5,12 @@
 const pathModule = require("path")
 const fs = require("fs")
 
-import { fileOps, fileIconPath, clearSelectedFiles, handleClick } from "./backend.js"
+import { fileIconPath, clearSelectedFiles, handleClick } from "./backend.js"
 import { setFileListListeners } from "./EventListeners.js"
 import { nameFromLi } from "./pure.ts"
 import File from "./PaneTracking/File"
+import { openFile } from "./fileOps.js"
+import SystemI from "./System/SystemI.ts"
 
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(pane) {
@@ -109,7 +111,7 @@ function file_dbl_clicked(e) {
     if (Tracker.folder().children[selectedFile].type == 'directory') {
         Tracker.activePane.cd(newPath);
     } else {
-        fileOps.openFile(newPath);
+        openFile(newPath);
     }
 }
 
@@ -130,7 +132,7 @@ function selectFile(li_target) {
 
 // usually results in contextMenu being shown
 function fileRightClicked(e) {
-    if (!e.ctrlKey && selectedFiles.tentative.length == 1) {
+    if (!SystemI.instance.isModifierKeyPressed(e) && selectedFiles.tentative.length == 1) {
         clearSelectedFiles();
     }
     // 'this' is the li element
@@ -148,7 +150,7 @@ function fileClicked(e) {
     if (selectedFiles.tentativeContains(this)) {
         selectedFiles.tentativeRemove(this);
         return;
-    } else if (!e.ctrlKey) {
+    } else if (!SystemI.instance.isModifierKeyPressed(e)) {
         clearSelectedFiles();
     }
 

@@ -61,6 +61,11 @@ class LinuxSystem implements SystemI {
 
 		return `cp ${src.join(' ')} ${dest}`
 	}
+
+	isModifierKeyPressed(e: KeyboardEvent | MouseEvent): boolean {
+		return e.ctrlKey;
+	}
+
 }
 
 export default LinuxSystem

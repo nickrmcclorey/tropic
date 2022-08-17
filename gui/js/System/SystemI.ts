@@ -9,6 +9,7 @@ abstract class SystemI {
 	abstract openFile(path: string): any;
 	abstract moveCommand(src: string[], dest: string, overwrite: boolean): string;
 	abstract copyCommand(src: string[], dest: string): string;
+	abstract isModifierKeyPressed(e: KeyboardEvent | MouseEvent): boolean;
 
 	static instance: SystemI = SystemI.getCorrectSystem();
 	static getCorrectSystem(): SystemI {

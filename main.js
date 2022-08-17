@@ -38,7 +38,9 @@ function iconPath() {
 }
 
 function runFunction(functionName) {
-    win.webContents.send('executeFunction', functionName);
+    return () => {
+        win.webContents.send('executeFunction', functionName);
+    }
 }
 
 
@@ -60,10 +62,10 @@ const template = [
     {
         label: 'Settings',
         submenu: [
-            { label: "file icons", click: () => { runFunction('showIconSettings') } },
-            { label: "programs", click: () => { runFunction('showProgramSettings') } },
-            { label: "advanced", click: () => { runFunction('showAdvancedSettings') } },
-            { label: "exit settings", click: () => { runFunction('hideSettings') } }
+            { label: "file icons", click: runFunction('showIconSettings') },
+            { label: "programs", click: runFunction('showProgramSettings') },
+            { label: "advanced", click: runFunction('showAdvancedSettings') },
+            { label: "exit settings", click: runFunction('hideSettings') },
         ]
     },
     {

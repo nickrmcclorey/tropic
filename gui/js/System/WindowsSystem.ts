@@ -43,6 +43,11 @@ class WindowsSystem implements SystemI {
 		}
 		return commands.join(' & ')
 	}
+
+	isModifierKeyPressed(e: KeyboardEvent | MouseEvent): boolean {
+		return e.ctrlKey;
+	}
+
 }
 
 export default WindowsSystem
