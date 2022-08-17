@@ -4,8 +4,9 @@ const os = require("os")
 const { execFile } = require("child_process")
 
 import SystemI from "./SystemI";
+import UnixSystem from "./UnixSystem";
 
-class LinuxSystem implements SystemI {
+class LinuxSystem extends UnixSystem implements SystemI {
 
 	deleteFiles(files: string[]): Promise<any> {
 		return new Promise((resolve, reject) => {
@@ -48,18 +49,6 @@ class LinuxSystem implements SystemI {
 				resolve()
 			});
 		})
-	}
-
-	moveCommand(src: string[], dest: string, overwrite: boolean): string {
-		if (src.length <= 0) throw "No src files specified in move command";
-
-		return `mv ${src.join(' ')} ${dest}`
-	}
-
-	copyCommand(src: string[], dest: string): string {
-		if (src.length <= 0) throw "No src files specified in copy command";
-
-		return `cp ${src.join(' ')} ${dest}`
 	}
 
 	isModifierKeyPressed(e: KeyboardEvent | MouseEvent): boolean {
