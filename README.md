@@ -27,4 +27,4 @@ npm start
 - change all settings through UI
 - integrated terminal
 - tool to find file or folder
-- Check out [jszip](https://www.npmjs.com/package/jszip) to replace adm-zip
+- View contents of zip file and extract individual entries
