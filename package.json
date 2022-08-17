@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.7.3",
-    "electron": "^11.1.1",
+    "electron": "^20.0.2",
     "electron-packager": "^15.2.0",
     "ts-loader": "^6.2.2",
     "typescript": "^3.9.9",

@@ -22,9 +22,9 @@ npm start
 
 ## Future Improvments
 - drag/drop files (compatable with other file browsers?)
-- perform terminal commands
+- resolve `~` as home directory
 - view file info and properties
-- tool to find file or folder
 - change all settings through UI
-- improve trash capability and opening files for macos
-- Move trash handling to trash library
+- integrated terminal
+- tool to find file or folder
+- Check out [jszip](https://www.npmjs.com/package/jszip) to replace adm-zip
