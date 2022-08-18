@@ -1,6 +1,6 @@
 
 const path = require('path');
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const Menu = require('electron').Menu;
 const { exec } = require('child_process');
 
@@ -16,7 +16,7 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            devTools: true
+            devTools: true,
         }
     });
     win.setMenu(null);
@@ -30,6 +30,7 @@ function createWindow() {
 app.on('ready', createWindow);
 
 app.on('window-all-closed', app.quit);
+ipcMain.on('quit', app.quit); // emitted from Renderer process
 
 
 // this is needed because the path changes from development to deployment

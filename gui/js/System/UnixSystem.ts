@@ -23,7 +23,6 @@ abstract class UnixSystem implements SystemI {
 		return `cp ${src.join(' ')} ${dest}`
 	}
 
-
 }
 
 export default UnixSystem

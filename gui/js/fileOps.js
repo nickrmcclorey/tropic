@@ -45,8 +45,9 @@ function createNewChild(makeDir) {
             } else if (!fs.existsSync(newPathToCreate)) {
                 fs.writeFile(newPathToCreate, '', error => {
                     if (error?.code == 'EACCES') {
-                        console.log("don't have permissions to write here")
-                        createErrorToast("File Access Error: Insufficient permissions")
+                        createErrorToast("Folder Access Error: Insufficient permissions")
+                    } else if (error) {
+                        createErrorToast("Failed to write file")
                     }
                 });
             }
@@ -62,10 +63,14 @@ function createNewChild(makeDir) {
 }
 
 // uses executable that recycles files
-async function deleteFile() {
+function deleteFile() {
     hideContextMenu();
-    await SystemI.instance.deleteFiles(selectedFiles.tentativePaths())
-    Tracker.refresh()
+    SystemI.instance.deleteFiles(selectedFiles.tentativePaths())
+        .then(Tracker.refresh)
+        .catch(e => {
+            createErrorToast("Failed to delete file")
+        }
+    )
 }
 
 
@@ -222,24 +227,35 @@ function sudoExec(command) {
 function unzip() {
     let newFilename = pathModule.basename(selectedFiles.tentative[0].path).replace('.zip', '');
     let newPath = pathModule.join(Tracker.folder().path, newFilename);
-    let zip = new AdmZip(selectedFiles.tentative[0].path);
-    zip.extractAllTo(newPath, false);
+    try { 
+        let zip = new AdmZip(selectedFiles.tentative[0].path);
+        zip.extractAllTo(newPath, false);
+    } catch (e) {
+        console.log(e)
+        createErrorToast("Failed to unzip file")
+    }
     hideContextMenu();
     Tracker.activePane.refresh();
 }
 
 
 function zip() {
-    let zip = new AdmZip();
-    for (let file of selectedFiles.tentative) {
-        if (file.isDirectory) {
-            zip.addLocalFolder(file.path);
-        } else {
-            zip.addLocalFile(file.path);
+    try {
+        let zip = new AdmZip();
+        for (let file of selectedFiles.tentative) {
+            if (file.isDirectory) {
+                zip.addLocalFolder(file.path);
+            } else {
+                zip.addLocalFile(file.path);
+            }
         }
+        let zipName = pathModule.basename(selectedFiles.tentative[0].path) + ".zip"
+        zip.writeZip(pathModule.join(Tracker.folder().path, zipName));
+    } catch (e) {
+        console.log(e)
+        createErrorToast("Failed to create zip archive")
     }
-    let zipName = pathModule.basename(selectedFiles.tentative[0].path) + ".zip"
-    zip.writeZip(pathModule.join(Tracker.folder().path, zipName));
+
     hideContextMenu();
     Tracker.activePane.refresh();
 }

@@ -157,6 +157,8 @@ function handleKeypress(e) {
             settings.showHiddenFiles = !settings.showHiddenFiles;
             Tracker.refresh();
             saveSettingsToFile();
+        } else if (process.platform == 'darwin' && keyPressed == 'Q') {
+            electron.ipcRenderer.send('quit')
         }
     }
 
@@ -167,6 +169,7 @@ function handleKeypress(e) {
         Tracker.activePane.setActiveTab(Tracker.activePane.tabs[index].element);
         Tracker.refresh();
     }
+
 }
 
 

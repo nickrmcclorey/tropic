@@ -12,7 +12,6 @@ class MacSystem extends UnixSystem implements SystemI {
 	deleteFiles(files: string[]): Promise<void> {
         let pathToExe = cleanPath(pathModule.join(appPath(), "gui/programs/trash/macos-trash"));
         let command = pathToExe + ' ' + files.join(' ')
-        console.log(command)
 
         return new Promise((resolve, reject) => {
             exec(command, (error: any, stdout: any, stderr: string) => {
