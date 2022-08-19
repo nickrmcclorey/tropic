@@ -63,14 +63,16 @@ function createNewChild(makeDir) {
 }
 
 // uses executable that recycles files
-function deleteFile() {
+async function deleteFile() {
     hideContextMenu();
-    SystemI.instance.deleteFiles(selectedFiles.tentativePaths())
-        .then(Tracker.refresh)
-        .catch(e => {
-            createErrorToast("Failed to delete file")
-        }
-    )
+    try {
+        await SystemI.instance.deleteFiles(selectedFiles.tentativePaths())
+    } catch (error) {
+        console.log(error)
+        createErrorToast("Failed to delete file")
+    }
+    
+    Tracker.refresh()
 }
 
 

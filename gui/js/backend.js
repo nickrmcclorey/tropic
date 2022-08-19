@@ -11,7 +11,7 @@ import { createErrorToast } from "./toast.ts"
 
 function handleClick(e) {
     for (let fileField of document.getElementsByClassName('fileField')) {
-        if (e.path.includes(fileField) && Tracker.activePane.fileField != fileField) {
+        if (e.composedPath().includes(fileField) && Tracker.activePane.fileField != fileField) {
             for (let pane of Tracker.panes) {
                 if (pane.fileField == fileField) {
                     Tracker.activePane = pane;
@@ -22,7 +22,7 @@ function handleClick(e) {
     }
 
     let contextMenu = document.getElementById('contextMenu');
-    if (!e.path.includes(contextMenu)) {
+    if (!e.composedPath().includes(contextMenu)) {
         hideContextMenu();
     }
 
@@ -32,7 +32,7 @@ function handleClick(e) {
     }
 
     let locationMenu = document.getElementsByClassName('locationList')[0];
-    if (!e.path.includes(locationMenu) && !e.target.classList.contains('locations')) {
+    if (!e.composedPath().includes(locationMenu) && !e.target.classList.contains('locations')) {
         locationMenu.style.display = 'none';
     }
 

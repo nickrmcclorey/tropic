@@ -6,7 +6,10 @@ async function bundleElectronApp(opt) {
         opt.icon="./gui/img/palm_trees.icns"
 
     if (platform != 'win32')
-        opt.ignore.push("gui/programs")
+        opt.ignore.push("gui/programs/recycle")
+
+    if (platform != 'darwin')
+        opt.ignore.push("gui/programs/trash")
 
     const appPaths = await packager(opt)
     console.log(`Electron app bundles created:\n${appPaths.join("\n")}`)
@@ -14,7 +17,7 @@ async function bundleElectronApp(opt) {
 
 options = {
     icon: "./gui/img/palm_trees.ico",
-    ignore: [ "scripts", "installers", "gui/settings.json", "webpack.config.js", "tsconfig.js", "gui/js"],
+    ignore: [ "scripts", "installers", "gui/settings.json", "webpack.config.js", "tsconfig.js", "gui/js", ".git"],
     out: "builds",
     overwrite: true,
     arch: "x64",

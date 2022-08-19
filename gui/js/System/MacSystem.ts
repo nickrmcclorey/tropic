@@ -28,6 +28,7 @@ class MacSystem extends UnixSystem implements SystemI {
                         }
                     })
                 } else if (error) {
+                    console.log(error)
                     reject()
                 } else {
                     resolve()
