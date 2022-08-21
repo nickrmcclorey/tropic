@@ -15,7 +15,7 @@ import SystemI from "./System/SystemI.ts"
 // updates the display with the list of files and their relavant information
 function updateGuiFiles(pane) {
     let folder = pane.activeTab.folder
-    let fileList = Tracker.activePane.fileList;
+    let fileList = pane.fileList;
 
     // update the input path box to show current path
     pane.pathBox.value = folder.path;

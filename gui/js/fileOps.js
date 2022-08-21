@@ -6,6 +6,7 @@ const sudo = require('sudo-prompt');
 import { hideContextMenu, newInputBox } from "./updater.js"
 import { createErrorToast } from "./toast.ts"
 import SystemI from "./System/SystemI"
+import { clearSelectedFiles } from "./backend.js";
 
 
 // opens a file in a seperate program
