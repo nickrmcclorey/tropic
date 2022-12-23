@@ -10,8 +10,8 @@
     "build-win-installer": "node scripts/installer-win.js",
     "build-mac-installer": "node scripts/installer-mac.js",
     "build-deb-installer": "node scripts/installer-debian.js",
-    "build-win":   "node scripts/package.js win32",
-    "build-mac":   "node scripts/package.js darwin",
+    "build-win": "node scripts/package.js win32",
+    "build-mac": "node scripts/package.js darwin",
     "build-linux": "node scripts/package.js linux"
   },
   "repository": {
