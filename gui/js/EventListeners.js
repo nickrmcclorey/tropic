@@ -1,3 +1,4 @@
+const os = require("os")
 import { useAsHome, handleClick, goToParentDirectory, clearSelectedFiles } from "./backend.js"
 import { renameFile, pasteSelectedFiles, deleteFile, openFile, createNewChild, unzip, zip, addPicToFileIcons } from "./fileOps.js"
 import { adjustFileFieldParentCss, callbacks, hideContextMenu, updatePaneStyling } from "./updater.js"
@@ -174,7 +175,7 @@ function handleKeypress(e) {
 
 
 function homePath() {
-    if (settings.homeFolder == undefined) {
+    if (!settings.homeFolder) {
         return os.homedir();
     } else {
         return settings.homeFolder
